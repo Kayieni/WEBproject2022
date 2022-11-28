@@ -12,5 +12,9 @@ router.get('/register', (req,res) => {
     res.render('register');
 });
 
+router.get('/login', (req,res) => {
+    res.render('login');
+})
+
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it
 module.exports = router;

@@ -26,8 +26,10 @@ const db = mysql.createConnection({
 //we also installed a dependancy called hbs for handlebars
 //to use this we need to set up some things
 
-const publicDirectory =  path.join(__dirname, './public'); //files like css or any js for frontend files we might want to use
-//console.log(__dirname);
+//files like css or any js for frontend files we might want to use
+const publicDirectory =  path.join(__dirname, './public'); 
+
+//also here, to use the variable 'path' we actually need to import this at the beginning because this is a part of node.js
 //__dirname is a default variable from node.js that gives you access to the current directory where you are
 //now we make sure express is being used
 app.use(express.static(publicDirectory));
@@ -37,7 +39,6 @@ app.use(express.urlencoded({ extended: false}));
 //Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-//also here, to use the variable 'path' we actually need to import this at the beginning because this is a part of node.js
 app.set('view engine', 'hbs');
 //now we create a folder named views which is a default name for handlebars
 

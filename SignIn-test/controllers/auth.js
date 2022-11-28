@@ -11,6 +11,45 @@ const db = mysql.createConnection({
     database: process.env.DATABASE
 });
 
+exports.login = (req,res) => {
+    console.log(req.body);
+
+    const { logname, logpwd } = req.body;
+
+    //start questing into the database
+    db.query('SELECT password FROM users WHERE username = ? OR email = ?', [logname, logname], async (error,results) => {
+        //error handling
+        if(error) {
+            console.log(error); //so i know what is the error and i an fix it
+        }
+
+        if(results.length < 1) {
+            //meaning that there is no entry with this email or username
+            return res.render('login', {
+                message: 'That user does not exit. Please try again or register a new user.'
+            })
+        }
+
+        //console.log(results);
+
+        const comparison = bcrypt.compare(logpwd, results[0].password, function(err, result) {
+            if(err){
+                console.log(err);
+            }
+            
+            if (result) {
+                return res.render('login', {
+                    message: 'You are now logged in!'
+                })
+            } else {
+                return res.render('login', {
+                    message:'Your password in incorrect, please try again.'
+                })
+            }
+           })
+    });
+
+}
 
 exports.register = (req,res) => {
     console.log(req.body); //req.body is grabbing all the data that we have from the form
