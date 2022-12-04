@@ -33,3 +33,9 @@ nav li a:hover {
     display: none; 
     text-align :center;
 }
+
+#map {
+    height: 500px; 
+    width: 800px;
+    position: relative;
+}

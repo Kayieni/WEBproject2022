@@ -23,5 +23,9 @@ router.get('/welcome', (req,res) => {
     res.render('welcome');
 })
 
+router.get('/map', (req,res) => {
+    res.render('map');
+})
+
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it
 module.exports = router;

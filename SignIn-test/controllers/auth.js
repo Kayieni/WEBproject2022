@@ -112,7 +112,7 @@ exports.login = (req,res) => {
             }
 
             if (result) {
-                res.redirect("/welcome");
+                res.redirect("/map");
                 return res.render('login', {
                     message: 'You are now logged in! Just wait a few seconds until we get redirected...'
                 });

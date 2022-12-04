@@ -5,6 +5,9 @@
  <meta http-equiv="X-UA-Compatible" content="IE=edge">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <!-- for CSS -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+  integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+  crossorigin=""/>                                 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <link rel="stylesheet" href="/style.css">
@@ -25,7 +28,7 @@
   </style>
 </head>
 <body>
-  <nav>
+<!--  <nav>
     <h4>Node MySQL</h4>
     <ul>
         <li><a href="/welcome">Home</a></li>
@@ -33,8 +36,9 @@
         <li><a href="/">Logout</a></li>
     </ul>
   </nav>
+-->
 <!-- navbar -->
- {{!-- <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top">
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top">
   <div class="container">
    <a href="#" class="navbar-brand">Frontend Bootcamp</a>
 
@@ -46,18 +50,19 @@
     <ul class="navbar-nav ms-auto"> 
 <!-- alk to ms-auto to paei sthn akrh -->
      <li class="nav-item">
-      <a href="#learn" class="nav-link">What You'll Learn</a>
+      <a href="#" class="nav-link">Home</a>
      </li>
      <li class="nav-item">
-      <a href="#questions" class="nav-link">Questions</a>
+      <a href="/profile" class="nav-link">Profile</a>
      </li>
      <li class="nav-item">
-      <a href="#instructors" class="nav-link">Instructors</a>
+      <a href="/" class="nav-link">Logout</a>
      </li>
     </ul>
    </div>
   </div>
- </nav> --}}
+ </nav>
+
 <!-- showcase -->
  <section class="bg-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
   <div class="container">
@@ -73,7 +78,10 @@
      data-bs-target="#enroll" >
      Start The Enrollment</button>
     </div>
-    <img class="img-fluid w-50 d-none d-sm-block p-2" src="../public/img/prezkermit.jpg" alt="">
+    <!-- Here will be the map instead of the image
+    <img class="img-fluid w-50 d-none d-sm-block p-2" src="img/prezkermit.jpg" alt="">
+    -->
+    <div id="map"></div> 
    </div>
   </div>
  </section>
@@ -137,7 +145,7 @@
   <div class="container">
    <div class="row align-items-center justify-content-between">
     <div class="col-md">
-     <img src="../public/img/piggy.jpg" class="img-fluid" alt="">
+     <img src="img/piggy.jpg" class="img-fluid" alt="">
     </div>
     <div class="col-md p-5">
      <h2>Learn The Fundumentals</h2>
@@ -166,7 +174,7 @@
      </a>
     </div>
     <div class="col-md">
-     <img src="../public/img/animal.webp" class="img-fluid" alt="">
+     <img src="img/animal.webp" class="img-fluid" alt="">
     </div>
    </div>
   </div>
@@ -271,7 +279,7 @@
      <div class="card bg-light">
       <div class="card-body text-center">
        <img 
-       src="../public/img/cartman.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
+       src="img/cartman.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
        <h3 class="card-title mb-3">John Doe</h3>
        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi numquam a modi perspiciatis, voluptates quasi.</p>
        <a href="#"><i class="bi bi-twitter text-dark mx-1"></i></a>
@@ -284,7 +292,7 @@
     <div class="col-md-6 col-lg-3">
      <div class="card bg-light">
       <div class="card-body text-center">
-       <img src="../public/img/kenny.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
+       <img src="img/kenny.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
        <h3 class="card-title mb-3">Jane Doe</h3>
        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi numquam a modi perspiciatis,
         voluptates quasi.</p>
@@ -298,7 +306,7 @@
     <div class="col-md-6 col-lg-3">
      <div class="card bg-light">
       <div class="card-body text-center">
-       <img src="../public/img/stan.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
+       <img src="img/stan.webp" class="img-fluid rounded-circle md-3" width="20%" alt="">
        <h3 class="card-title mb-3">You know who</h3>
        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi numquam a modi perspiciatis,
         voluptates quasi.</p>
@@ -386,6 +394,10 @@
   </div>
  </div>
  <!-- JavaScript Bundle -->
+ <script src="map.js"></script>
+ <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+  integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+  crossorigin=""></script> 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 </body>
