@@ -27,3 +27,9 @@ nav li a:hover {
     color: yellow;
     text-decoration: none;
 }
+
+.displayBadge{
+    margin-top: 5%; 
+    display: none; 
+    text-align :center;
+}

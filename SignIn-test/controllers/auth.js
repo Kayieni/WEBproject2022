@@ -11,45 +11,7 @@ const db = mysql.createConnection({
     database: process.env.DATABASE
 });
 
-exports.login = (req,res) => {
-    console.log(req.body);
-
-    const { logname, logpwd } = req.body;
-
-    //start questing into the database
-    db.query('SELECT password FROM users WHERE username = ? OR email = ?', [logname, logname], async (error,results) => {
-        //error handling
-        if(error) {
-            console.log(error); //so i know what is the error and i an fix it
-        }
-
-        if(results.length < 1) {
-            //meaning that there is no entry with this email or username
-            return res.render('login', {
-                message: 'That user does not exit. Please try again or register a new user.'
-            })
-        }
-
-        //console.log(results);
-
-        const comparison = bcrypt.compare(logpwd, results[0].password, function(err, result) {
-            if(err){
-                console.log(err);
-            }
-            
-            if (result) {
-                return res.render('login', {
-                    message: 'You are now logged in!'
-                })
-            } else {
-                return res.render('login', {
-                    message:'Your password in incorrect, please try again.'
-                })
-            }
-           })
-    });
-
-}
+//-----for register-------
 
 exports.register = (req,res) => {
     console.log(req.body); //req.body is grabbing all the data that we have from the form
@@ -68,15 +30,33 @@ exports.register = (req,res) => {
             console.log(error); //so i know what is going on
         }
 
+        //meaning that there is already a same email registered
         if(results.length > 0) {
-            //meaning that there is already a same email registered
+            
             return res.render('register', {
                 message: 'That email is already in use'
             })
-        } else if( password !== passwordConfirm ) {
+        } 
+        //check if username is unique
+        //bus this account is registered even though i say not to
+        db.query('SELECT username FROM users WHERE username = ?', [username], async (error,results) => {
+            if(error) {
+                console.log(error);
+            }
+
+            if(results.length > 0) {
+                return res.render('register', {
+                    message: 'That username is already taken'
+                })
+            }
+        })
+
+
+        //last error handling: check if the 2 password fields have equivalent content typed in
+        if( password !== passwordConfirm ) {
             return res.render('register', {
                 message: 'The passwords do not match'
-            });
+            })
         }
 
         let hashedPassword = await bcrypt.hash(password, 8); //await bc this process of encrypting passwords could take a few seconds more. The default of 8 rounds of hashing should be an ok encryption
@@ -87,7 +67,8 @@ exports.register = (req,res) => {
                     console.log(error);
                 } else {
                     console.log(results);
-                    return res.render('register', {
+                    res.redirect("/login")
+                    return res.render('login', {
                         message: 'User registered'
                     });
                 }
@@ -98,10 +79,49 @@ exports.register = (req,res) => {
     //to hash the password we need to import the bcryptjs
     //we want to handle errors like 1 person with the same email to register 2 times
 
-    //res.send("testing");
+}
 
 
-    
+//---- for login -----
 
+exports.login = (req,res) => {
+    console.log(req.body);
+
+    const { logname, logpwd } = req.body;
+
+    //start questing into the database
+    db.query('SELECT password FROM users WHERE username = ? OR email = ?', [logname, logname], async (error,results) => {
+        //error handling
+        //----------------------------------------------------------------------
+        //!!! prepei na kanw to username case sensitive, diladi to Emma =/= emma
+        //----------------------------------------------------------------------
+        if(error) {
+            console.log(error); //so i know what is the error and i an fix it
+        }
+
+        if(results.length < 1) {
+            //meaning that there is no entry with this email or username
+            return res.render('login', {
+                message: 'That user does not exit. Please try again or register a new user.'
+            })
+        }
+
+        const comparison = bcrypt.compare(logpwd, results[0].password, function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+
+            if (result) {
+                res.redirect("/welcome");
+                return res.render('login', {
+                    message: 'You are now logged in! Just wait a few seconds until we get redirected...'
+                });
+            } else {
+                return res.render('login', {
+                    message: 'Your password in incorrect, please try again.'
+                });
+            }
+        })
+    });
 
 }
