@@ -1,7 +1,8 @@
 //first import the database in here
 const mysql = require('mysql');
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
+
 
 //start the connection
 const db = mysql.createConnection({

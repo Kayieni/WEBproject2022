@@ -4,12 +4,10 @@
 //first of all install a couple of dependances that we need
 //the base minimum to start a node.js project
 //if we use nodemon the server will restart automatically otherwise everytime we make changes to this .js file we have to stop the server and restart it again
-const nodemon = require('nodemon');
 const express = require("express"); //to make sure we restart our server from node.js
 const path = require('path'); //we dont need to install it cause it comes by default from node.js
 const mysql = require("mysql"); //install mysql
-const dotenv = require('dotenv'); //we already installed it with npm
-//const exp = require("constants");   
+const dotenv = require('dotenv'); //we already installed it with npm  
 
 dotenv.config({ path: './.env'}); //here we tell where is the file
 
@@ -106,6 +104,6 @@ app.listen(3000,()=> {console.log("Server started on port 3000.")});
 
 //what kind of port we want to listen to
 app.listen(process.env.PORT, () => {
-    console.log("Server started on Port 5000");
+    console.log("Server started on: http://localhost:" +process.env.PORT);
 })
 
