@@ -28,15 +28,6 @@
   </style>
 </head>
 <body>
-<!--  <nav>
-    <h4>Node MySQL</h4>
-    <ul>
-        <li><a href="/welcome">Home</a></li>
-        <li><a href="/Profile">Profile</a></li>
-        <li><a href="/">Logout</a></li>
-    </ul>
-  </nav>
--->
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top">
   <div class="container">
@@ -50,13 +41,13 @@
     <ul class="navbar-nav ms-auto"> 
 <!-- alk to ms-auto to paei sthn akrh -->
      <li class="nav-item">
-      <a href="#" class="nav-link">Home</a>
+      <a href="/" class="nav-link">Home</a>
      </li>
      <li class="nav-item">
       <a href="/profile" class="nav-link">Profile</a>
      </li>
      <li class="nav-item">
-      <a href="/" class="nav-link">Logout</a>
+      <a href="/logout" class="nav-link">Logout</a>
      </li>
     </ul>
    </div>
@@ -68,8 +59,9 @@
   <div class="container">
    <div class="d-sm-flex align-items-center justify-content-between">
     <div>
-     <h1>Become a <span class="text-warning">Web Developer</span></h1>
-     <p class="lead my-4">
+      {{#if user}}
+        <h1>Welcome <br><span class="text-warning">{{user}}</span></h1>
+      {{/if}}<p class="lead my-4">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur non molestiae aperiam eum provident pariatur repellendus molestias quos obcaecati doloremque.
      </p>
      <button 

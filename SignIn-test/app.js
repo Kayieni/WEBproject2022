@@ -8,6 +8,10 @@ const express = require("express"); //to make sure we restart our server from no
 const path = require('path'); //we dont need to install it cause it comes by default from node.js
 const mysql = require("mysql"); //install mysql
 const dotenv = require('dotenv'); //we already installed it with npm  
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const {v4:uuidv4} = require('uuid');
+//const MySQLStore = require('connect-mysql2')(session);
 
 dotenv.config({ path: './.env'}); //here we tell where is the file
 
@@ -48,8 +52,10 @@ app.get('/',function(req,res){
 })
 */
 
+
+//=====parsing the incoming data======
 //Parse URL-encoded bodies (as sent by HTML forms) 
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: true}));
 //Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
@@ -61,6 +67,26 @@ app.set('view engine', 'hbs'); //instead of hbs, pug is common too
 /*
 app.set('views','./newname")
 */
+
+//=========Set the Cookie-parser========
+//Define Cookie-parser usage so that the server can access the necessary option to save, read and access a cookie.
+//app.use(cookies);
+//====== session setup =======
+const aday = 1000*60*60*24; //a day in milliseconds
+//src: https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+app.use(session({
+    secret: 'secret',
+    //store: new MySQLStore(db),
+    resave: false,
+    saveUninitialized: true,
+    cookie: {maxAge: aday}
+}))
+
+//To initialize the session, we will set the session middleware inside the routes of the individual HTTP requests.
+//When a client sends a request, the server will set a session ID and set the cookie equal to that session ID. The cookie is then stored in the set cookie HTTP header in the browser. Every time the browser (client) refreshes, the stored cookie will be a part of that request.
+
+//=======set the cookie parser====
+app.use(cookieParser());
 
 /* ==== Connect with mySQL Database ====*/
 

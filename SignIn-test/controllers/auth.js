@@ -2,6 +2,9 @@
 const mysql = require('mysql');
 //const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
+//const session = require('express-session');
+
+var session;
 
 
 //start the connection
@@ -113,9 +116,25 @@ exports.login = (req,res) => {
             }
 
             if (result) {
-                res.redirect("/map");
-                return res.render('login', {
-                    message: 'You are now logged in! Just wait a few seconds until we get redirected...'
+                exports.setSession = (reqq,ress) => {
+                    reqq.session.userid = logname;
+                    console.log(req.session)
+                    ress.send('Session value set');
+                };
+
+                exports.getSession = (reqq,ress) => {
+                    const userid = reqq.session.userid;
+                    console.log(userid)
+                    ress.send(`Session value: ${userid}`);
+                };
+
+                session = req.session;
+                session.userid = logname;
+                console.log(req.session);
+
+                //res.redirect("/welcome");
+                return res.render('welcome', {
+                    user: logname
                 });
             } else {
                 return res.render('login', {
