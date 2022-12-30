@@ -82,6 +82,7 @@ app.use(session({
     cookie: {maxAge: aday}
 }))
 
+
 //To initialize the session, we will set the session middleware inside the routes of the individual HTTP requests.
 //When a client sends a request, the server will set a session ID and set the cookie equal to that session ID. The cookie is then stored in the set cookie HTTP header in the browser. Every time the browser (client) refreshes, the stored cookie will be a part of that request.
 

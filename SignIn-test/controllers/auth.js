@@ -2,6 +2,7 @@
 const mysql = require('mysql');
 //const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
+//const { escapeSelector } = require('jquery');
 //const session = require('express-session');
 
 var session;
@@ -127,6 +128,16 @@ exports.login = (req,res) => {
                     console.log(userid)
                     ress.send(`Session value: ${userid}`);
                 };
+
+                exports.checkAuth = (reqq,ress,next) => {
+                    if(reqq.session && reqq.session.userid) {
+                        //The user is authenticated, allow them to access the page
+                        return next();
+                    }else {
+                        //The user is not authenticated, redirect them to the login page
+                        ress.redirect('/login');
+                    }
+                }
 
                 session = req.session;
                 session.userid = logname;

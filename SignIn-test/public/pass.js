@@ -1,4 +1,4 @@
-// Check Password Strength 
+// Check Password Strength by: https://codepen.io/coding_beast/pen/LYGrXde
 
 let state = false;
 let password = document.getElementById("password");
@@ -67,21 +67,27 @@ function checkStrength(password) {
         eightChar.classList.remove('fa-check');   
     }
 
-    // If value is less than 2
+    // If value is less than 2 its not good
     if (strength < 2) {
         passwordStrength.classList.remove('progress-bar-warning');
         passwordStrength.classList.remove('progress-bar-success');
         passwordStrength.classList.add('progress-bar-danger');
         passwordStrength.style = 'width: 10%';
-    } else if (strength == 3) {
+    } 
+    // If value is 3, its ok password but not enough
+    else if (strength == 3) {
         passwordStrength.classList.remove('progress-bar-success');
         passwordStrength.classList.remove('progress-bar-danger');
         passwordStrength.classList.add('progress-bar-warning');
         passwordStrength.style = 'width: 60%';
-    } else if (strength == 4) {
+    } 
+    // If value is 4, its perfect and can continue
+    else if (strength == 4) {
         passwordStrength.classList.remove('progress-bar-warning');
         passwordStrength.classList.remove('progress-bar-danger');
         passwordStrength.classList.add('progress-bar-success');
         passwordStrength.style = 'width: 100%';
     }
+
+    return strength;
 }

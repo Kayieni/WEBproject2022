@@ -1,8 +1,7 @@
 //this file is gonna just organize all my code to create all the routes for all the different pages that i want
 //1. first step we have to import the express js
-const { application } = require('express');
 const express = require('express');
-const { setSession, getSession } = require('../controllers/auth');
+const { setSession, getSession, endSession, checkAuth } = require('../controllers/auth');
 
 //performing tasks on a particular path is called routing
 const router = express.Router();
@@ -28,42 +27,24 @@ router.get('/login', (req,res) => {
     res.render('login');
 })
 
-// router.get('/login', (req,res) => {
-//     res.render('login');
-// })
-
-//===test====
-
-// router.get('/welcome', (req,res) => {
-//     session = req.session;
-//     req.session.userid = logname;
-//     console.log(req.session);
-//     if(session.userid){
-//         res.render('welcome', {user:req.session.userid})
-//     }else(
-//         res.render('login', {message:"unauthorized user"})
-//     )
-// })
-
-// router.get('/set-session', setSession);
-// router.get('/get-session', getSession);
-
-
 router.get('/welcome', (req,res) => {
+    //The user is authenticated, display the user page
+    checkAuth;
     res.render('welcome');
 });
 
-// router.get('/set-session', (req,res) => {
-//     setSession;
-// });
-
-// router.get('/get-session', (req,res) => {
-//     getSession;
-// });
-
 router.get('/logout', (req,res) => {
-    req.session.destroy();
-    res.render('index');
+    req.session.destroy((err) => {
+        if(err) {
+            //An error occurred while destroying the session
+            console.log(err);
+            res.send('Error logging out');
+        }else {
+            //The session was successfully destroyed, redirect the user to the login page
+            console.log('Session killed');
+            res.render('login', {messagegood: 'You are logged out successfully!'});
+        }
+    });
 })
 
 router.get('/map', (req,res) => {
