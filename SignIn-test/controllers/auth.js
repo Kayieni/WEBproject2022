@@ -2,8 +2,10 @@
 const mysql = require('mysql');
 //const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
+const { setSession, getSession } = require('./sessions');
 //const { escapeSelector } = require('jquery');
 //const session = require('express-session');
+//const { setSession, getSession, checkAuth } = require('../controllers/sessions');
 
 var session;
 
@@ -93,7 +95,6 @@ exports.login = (req,res) => {
     console.log(req.body);
 
     const { logname, logpwd } = req.body;
-
     //start questing into the database
     db.query('SELECT password FROM users WHERE username = ? OR email = ?', [logname, logname], async (error,results) => {
         //error handling
@@ -117,36 +118,17 @@ exports.login = (req,res) => {
             }
 
             if (result) {
-                exports.setSession = (reqq,ress) => {
-                    reqq.session.userid = logname;
-                    console.log(req.session)
-                    ress.send('Session value set');
-                };
 
-                exports.getSession = (reqq,ress) => {
-                    const userid = reqq.session.userid;
-                    console.log(userid)
-                    ress.send(`Session value: ${userid}`);
-                };
-
-                exports.checkAuth = (reqq,ress,next) => {
-                    if(reqq.session && reqq.session.userid) {
-                        //The user is authenticated, allow them to access the page
-                        return next();
-                    }else {
-                        //The user is not authenticated, redirect them to the login page
-                        ress.redirect('/login');
-                    }
-                }
-
+                //set session
                 session = req.session;
                 session.userid = logname;
                 console.log(req.session);
+                const userid = req.session.userid;
+                exports.userid = userid;
+                console.log('userid from controllers auth.js is:', userid);
+                getSession;
+                return res.render('welcome', {user: userid});
 
-                //res.redirect("/welcome");
-                return res.render('welcome', {
-                    user: logname
-                });
             } else {
                 return res.render('login', {
                     message: 'Your password in incorrect, please try again.'

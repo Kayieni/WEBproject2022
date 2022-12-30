@@ -1,10 +1,11 @@
 //this file is gonna just organize all my code to create all the routes for all the different pages that i want
 //1. first step we have to import the express js
 const express = require('express');
-const { setSession, getSession, endSession, checkAuth } = require('../controllers/auth');
-
+const { setSession, getSession, endSession, checkAuth } = require('../controllers/sessions');
+const username = require('../controllers/auth');
 //performing tasks on a particular path is called routing
 const router = express.Router();
+const userid = username.userid;
 
 router.get('/', (req,res) => {
     res.render('index');
@@ -14,24 +15,32 @@ router.get('/register', (req,res) => {
     res.render('register');
 });
 
-router.get('/set-session', (req,res) => {
-    setSession;
-});
+// router.get('/set-session', (req,res) => {
+//     setSession;
+// });
 
-router.get('/get-session', (req,res) => {
-    getSession;
-});
+// router.get('/get-session', (req,res) => {
+//     getSession;
+// });
 
 //===test====
 router.get('/login', (req,res) => {
+    //setSession;
     res.render('login');
 })
 
-router.get('/welcome', (req,res) => {
+router.get('/welcome', checkAuth, (req,res) => {
     //The user is authenticated, display the user page
-    checkAuth;
-    res.render('welcome');
+    // let userid = getSession;
+    // res.render('welcome', {user: getSession});
+    console.log('userid used from pages.js', userid)
+    res.render('welcome',{user: userid});
 });
+
+router.get('/profile', checkAuth, (req,res) => {
+    //getSession;
+    res.render('profile');
+})
 
 router.get('/logout', (req,res) => {
     req.session.destroy((err) => {
@@ -41,7 +50,7 @@ router.get('/logout', (req,res) => {
             res.send('Error logging out');
         }else {
             //The session was successfully destroyed, redirect the user to the login page
-            console.log('Session killed');
+            console.log('Session killed!');
             res.render('login', {messagegood: 'You are logged out successfully!'});
         }
     });
