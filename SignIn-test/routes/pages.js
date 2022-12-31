@@ -15,14 +15,6 @@ router.get('/register', (req,res) => {
     res.render('register');
 });
 
-// router.get('/set-session', (req,res) => {
-//     setSession;
-// });
-
-// router.get('/get-session', (req,res) => {
-//     getSession;
-// });
-
 //===test====
 router.get('/login', (req,res) => {
     //setSession;
