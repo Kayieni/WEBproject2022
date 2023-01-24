@@ -322,7 +322,10 @@ exports.updatepass = (req,res) => {
 exports.review = (req,res) => {
     console.log(req.session);
     console.log('im inside review auth')
-    const counter = parseInt(req.body.like);
+    const counter = parseInt(req.body.product_counter);
+    const DiscPrice = parseInt(req.body.disc_price);
+    const interact = parseInt(req.body.interact);
+    
     db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? ', [counter], async (error,results) => {
         if(error) {
             console.log(error); //so i know what is the error and i an fix it

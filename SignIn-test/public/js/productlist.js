@@ -76,21 +76,27 @@ $(document).ready(function () {
                                     <h6 class="text-${txtstyle}">${stock}</h6>
                                     <div class="d-flex flex-column mt-4">
                                         <form action="/auth/review" method="POST">
-                                            <input type="hidden" name="like" value="${filteredDiscs[i].counter}">  
+                                            <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                            <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
+                                            <input type="hidden" name="interact" value="like">  
                                             <button class="btn btn-${likebtn} btn-sm"
                                                 type="submit">
                                                 Like
                                             </button>
                                         </form>
                                         <form action="/auth/review" method="POST">
-                                            <input type="hidden" name="dislike" value="${filteredDiscs[i].counter}">  
+                                        <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                        <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
+                                            <input type="hidden" name="interact" value="dislike">  
                                             <button class="btn btn-${dislikebtn} btn-sm"
                                                 type="submit">
                                                 Dislike
                                             </button>
                                         </form>
                                         <form action="/auth/review" method="POST">
-                                            <input type="hidden" name="stock" value="${filteredDiscs[i].counter}">  
+                                        <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                        <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                            <input type="hidden" name="interact" value="stock">  
                                             <button class="btn btn-outline-dark btn-sm mt-2"
                                                 type="submit">
                                                 ${restock}
