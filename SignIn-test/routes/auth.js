@@ -8,6 +8,9 @@ const router = express.Router();
 //we dont want to render but we want to create a controller that will be able to deal with all the data from the form
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/updatename', authController.updatename);
+router.post('/updatepass', authController.updatepass);
+router.post('/review', authController.review);
 
 //with this command in node we can create a new module
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it

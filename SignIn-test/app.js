@@ -1,3 +1,6 @@
+// ======= MVC Architecture ==============
+
+
 //also known as: server.js
 //this file is mainly about the host/ server in http
 
@@ -11,6 +14,8 @@ const dotenv = require('dotenv'); //we already installed it with npm
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const {v4:uuidv4} = require('uuid');
+var MySQLSessionStore = require('express-mysql-session')(session); // for session storeage
+
 //const MySQLStore = require('connect-mysql2')(session);
 
 dotenv.config({ path: './.env'}); //here we tell where is the file
@@ -34,14 +39,15 @@ const db = mysql.createConnection({
 //we also installed a dependancy called hbs for handlebars
 //to use this we need to set up some things
 
-//files like css or any js for frontend files we might want to use
+//files like css or any js for frontend files we might want to use 
+// basically the front end in ./public
 const publicDirectory =  path.join(__dirname, './public'); 
 //also here, to use the variable 'path' we actually need to import this at the beginning because this is a part of node.js
 //__dirname is a default variable from node.js that gives you access to the current directory where you are
 //now we make sure express is being used
 //now we access all the static files in the public folder
 app.use(express.static(publicDirectory));
-
+// τσέκαρε αν το req χρειάζεται κατι απο το public dir και αν ναι : res
 //----- alternative for the static files
 /*
 const publicpath = path.resolve(__dirname,'public')
@@ -57,6 +63,7 @@ app.get('/',function(req,res){
 //Parse URL-encoded bodies (as sent by HTML forms) 
 app.use(express.urlencoded({ extended: true}));
 //Parse JSON bodies (as sent by API clients)
+//middleware to read req.body.<params>
 app.use(express.json());
 
 //engine to generate dynamic html file
@@ -72,22 +79,67 @@ app.set('views','./newname")
 //Define Cookie-parser usage so that the server can access the necessary option to save, read and access a cookie.
 //app.use(cookies);
 //====== session setup =======
+var sessionStore = new MySQLSessionStore({
+    host: process.env.DATABASE_HOST,    
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE
+},db);
 const aday = 1000*60*60*24; //a day in milliseconds
 //src: https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
 app.use(session({
-    secret: 'secret',
-    //store: new MySQLStore(db),
-    resave: false,
-    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET,
+    store: sessionStore, // to store the session in the database
+    // rolling: false, if i want the session to expire in the maxAge, regardless the activity of the user
+    resave: false, // default value: true. Set to false in order for the session to be destroyed
+    saveUninitialized: false, // default value: true. Set to false in order for the session to be destroyed
     cookie: {maxAge: aday}
 }))
 
+// now, after visiting any route of the website, the will be a cookie set in the httprequest header, that will be equilanant to the sessions stored above, in the database
 
 //To initialize the session, we will set the session middleware inside the routes of the individual HTTP requests.
 //When a client sends a request, the server will set a session ID and set the cookie equal to that session ID. The cookie is then stored in the set cookie HTTP header in the browser. Every time the browser (client) refreshes, the stored cookie will be a part of that request.
 
-//=======set the cookie parser====
-app.use(cookieParser());
+//=======set the cookie parser middleware ====
+// app.use(cookieParser());
+
+
+function checkAuthenticated (req, res, next) {
+    if (req.session.authenticated && (req.session.role == "user")) {
+        console.log("from checkAuth app.js");
+        next();
+    } else {
+        req.session.successMessage = "Not authendicated. Login Again.";
+        res.redirect('/logout');
+    }
+}
+
+// User pages that need authendication
+app.use('/welcome', checkAuthenticated);
+app.use('/profile', checkAuthenticated);
+app.use('/reviews', checkAuthenticated);
+app.use('/edit', checkAuthenticated);
+// app.use('/map', checkAuthenticated);
+
+
+function checkAuthAdmin (req, res, next) {
+    if (req.session.authenticated && (req.session.role == "admin")){
+        console.log("from checkAdmin app.js");
+        next();
+    } else {
+        req.session.successMessage = "Not authendicated. Login Again.";
+        res.redirect('/logout');
+    }
+}
+
+// Admin pages that need authendication
+app.use('/admin', checkAuthAdmin);
+app.use('/statistics', checkAuthAdmin);
+app.use('/leaderboard', checkAuthAdmin);
+app.use('/admin-poi', checkAuthAdmin);
+app.use('/admin-products', checkAuthAdmin);
+
 
 /* ==== Connect with mySQL Database ====*/
 
@@ -105,7 +157,10 @@ db.connect( (error) => {
 
 //----------------------------
 //Defire Routes
+
+// app.use('/admin',require('./routes/admin'));
 app.use('/', require('./routes/pages')); //no need again to write the .js ending of the file
+// app.use('/dragdrop',require('./routes/dragdrop'));
 app.use('/auth',require('./routes/auth'));
 
 //so everytime i get something in http, i send something else
