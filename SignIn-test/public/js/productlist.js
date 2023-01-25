@@ -58,6 +58,7 @@ $(document).ready(function () {
                                         <span>Date:</span>
                                         <span>${filteredDiscs[i].entry_date}<br></span>
                                     </div>
+                                    
                                     <div class="mt-1 mb-1 figure-caption">
                                         <span class="dot"></span>
                                         <span>User:</span>
@@ -78,7 +79,8 @@ $(document).ready(function () {
                                         <form action="/auth/review" method="POST">
                                             <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
                                             <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
-                                            <input type="hidden" name="interact" value="like">  
+                                            <input type="hidden" name="entry_by" value="${filteredDiscs[i].userID}">  
+                                            <input type="hidden" name="interact" value="1">  
                                             <button class="btn btn-${likebtn} btn-sm"
                                                 type="submit">
                                                 Like
@@ -87,7 +89,7 @@ $(document).ready(function () {
                                         <form action="/auth/review" method="POST">
                                         <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
                                         <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
-                                            <input type="hidden" name="interact" value="dislike">  
+                                            <input type="hidden" name="interact" value="0">  
                                             <button class="btn btn-${dislikebtn} btn-sm"
                                                 type="submit">
                                                 Dislike
