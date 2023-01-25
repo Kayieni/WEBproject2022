@@ -324,7 +324,11 @@ exports.review = (req,res) => {
     console.log('im inside review auth')
     const counter = parseInt(req.body.product_counter);
     const DiscPrice = parseInt(req.body.disc_price);
+    const entry_by= parseInt(req.body.entry_by);
+    console.log(entry_by);
     const interact = parseInt(req.body.interact);
+
+    let current_date = new Date().toJSON().slice(0,10);
     
     db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? ', [counter], async (error,results) => {
         if(error) {
@@ -332,6 +336,24 @@ exports.review = (req,res) => {
         } else if(results.length < 1) {
             console.log(req.session);
             console.log("you can do like");
+            db.query('INSERT INTO interaction SET ? ',{price:DiscPrice, userID: req.session.user_data[0].userID, counter:counter,timestamp:current_date, interaction:interact },(error,results)=>{
+                if(error){
+                    console.log(error);
+                }else{
+                    console.log('Interaction inserted to db');
+                    
+                }
+            });
+
+            db.query('UPDATE users SET month_score = ? WHERE userID = ?',[5, entry_by],(error,results)=>{
+                if(error){
+                    console.log(error);
+                }else{
+                    console.log('Users score updated')
+                    res.redirect("/reviews");
+                }
+            });
+
         } else {
             console.log("you cant");
         }   
