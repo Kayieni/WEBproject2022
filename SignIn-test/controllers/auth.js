@@ -319,7 +319,6 @@ exports.updatepass = (req,res) => {
     });         
 }
 
-// Vasiliki edits this part
 exports.review = (req,res) => {
     console.log(req.session);
     console.log('im inside review auth')
@@ -328,9 +327,12 @@ exports.review = (req,res) => {
     const entry_by= parseInt(req.body.entry_by);
     console.log(entry_by);
     const interact = parseInt(req.body.interact);
-
-    let current_date = new Date().toJSON().slice(0,10);
     
+
+
+    let current_date = new Date().toJSON();
+    console.log(current_date);
+    var month_score;
     db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? ', [counter], async (error,results) => {
         if(error) {
             console.log(error); //so i know what is the error and i an fix it
@@ -345,22 +347,36 @@ exports.review = (req,res) => {
                     
                 }
             });
-
-            db.query('UPDATE users SET month_score = ? WHERE userID = ?',[5, entry_by],(error,results)=>{
+            db.query('SELECT month_score FROM users WHERE userID = ?',[entry_by] , async (error,results) => {
                 if(error){
                     console.log(error);
                 }else{
-                    console.log('Users score updated')
-                    res.redirect("/reviews");
+                    console.log('Users month_score=',results[0].month_score);
+                    month_score = results[0].month_score;
+                    if(interact===1){
+                        month_score = month_score + 5;     
+                    }
+                    else if(interact===0){
+                        month_score = month_score - 1;
+                    }
+                    console.log(month_score);
+                    db.query('UPDATE users SET month_score = ? WHERE userID = ?',[month_score, entry_by],(error,results)=>{
+                        if(error){
+                            console.log(error);
+                        }else{
+                            console.log('Users score updated')
+                            res.redirect("/reviews");
+                        }
+                    });
                 }
             });
+            
+            
 
-        } else {
+        }else {
             console.log("you cant");
         }   
     });
-        
-
     // table interaction new entry
         // price of disc that time
         // userid of the user liked
@@ -370,4 +386,32 @@ exports.review = (req,res) => {
 
     // if i do like, it has to disable both like and dislike 
 
+}
+
+
+exports.stock = (req,res) => {
+    const stock = parseInt(req.body.stock);
+    const counter = parseInt(req.body.product_counter);
+
+    if(stock===1){
+        console.log('stock=',stock);
+        db.query('UPDATE product SET stock = 0 WHERE counter = ?',[counter],(error,results)=>{
+                        if(error){
+                            console.log(error);
+                        }else{
+                            console.log('Stock set to 0');
+                            res.redirect("/reviews");
+                        }
+                    });
+    }else if(stock===0){
+        console.log('stock=',stock);
+        db.query('UPDATE product SET stock = 1 WHERE counter = ?',[counter],(error,results)=>{
+                        if(error){
+                            console.log(error);
+                        }else{
+                            console.log('Stock set to 1');
+                            res.redirect("/reviews");
+                        }
+                    });
+    }
 }
