@@ -9,20 +9,18 @@ $(document).ready(function () {
             },
 
             success: function (data) {
+
                 // clear the data container
                 $('#discounts-list').empty();
                 // filter the data and take only the ones with discounts in the store
-
                 const filteredDiscs = data[0].filter(item => item.storeID === "node/354449389" && item.original_price !== item.disc_price);
                 console.log(filteredDiscs);
                 var { stock , restock , txtstyle , likebtn , dislikebtn } = ""
                 // Display data on website
                 if(filteredDiscs.length>0) {
                     $('.show-discounts-btn').append(`${filteredDiscs.length} Active Discounts`);
-
-                    $('.show-discounts-btn').click(function() {
+                    // $('.show-discounts-btn').click(function() {
                         for (let i = 0; i < filteredDiscs.length; i++) {
-                            
                             //control in/out of stock variables
                             if (filteredDiscs[i].stock == 0) {
                                 stock = 'Out of Stock'
@@ -51,7 +49,7 @@ $(document).ready(function () {
                                             <hr class="hr horizontal dark">
                                         </div>
                                         <div class="d-flex flex-row">
-                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span>310</span></div>
+                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span id="NumOfLikes">0</span></div>
                                             <div class="text-danger mr-2"><i class="large p-2 material-icons opacity-10">thumb_down</i><span>310</span></div>
                                         </div>
                                         <div class="mt-1 mb-1 figure-caption">
@@ -82,24 +80,24 @@ $(document).ready(function () {
                                                 <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
                                                 <input type="hidden" name="entry_by" value="${filteredDiscs[i].userID}">  
                                                 <input type="hidden" name="interact" value="1">  
-                                                <button class="btn btn-${likebtn} btn-sm"
+                                                <button id="btnlike" class="btn btn-${likebtn} btn-sm"
                                                     type="submit">
                                                     Like
                                                 </button>
-                                            </form>
+                                            </form>                                       
                                             <form action="/auth/review" method="POST">
                                             <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
-                                            <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}">  
+                                            <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}"> 
+                                            <input type="hidden" name="entry_by" value="${filteredDiscs[i].userID}">  
                                                 <input type="hidden" name="interact" value="0">  
                                                 <button class="btn btn-${dislikebtn} btn-sm"
                                                     type="submit">
                                                     Dislike
                                                 </button>
                                             </form>
-                                            <form action="/auth/review" method="POST">
+                                            <form action="/auth/stock" method="POST">
                                             <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
-                                            <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
-                                                <input type="hidden" name="interact" value="stock">  
+                                                <input type="hidden" name="stock" value="${filteredDiscs[i].stock}">   <!-- if interact=0 must do it stock=1,if interact=1 must do it stock=0 -->
                                                 <button class="btn btn-outline-dark btn-sm mt-2"
                                                     type="submit">
                                                     ${restock}
@@ -110,8 +108,26 @@ $(document).ready(function () {
                                 </div>
                             `
                             );
+                        
                         }
-                    });
+                        //new
+                        // let count = 0;
+                        // document.querySelector('.likebtn').addEventListener('click', function() {
+                        //     count++;
+                        //     console.log('Number of likes = ',count);
+                        //     document.getElementById('NumOfLikes').innerHTML = count;
+                        // });
+
+                    // });
+                            // var count = 0;
+                            // var btnlike = document.getElementById("btnlike");
+                            // var displikes = document.getElementById("NumOfLikes"); 
+                            // btnlike.onclick = function () {
+                            // count++;
+                            // displikes.innerHTML = count;
+                            // }
+
+
                 } else {
                     $('#discounts-list').append(
                         `<h4 class="alert alert-danger mt-4">No Discounts yet in this store. Try later.</h4>`
