@@ -319,6 +319,7 @@ exports.updatepass = (req,res) => {
     });         
 }
 
+// Vasiliki edits this part
 exports.review = (req,res) => {
     console.log(req.session);
     console.log('im inside review auth')
