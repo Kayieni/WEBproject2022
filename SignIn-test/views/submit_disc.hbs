@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Drop-down menu v3</title>
+        {{!-- jQuery for AJAX load --}}
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+</head>
+
+<body>
+    <h1>Select a category:</h1>
+    
+    <select id="category_select">
+        <option value="" disabled selected > Select </option>
+    </select>
+    
+    <h1>Select a subcategory:</h1>
+    
+    <select id="subcategory_select" disabled>
+    </select>
+    
+    <h1>Search for a product:</h1>
+    
+    <input type="text" id="search_input">
+    
+    <h1>Products:</h1>
+    
+    <ul id="products_list">
+    </ul>
+    
+    <div id="discount_form_container" style="display:none;"></div>
+    <div id="message_container"></div>
+    <script src="js/categories-search.js"></script>
+</body>
+
+</html>

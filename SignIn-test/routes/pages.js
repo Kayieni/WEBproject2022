@@ -75,6 +75,10 @@ router.get('/map', (req,res) => {
     res.render('map');
 })
 
+router.get('/submit_disc', (req,res) => {
+    res.render('submit_disc')    
+})
+
 router.get('/statistics', (req,res) => {
     res.render('statistics');
 })
@@ -97,11 +101,6 @@ router.get('/edit', (req,res) => {
     res.render('profile-edit', {message: message});
 })
 
-// router.get('/dragdrop.php', (req,res) => {
-//     res.render('dragdrop.php');
-// })
-
-
 
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST, 
@@ -113,13 +112,93 @@ const db = mysql.createConnection({
 // Create route to retrieve discounts from database
 router.get('/discounts', (req, res) => {
 
-    db.query('SELECT * FROM product INNER JOIN users ON product.entry_by = users.userID', (error, results) => {
-        // SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.table1_id
+    db.query('SELECT * FROM discount INNER JOIN users ON discount.entry_by = users.userID INNER JOIN product ON product.counter=discount.counter', (error, results) => {
+      if (error) {
+        res.status(500).send(error);
+
+      } 
+    //   this has to change when we fix admin
+      else if (req.session.role=='admin') {
+        res.json(results);
+      }else {
+        res.json([results, req.session.user_data[0]]);
+        // res.json(results);
+      }
+    });
+
+})
+
+// Create route to retrieve products and discounts from database
+router.get('/products', (req, res) => {
+
+    db.query('SELECT * FROM product', (error, results) => {
+      if (error) {
+        res.status(500).send(error);
+
+      } 
+
+      db.query('SELECT * FROM discount', (err, rest) => {
+        if (err) {
+          res.status(500).send(err);
+        }else if (req.session.role=='admin') {
+          res.json(results,rest);
+        }else {
+          res.json([results, rest, req.session.user_data[0]]);
+        }
+      });
+    });
+
+})
+
+// Create route to retrieve categories and subcategories from database
+router.get('/sub-categories', (req, res) => {
+
+    db.query('SELECT * FROM categories', (error, results) => {
+      if (error) {
+        res.status(500).send(error);
+
+      } 
+
+      db.query('SELECT * FROM subcategories', (err, rest) => {
+        if (err) {
+          res.status(500).send(err);
+        }else if (req.session.role=='admin') {
+          res.json(results,rest);
+        }else {
+          res.json([results, rest, req.session.user_data[0]]);
+        }
+      });
+    });
+
+})
+
+// Create route to retrieve discounts from database
+router.get('/stores', (req, res) => {
+
+    db.query('SELECT * FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter', (error, results) => {
+      if (error) {
+        res.status(500).send(error);
+      } 
+    //   this has to change when we fix admin
+      else if (req.session.role=='admin') {
+        res.json(results);
+      }else {
+        res.json(results);
+        // res.json(results);
+      }
+    });
+
+})
+
+// Create route to retrieve interactions of user from database
+router.get('/user_history', (req, res) => {
+    // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
+    db.query('SELECT * FROM interaction INNER JOIN product ON product.counter = interaction.counter WHERE userID = ?', [req.session.user_data[0].userID], (error, results) => {
       if (error) {
         res.status(500).send(error);
 
       } else {
-        res.json([results, req.session.user_data[0]]);
+        res.json(results);
         // res.json(results);
       }
     });

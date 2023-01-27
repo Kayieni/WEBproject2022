@@ -157,6 +157,7 @@ exports.login = (req,res) => {
                 req.session.role = "admin";
                 req.session.userid = logname;
                 req.session.password = logpwd;
+                console.log(req.session);
                 return res.redirect('/admin')
                 
             }else {
@@ -414,4 +415,10 @@ exports.stock = (req,res) => {
                         }
                     });
     }
+}
+
+
+exports.save_discount = (req,res) => {
+    console.log('inside save discount');
+    // "node/354449389"
 }

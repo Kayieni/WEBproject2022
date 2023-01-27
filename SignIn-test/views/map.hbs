@@ -1,108 +1,121 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-    crossorigin=""/>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.svg">
 
-        <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-    crossorigin=""></script>
+    <head>
+        <title>Leaflet OverPass Layer demo page</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    
- <style>
-    #map {
-         height: 800px; 
-         width: 1000px;
-         position: relative;
-        }
- </style>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+            integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css"
+            integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+            crossorigin="" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css"
+            integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+            crossorigin="" />
+
+        {{!-- <link rel="stylesheet" href="overpass/OverPassLayer.css" />
+        <link rel="stylesheet" href="overpass/leaflet-search.css" /> --}}
+
+        <!-- File Layer plugin -->
 
 
-    <title>Leaflet</title>
-</head>
-<body>
-    <div class="container-lg">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+
+
+        {{!-- jQuery for AJAX load --}}
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        
+        <style>
+            #loading-container {
+            display: none; /* hide by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            }
+
+            .loading {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid #f3f3f3;
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -25px;
+            }
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+        </style>
+
+        <style>
+            body {
+                padding: 30;
+                margin: 30;
+            }
+
+            html,
+            body,
+            #map {
+                height: 800px;
+                width: 1000px;
+                position: relative;
+            }
+
+            .icon {
+                max-width: 70%;
+                max-height: 70%;
+                margin: 4px;
+            }
+        </style>
+    </head>
+
+    <body>
+        {{!-- loading animation that will be displaied until filtering of discounts is finished --}}
+        <div id="loading-container">
+            <div class="loading"></div>
+        </div>
+
         <div id="map"></div>
-      </div>
-
-
-    <script>
-
-
-        if ('geolocation' in navigator) {
-
-            const watchID = navigator.geolocation.watchPosition((position) => {
-                var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 18
-                );
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                }).addTo(map);
-           
-                var Icon = L.Icon.extend({
-                options: {
-                    //shadowUrl: 'leaf-shadow.png',
-                    //iconSize:     [38, 95],
-                    //shadowSize:   [50, 64],
-                    iconAnchor:   [25, 16],
-                // shadowAnchor: [4, 62],
-                    popupAnchor:  [-3, -76]
-                }
-                });
-
-                var superIcon = new Icon({iconUrl: 'super.png'});
-                var miniIcon = new Icon({iconUrl: 'mini.png'}); 
-                var manIcon = new Icon({iconUrl: 'man.png'}); 
-
-                var marker = L.marker([38.24, 21.73], {icon: miniIcon}).addTo(map);
-                marker.bindPopup("<b>Minimarket</b>.").openPopup();
-
-                var marker = L.marker([38.2466, 21.7345], {icon: superIcon}).addTo(map);
-                marker.bindPopup("<b>Supermarket</b>.").openPopup();
-                var marker = L.marker([position.coords.latitude, position.coords.longitude], {icon: manIcon}).addTo(map);
-                marker.bindPopup("<b>You are here</b>.").openPopup();
-
-                var circle = L.circle([position.coords.latitude, position.coords.longitude], {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.1,
-                    radius: 50
-                }).addTo(map);
-            
-            });
-
-        } else {
-            alert('Sorry, no position available.');
-        }
-
-
-        var popup = L.popup()
-            .setLatLng([38.24, 21.73])
-            .setContent("I am a standalone popup.")
-            .openOn(map);
-
-
-        function onMapClick(e) {
-             popup
-                .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(map);
-        }
-
-        map.on('click', onMapClick);
 
 
 
-    
 
-    </script>
-</body>
+        <script src="js/map.js"></script>
+        {{!-- <script src="overpass/OverPassLayer.bundle.js"></script>
+        <script src="overpass/leaflet-search.js"></script> --}}
+        
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+        <script src="https://unpkg.com/togeojson@0.16.0"></script>
+        <script src="https://unpkg.com/leaflet-filelayer@1.2.0"></script>
+
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.1/dist/leaflet.markercluster.js"
+            integrity="sha512-+Zr0llcuE/Ho6wXRYtlWypMyWSEMxrWJxrYgeAMDRSf1FF46gQ3PAVOVp5RHdxdzikZXuHZ0soHpqRkkPkI3KA=="
+            crossorigin="">
+        </script>
+    </body>
+
 </html>

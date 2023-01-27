@@ -24,7 +24,44 @@
 
     <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
 
-    
+    {{!-- jQuery for AJAX load --}}
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+    <style>
+        #loading-container {
+        display: none; /* hide by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        }
+
+        .loading {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 5px solid #f3f3f3;
+        border-top-color: #3498db;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -25px;
+        margin-left: -25px;
+        }
+
+        @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+        }
+    </style>
 
 </head>
 
@@ -231,128 +268,45 @@
                                             <a href="/edit">
                                                 <i class="fas fa-user-edit text-secondary text-sm"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Edit Profile"></i>
-                                            </a>
-
-                                            {{!-- to have a popup --}}
-                                        
-                                            {{!-- <div class="modal fade show" id="modalLoginForm" tabindex="-1" aria-labelledby="myModalLabel" style="display: block; padding-right: 14px;" data-gtm-vis-first-on-screen-2340190_1302="172301" data-gtm-vis-total-visible-time-2340190_1302="100" data-gtm-vis-has-fired-2340190_1302="1" aria-modal="true" role="dialog">
-                                                <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-center">
-                                                    <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                    </div>
-                                                    <div class="modal-body mx-3">
-                                                    <div class="md-form mb-5">
-                                                        <i class="fas fa-envelope prefix grey-text"></i>
-                                                        <input type="email" id="defaultForm-email1" class="form-control validate">
-                                                        <label data-error="wrong" data-success="right" for="defaultForm-email1">Your email</label>
-                                                    </div>
-
-                                                    <div class="md-form mb-4">
-                                                        <i class="fas fa-lock prefix grey-text"></i>
-                                                        <input type="password" id="defaultForm-pass1" class="form-control validate">
-                                                        <label data-error="wrong" data-success="right" for="defaultForm-pass1">Your password</label>
-                                                    </div>
-
-                                                    </div>
-                                                    <div class="modal-footer d-flex justify-content-center">
-                                                    <button class="btn btn-default waves-effect waves-light">Login</button>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </div> --}}
-
-                                            {{!-- <a href="" data-toggle="modal" data-target="#modalLoginForm">
-                                                <i class="fas fa-user-edit text-secondary text-sm"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Edit Profile"></i>
-                                            </a> --}}
-                                        </div>
-
-
-                                        {{!-- 
-                                        
-                                        <div class="modal fade show" id="modalLoginForm" tabindex="-1" aria-labelledby="myModalLabel" style="display: block; padding-right: 14px;" data-gtm-vis-first-on-screen-2340190_1302="172301" data-gtm-vis-total-visible-time-2340190_1302="100" data-gtm-vis-has-fired-2340190_1302="1" aria-modal="true" role="dialog">
-                                            <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header text-center">
-                                                <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                                </div>
-                                                <div class="modal-body mx-3">
-                                                <div class="md-form mb-5">
-                                                    <i class="fas fa-envelope prefix grey-text"></i>
-                                                    <input type="email" id="defaultForm-email1" class="form-control validate">
-                                                    <label data-error="wrong" data-success="right" for="defaultForm-email1">Your email</label>
-                                                </div>
-
-                                                <div class="md-form mb-4">
-                                                    <i class="fas fa-lock prefix grey-text"></i>
-                                                    <input type="password" id="defaultForm-pass1" class="form-control validate">
-                                                    <label data-error="wrong" data-success="right" for="defaultForm-pass1">Your password</label>
-                                                </div>
-
-                                                </div>
-                                                <div class="modal-footer d-flex justify-content-center">
-                                                <button class="btn btn-default waves-effect waves-light">Login</button>
-                                                </div>
-                                            </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="text-center">
-                                            <a href="" class="btn btn-default btn-rounded mb-4 waves-effect waves-light" data-toggle="modal" data-target="#modalLoginForm">
-                                                Launch Modal Login Form
+                                                    title="Edit Profile">
+                                                </i>
                                             </a>
                                         </div>
-                                         --}}
-
-
                                     </div>
                                 </div>
                                 {{!-- profile info details --}}
                                 <div class="card-body p-3">
-                                    {{!-- <p class="text-sm">
-                                        Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two
-                                        equally difficult
-                                        paths, choose the one more painful in the short term (pain avoidance is creating
-                                        an illusion of
-                                        equality).
-                                    </p> --}}
-                                    <hr class="horizontal gray-light my-4">
+                                    <hr class="horizontal dark my-4">
                                     <ul class="list-group">
                                         {{!-- username --}}
-                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong
-                                                class="text-dark">Username:</strong>
+                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm">
+                                            <strong class="text-dark">Username:</strong>
                                             &nbsp; {{user_data.username}}
                                         </li>
-                                        {{!-- mobile ??? --}}
-                                        {{!-- <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                                class="text-dark">Mobile:</strong> &nbsp;
-                                            (44) 123 1234 123
-                                        </li> --}}
                                         {{!-- email --}}
-                                        <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                                class="text-dark">Email:</strong> &nbsp;
-                                            {{!-- <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                data-cfemail="36575a5355425e595b46455958765b575f5a1855595b">
-                                                [email&#160;protected]
-                                            </a> --}}
-                                            <a href="#">
+                                        <li class="list-group-item border-0 ps-0 text-sm">
+                                            <strong class="text-dark">Email:</strong>
+                                            &nbsp;
+                                            <a href="mailto:{{user_data.email}}">
                                                 {{user_data.email}}
                                             </a>
                                         </li>
                                         {{!-- register date --}}
-                                        <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                                class="text-dark">Since:</strong>
+                                        <li class="list-group-item border-0 ps-0 text-sm">
+                                            <strong class="text-dark">Since:</strong>
                                             &nbsp; {{user_data.register_date}}
+                                        </li>
+                                        {{!-- score --}}
+                                        <li class="list-group-item border-0 ps-0 text-sm">
+                                            <strong class="text-dark">Score:</strong>
+                                            <span class="badge badge-sm bg-gradient-primary">&nbsp; {{user_data.total_score}}</span>
+                                            <span class="badge badge-sm bg-gradient-secondary">&nbsp; {{user_data.month_score}}</span>
+                                        </li>
+                                        {{!-- tokens --}}
+                                        <li class="list-group-item border-0 ps-0 text-sm">
+                                            <strong class="text-dark">Tokens:</strong>
+                                            <span class="badge badge-sm bg-gradient-primary">&nbsp; {{user_data.total_tokens}}</span>
+                                            <span class="badge badge-sm bg-gradient-secondary">&nbsp; {{user_data.month_tokens}}</span>
                                         </li>
                                         {{!-- social ??? --}}
                                         <li class="list-group-item border-0 ps-0 pb-0">
@@ -448,77 +402,39 @@
                         <div class="col-12 col-xl-4">
                             <div class="card card-plain h-100">
                                 <div class="card-header pb-0 p-3">
-                                    <h6 class="mb-0">Conversations</h6>
+                                    <h6 class="mb-0">Action History</h6>
                                 </div>
                                 <div class="card-body p-3">
-                                    <ul class="list-group">
+                                    <div id="loading-container">
+                                        <div class="loading"></div>
+                                    </div>
+                                    <ul id="action_history" class="list-group">
+                                        {{!-- loading animation that will be displaied until filtering of discounts is finished --}}
+                                        
+                                        
                                         <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2 pt-0">
                                             <div class="avatar me-3">
-                                                <img src="images/kal-visuals-square.jpg" alt="kal"
+                                                <img src="#" alt="kal"
                                                     class="border-radius-lg shadow">
                                             </div>
                                             <div class="d-flex align-items-start flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Sophie B.</h6>
-                                                <p class="mb-0 text-xs">Hi! I need more information..</p>
+                                                <h6 class="mb-0 text-sm">price new + old</h6>
+                                                <p class="mb-0 text-xs">Product Name</p>
+                                                <p class="mb-0 text-xxs">Product ID</p>
                                             </div>
-                                            <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
-                                                href="javascript:;">Reply</a>
-                                        </li>
-                                        <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                                            <div class="avatar me-3">
-                                                <img src="images/marie.jpg" alt="kal"
-                                                    class="border-radius-lg shadow">
+                                            <div class="text-success pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto">
+                                                <i class="large p-2 material-icons opacity-10">thumb_up</i>
                                             </div>
-                                            <div class="d-flex align-items-start flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Anne Marie</h6>
-                                                <p class="mb-0 text-xs">Awesome work, can you..</p>
-                                            </div>
-                                            <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
-                                                href="javascript:;">Reply</a>
-                                        </li>
-                                        <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                                            <div class="avatar me-3">
-                                                <img src="images/ivana-square.jpg" alt="kal"
-                                                    class="border-radius-lg shadow">
-                                            </div>
-                                            <div class="d-flex align-items-start flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Ivanna</h6>
-                                                <p class="mb-0 text-xs">About files I can..</p>
-                                            </div>
-                                            <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
-                                                href="javascript:;">Reply</a>
-                                        </li>
-                                        <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                                            <div class="avatar me-3">
-                                                <img src="images/team-4.jpg" alt="kal"
-                                                    class="border-radius-lg shadow">
-                                            </div>
-                                            <div class="d-flex align-items-start flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Peterson</h6>
-                                                <p class="mb-0 text-xs">Have a great afternoon..</p>
-                                            </div>
-                                            <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
-                                                href="javascript:;">Reply</a>
-                                        </li>
-                                        <li class="list-group-item border-0 d-flex align-items-center px-0">
-                                            <div class="avatar me-3">
-                                                <img src="images/team-3.jpg" alt="kal"
-                                                    class="border-radius-lg shadow">
-                                            </div>
-                                            <div class="d-flex align-items-start flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Nick Daniel</h6>
-                                                <p class="mb-0 text-xs">Hi! I need more information..</p>
-                                            </div>
-                                            <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto"
-                                                href="javascript:;">Reply</a>
-                                        </li>
+                                        </li> 
+                                       
                                     </ul>
+                                    <div id="no_action" class="list-group-item border-0 d-flex align-items-center px-0 mb-2 pt-0"></div>
                                 </div>
                             </div>
                         </div>
 
                         {{!-- projects card --}}
-                        <div class="col-12 mt-4">
+                        {{!-- <div class="col-12 mt-4">
                             <div class="mb-5 ps-3">
                                 <h6 class="mb-1">Projects</h6>
                                 <p class="text-sm">Architects design houses</p>
@@ -714,7 +630,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -766,6 +682,7 @@
         </a>
     </div>
 
+    <script src="js/user_history.js"></script>
     <script src="js/core/popper.min.js"></script>
     <script src="js/core/bootstrap.min.js"></script>
     <script src="js/plugins/perfect-scrollbar.min.js"></script>
