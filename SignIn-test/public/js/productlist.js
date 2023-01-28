@@ -49,7 +49,7 @@ $(document).ready(function () {
                                             <hr class="hr horizontal dark">
                                         </div>
                                         <div class="d-flex flex-row">
-                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span id="NumOfLikes">0</span></div>
+                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span>0</span></div>
                                             <div class="text-danger mr-2"><i class="large p-2 material-icons opacity-10">thumb_down</i><span>310</span></div>
                                         </div>
                                         <div class="mt-1 mb-1 figure-caption">
@@ -129,6 +129,7 @@ $(document).ready(function () {
 
 
                 } else {
+                    $('.show-discounts-btn').append(`${filteredDiscs.length} Active Discounts`);
                     $('#discounts-list').append(
                         `<h4 class="alert alert-danger mt-4">No Discounts yet in this store. Try later.</h4>`
                     );
