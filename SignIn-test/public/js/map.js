@@ -87,6 +87,8 @@ $(document).ready(function () {
                                 marker.bindPopup(div);
 
                                 var button = div.querySelector('#button' + i);
+                                var storeclicked = data[i].storeID;
+                                console.log('storeID = ',storeclicked);
                                 button.addEventListener('click', function () {
                                     alert('Submit Discount!');
                                     window.location.href = 'http://localhost:5000/submit_disc';
@@ -96,6 +98,7 @@ $(document).ready(function () {
 
                             } else {
                                 // The marker is within the radius, so update the content of the div element and add the marker
+                                // div.innerHTML = `<b>${data[i].store_type}</b>.` + `<p>${data[i].store_name}</p>` + '<button id="button' + i + '">Submit Discount</button>';
                                 div.innerHTML = `<b>${data[i].store_type}</b>.` + `<p>${data[i].store_name}</p>`;
                                 
                                 var marker = L.marker([data[i].store_latitude, data[i].store_longtitude], {

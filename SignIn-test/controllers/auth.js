@@ -420,5 +420,11 @@ exports.stock = (req,res) => {
 
 exports.save_discount = (req,res) => {
     console.log('inside save discount');
+    const price = parseInt(req.body.disc_price);
+    const counter = parseInt(req.body.counter);
+
+    console.log('price = ', price);
+    console.log('counter = ', counter);
+
     // "node/354449389"
 }

@@ -37,11 +37,11 @@ $(document).ready(function () {
                         formContainer.innerHTML = "";
                         formContainer.style.display = "block";
                         formContainer.innerHTML +=
-                            "<form id='discount_form'>" +
+                            "<form id='discount_form' action='/auth/save_discount' method='POST'>" +
                             "<label for='disc_price'>Enter the new discounted price:</label>" +
                             "<input type='text' id='disc_price' name='disc_price'>" +
                             "<input type='hidden' id='counter' name='counter' value='" + counter + "'>" +
-                            "<input type='button' value='Save' onclick='saveDiscount()'>" +
+                            "<button type='submit' >Save</button>" +
                             "</form>";
                     }
 

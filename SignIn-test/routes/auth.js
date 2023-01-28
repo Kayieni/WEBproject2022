@@ -12,6 +12,7 @@ router.post('/updatename', authController.updatename);
 router.post('/updatepass', authController.updatepass);
 router.post('/review', authController.review);
 router.post('/stock', authController.stock);
+router.post('/save_discount', authController.save_discount);
 
 //with this command in node we can create a new module
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it

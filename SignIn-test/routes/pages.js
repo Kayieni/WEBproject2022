@@ -147,7 +147,6 @@ router.get('/products', (req, res) => {
         }
       });
     });
-
 })
 
 // Create route to retrieve categories and subcategories from database
@@ -175,7 +174,8 @@ router.get('/sub-categories', (req, res) => {
 // Create route to retrieve discounts from database
 router.get('/stores', (req, res) => {
 
-    db.query('SELECT * FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter', (error, results) => {
+    // db.query('SELECT * FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter', (error, results) => {
+    db.query('SELECT * FROM stores', (error, results) => {
       if (error) {
         res.status(500).send(error);
       } 
