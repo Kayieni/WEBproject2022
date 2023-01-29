@@ -117,7 +117,7 @@ router.get('/discounts', (req, res) => {
         res.status(500).send(error);
 
       } 
-    //   this has to change when we fix admin
+      // this has to change when we fix admin
       else if (req.session.role=='admin') {
         res.json(results);
       }else {
@@ -131,7 +131,7 @@ router.get('/discounts', (req, res) => {
 // Create route to retrieve products and discounts from database
 router.get('/products', (req, res) => {
 
-    db.query('SELECT * FROM product', (error, results) => {
+    db.query('SELECT product.* , stores.store_name FROM product JOIN stores WHERE stores.storeID = product.storeID', (error, results) => {
       if (error) {
         res.status(500).send(error);
 
