@@ -128,11 +128,11 @@ router.get('/discounts', (req, res) => {
         res.status(500).send(error);
 
       } 
-      // this has to change when we fix admin
+      // this has to change w hen we fix admin
       else if (req.session.role=='admin') {
       res.json(results);
       }else {
-        console.log(results[0].counter);
+        // console.log(results[0].counter);
         res.json([results, req.session.user_data[0], req.session.storeclicked]);
         // res.json(results);
       }
