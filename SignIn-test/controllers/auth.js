@@ -420,11 +420,66 @@ exports.stock = (req,res) => {
 
 exports.save_discount = (req,res) => {
     console.log('inside save discount');
-    const price = parseInt(req.body.disc_price);
+    const price = parseFloat(req.body.disc_price);
     const counter = parseInt(req.body.counter);
+    const original_price = parseFloat(req.body.original_price);
+    const entry_by= req.body.entry_by;
+    console.log("userID=",entry_by);
+
+    const checkOriginalPriceQuery = `SELECT original_price FROM product WHERE counter=${counter}`;
+    const checkDiscountedPriceQuery = `SELECT disc_price FROM discount  WHERE counter=${counter} ORDER BY entry_date DESC`;
+    // 
+
+    db.query(checkOriginalPriceQuery, (err, result) => {
+        if (err) {
+        console.log("error1: No original prices found");
+        return console.log(err);
+
+        }
+        const originalPrice = result[0].original_price;
+        db.query(checkDiscountedPriceQuery, (err, result) => {
+            if (err) {
+            console.log("error2: No discount prices found");
+            return console.log(err);
+            }
+            if (result.length > 0) {
+                const currentPrice = result[0].disc_price;
+                if (price < (0.8 * currentPrice)) {
+                    const insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by})`;
+                    db.query(insertDiscountQuery, (err, result) => {
+                        if (err) {
+                        console.log("error3");
+                        return console.log(err);
+                        }
+                    });
+                } else{
+                    console.log("Discounted price must be less than 20% of the current price.");
+                }
+            } else{
+                if (price < originalPrice) {
+                    const insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by})`;
+                    db.query(insertDiscountQuery, (err, result) => {
+                        if (err) {
+                        console.log("error4");
+                        return console.log(err);
+                        }
+                    });
+                } else{
+                    console.log("Discounted price must be less than the original price.");
+                }
+            }
+        });
+    });
+
+
+    
+
+
+
 
     console.log('price = ', price);
     console.log('counter = ', counter);
+    console.log('original = ', original_price);
 
     // "node/354449389"
 }
