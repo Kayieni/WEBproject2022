@@ -13,7 +13,7 @@ $(document).ready(function () {
                 // clear the data container
                 $('#discounts-list').empty();
                 // filter the data and take only the ones with discounts in the store
-                const filteredDiscs = data[0].filter(item => item.storeID === "node/354449389" && item.original_price !== item.disc_price);
+                const filteredDiscs = data[0].filter(item => item.storeID === "node/1643373636" && item.original_price !== item.disc_price);
                 console.log(filteredDiscs);
                 var { stock , restock , txtstyle , likebtn , dislikebtn } = ""
                 // Display data on website
@@ -49,7 +49,7 @@ $(document).ready(function () {
                                             <hr class="hr horizontal dark">
                                         </div>
                                         <div class="d-flex flex-row">
-                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span>0</span></div>
+                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span id="NumOfLikes">0</span></div>
                                             <div class="text-danger mr-2"><i class="large p-2 material-icons opacity-10">thumb_down</i><span>310</span></div>
                                         </div>
                                         <div class="mt-1 mb-1 figure-caption">

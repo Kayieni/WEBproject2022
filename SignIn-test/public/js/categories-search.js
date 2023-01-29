@@ -18,7 +18,7 @@ $(document).ready(function () {
                         );
                         console.log(category.catID);
                         console.log(`<option value="${category.catID}"> ${category.category_name} </option>`);
-                     });
+                    });
 
                     //  display products function to show the products list
                     // Convert the PHP arrays into JavaScript variables
@@ -32,7 +32,7 @@ $(document).ready(function () {
                     console.log("products",products);
                     console.log("filteredProducts", filteredProducts);
                     
-                    function openDiscountForm(counter) {
+                    function openDiscountForm(counter,original_price) {
                         var formContainer = document.getElementById("discount_form_container");
                         formContainer.innerHTML = "";
                         formContainer.style.display = "block";
@@ -41,6 +41,8 @@ $(document).ready(function () {
                             "<label for='disc_price'>Enter the new discounted price:</label>" +
                             "<input type='text' id='disc_price' name='disc_price'>" +
                             "<input type='hidden' id='counter' name='counter' value='" + counter + "'>" +
+                            "<input type='hidden' id='original_price' name='original_price' value='" + original_price + "'>" +
+                            "<input type='hidden' name='entry_by' value='"+ prodata[2].userID +"'>"+
                             "<button type='submit' >Save</button>" +
                             "</form>";
                     }
@@ -82,7 +84,7 @@ $(document).ready(function () {
                                     let button = document.createElement("button");
                                     button.innerHTML = "Add Discount";
                                     button.id = "addDiscount";
-                                    button.onclick = function () { openDiscountForm(product.counter) };
+                                    button.onclick = function () { openDiscountForm(product.counter,product.original_price) };
                                     //button.addEventListener("click", openDiscountForm(product.counter) );
                                     li.appendChild(button);
                                     productsList.appendChild(li);
