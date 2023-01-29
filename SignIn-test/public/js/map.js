@@ -8,7 +8,10 @@ $(document).ready(function () {
             $("#loading-container").show();
         },
 
-        success: function(data) {
+        success: function(results) {
+            var data = results[0];
+            var role = results[1];
+            console.log(role);
 
             if ('geolocation' in navigator) {
                 const watchID = navigator.geolocation.watchPosition((position) => {
@@ -75,7 +78,34 @@ $(document).ready(function () {
                             // Check if the distance is less than the radius
                             if (distance < radius) {
                                 // The marker is within the radius, so update the content of the div element and add the marker
-                                div.innerHTML = `<b>${data[i].store_type}</b>.` + `<p>${data[i].store_name}</p>` + '<button id="button' + i + '">Submit Discount</button>';
+                                div.innerHTML = `<b>${data[i].store_type}</b>.` + 
+                                                `<p>${data[i].store_name}</p>` + 
+                                                '<button id="buttonSubmit' + i + '">Submit New Discount</button>' + 
+                                                '<button id="buttonReview' + i + '">Review Discounts</button>';
+
+                                // For last question
+                                if(role==='admin') {
+                                    div.innerHTML +=  '<button type="button" data-toggle="modal" data-target="#exampleModal" id="buttonDelete' + i + '">Delete Discounts</button>';
+                                //     '<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog" role="document">' +
+                                //       '<div class="modal-content">' +
+                                //         '<div class="modal-header">' +
+                                //           '<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>' +
+                                //           '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                //             '<span aria-hidden="true">&times;</span>' +
+                                //           '</button>' +
+                                //         '</div>' +
+                                //         '<div class="modal-body">' +
+                                //           '...' +
+                                //         '</div>' +
+                                //         '<div class="modal-footer">' +
+                                //           '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
+                                //           '<button type="button" class="btn btn-primary">Save changes</button>' +
+                                //         '</div>' +
+                                //       '</div>' +
+                                //     '</div>' +
+                                //   '</div>';
+
+                                }
                                 
                                 var marker = L.marker([data[i].store_latitude, data[i].store_longtitude], {
                                     icon: icon,
@@ -85,15 +115,59 @@ $(document).ready(function () {
                                 console.log("marker",marker);
 
                                 marker.bindPopup(div);
-
-                                var button = div.querySelector('#button' + i);
-                                var storeclicked = data[i].storeID;
-                                console.log('storeID = ',storeclicked);
-                                button.addEventListener('click', function () {
-                                    alert('Submit Discount!');
-                                    window.location.href = 'http://localhost:5000/submit_disc';
+                                let buttonSubmit = div.querySelector('#buttonSubmit' + i);
+                                let buttonReview = div.querySelector('#buttonReview' + i);
+                                let buttonDelete = div.querySelector('#buttonDelete' + i);
+                                let storeidclicked = data[i].storeID;
+                                let storenameclicked = data[i].store_name;
+                                let storeclicked = data[i];
+                                
+                                buttonSubmit.addEventListener('click', function () {
+                                    // alert('Submit Discount!');
+                                    console.log('storeID = ',storeidclicked, "store Name = ", storenameclicked);
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/submit_disc',
+                                        data: { storeclicked: storeclicked },
+                                        success: function(response){
+                                            alert('Submit Discount!') 
+                                            window.location.href = 'http://localhost:5000/submit_disc';
+                                        }
+                                    })
                                 });
                                 
+                                buttonReview.addEventListener('click', function () {
+                                    // alert('Submit Discount!');
+                                    console.log('storeID = ',storeidclicked, "store Name = ", storenameclicked);
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/submit_disc',
+                                        data: { storeclicked: storeclicked },
+                                        success: function(response){
+                                            alert('Review Discount!') 
+                                            window.location.href = 'http://localhost:5000/reviews';
+                                        }
+                                    })
+                                });
+
+                                // last question
+                                if(role==="admin") {
+                                    buttonDelete.addEventListener('click', function () {
+                                        // alert('Submit Discount!');
+                                        console.log('storeID = ',storeidclicked, "store Name = ", storenameclicked);
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '/submit_disc',
+                                            data: { storeclicked: storeclicked },
+                                            success: function(response){
+                                                alert('Delete Discount!') 
+                                                window.location.href = 'http://localhost:5000/map';
+                                            }
+                                        })
+                                    });
+
+                                }
+
                                 markerClusterGroup.addLayer(marker);
 
                             } else {
@@ -115,10 +189,17 @@ $(document).ready(function () {
 
                         }
 
+
+                        
+                        
+
                         // Add the markerClusterGroup to the map
                         console.log('added i guess');
                         
                         map.addLayer(markerClusterGroup);
+
+
+
 
                     }else {
                         $('#discounts-list').append(
@@ -126,6 +207,30 @@ $(document).ready(function () {
                         );
                     }
 
+
+                    // for (i = 0; i < data.length; i++) {
+                    //     const button = document.getElementById('button1');
+                    //     console.log(button);
+                    // //     // if (!button) {
+                    // //     //   continue;
+                    // //     // }
+                    // //     var button = div.querySelector('#button' + i);
+                        
+                    // //     button.addEventListener('click', function () {
+                    // //     // alert('Submit Discount!');
+                    // //     var storeclicked = data[i].storeID;
+                    // //     console.log('storeID = ',storeclicked);
+                    // //     $.ajax({
+                    // //         type: 'POST',
+                    // //         url: '/submit_disc',
+                    // //         data: {click: storeclicked},
+                    // //         success: function(response){
+                    // //             alert('Submit Discount!') 
+                    // //             window.location.href = 'http://localhost:5000/submit_disc';
+                    // //         }
+                    // //     })
+                    // // });
+                    // }
 
                     var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
                     marker.bindPopup("<b>You are here</b>.").openPopup();

@@ -326,13 +326,13 @@ exports.review = (req,res) => {
     const counter = parseInt(req.body.product_counter);
     const DiscPrice = parseInt(req.body.disc_price);
     const entry_by= parseInt(req.body.entry_by);
-    console.log(entry_by);
+    console.log('entry by userID:',entry_by);
     const interact = parseInt(req.body.interact);
     
 
 
     let current_date = new Date().toJSON();
-    console.log(current_date);
+    console.log("current_date",current_date);
     var month_score;
     db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? ', [counter], async (error,results) => {
         if(error) {
@@ -365,7 +365,7 @@ exports.review = (req,res) => {
                         if(error){
                             console.log(error);
                         }else{
-                            console.log('Users score updated')
+                            console.log('Users score updated');
                             res.redirect("/reviews");
                         }
                     });
@@ -446,6 +446,8 @@ exports.save_discount = (req,res) => {
                 const currentPrice = result[0].disc_price;
                 if (price < (0.8 * currentPrice)) {
                     const insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by})`;
+                    // const insertDiscountQuery = `START TRANSACTION; UPDATE product SET stock = 1 WHERE counter = ${counter}; INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by}); COMMIT;`;
+                    
                     db.query(insertDiscountQuery, (err, result) => {
                         if (err) {
                         console.log("error3");

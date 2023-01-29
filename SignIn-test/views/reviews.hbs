@@ -199,10 +199,13 @@
                             <img class="store-img"
                                 src="https://warply.s3.amazonaws.com/applications/ed840ad545884deeb6c6b699176797ed/store_pictures/mymarket_stores.png">
                         </div>
-                        <div class="col-12 col-lg-4 d-flex flex-column justify-content-center align-items-center">
-                            <p class="store-name">My Market</p>
-                            <p class="store-date-text">Last Discount submitted on:
-                                <b>07/01/2023</b></p>
+                        <div class="store-details col-12 col-lg-4 d-flex flex-column justify-content-center align-items-center">
+                            <h1 class="store-name text-primary font-weight-bold">{{storeclicked.store_name}}</h1>
+                            <div class="last-date">
+                                <h5 class="store-date-text">Last Discount submitted on:</h5>
+                                {{!-- <b>{{storeclicked.store.lastdiscount}}</b> --}}                           
+                            </div>
+                            <br>
                             <button class="show-discounts-btn store-products btn btn-primary btn-sm"></button>
                             {{!-- <button class="product-add-btn add-btn" data-ember-action="" data-ember-action-271="271"><img
                                     class="product-cart" src="favicon.svg">Προσθήκη στο καλάθι</button> --}}

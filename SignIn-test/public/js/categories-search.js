@@ -16,16 +16,30 @@ $(document).ready(function () {
                         $('#category_select').append(
                             `<option value="${category.catID}"> ${category.category_name} </option>`
                         );
-                        console.log(category.catID);
-                        console.log(`<option value="${category.catID}"> ${category.category_name} </option>`);
+                        // console.log(category.catID);
+                        // console.log(`<option value="${category.catID}"> ${category.category_name} </option>`);
                     });
 
                     //  display products function to show the products list
                     // Convert the PHP arrays into JavaScript variables
                     var categories = catdata[0]; // contains: catID, category_name
                     var subcategories = catdata[1]; // contains: catID, subID, subcategory_name 
-                    var products = prodata[0]; // contains: counter, image_link, original_price, prodID, product_name, stock, storeID, subID
+
+                    // console.log(prodata[0]);
+                    // console.log(prodata[0].storeID);
+                    // console.log(prodata[3]);
+                    
+                    // filter the data and take only the products in the store selected
+                    const StoreProducts = prodata[0].filter(item => item.storeID === prodata[3].store.storeID);
+                    console.log("store:" , prodata[3].store.storeID, prodata[3].store.store_name);
+                    console.log(StoreProducts);
+
+                    var products = StoreProducts; // contains: counter, image_link, original_price, prodID, product_name, stock, storeID, subID
                     var filteredProducts = [];
+
+
+
+
                     
                     console.log("categories",categories);
                     console.log("subcategories",subcategories);
@@ -39,11 +53,11 @@ $(document).ready(function () {
                         formContainer.innerHTML +=
                             "<form id='discount_form' action='/auth/save_discount' method='POST'>" +
                             "<label for='disc_price'>Enter the new discounted price:</label>" +
-                            "<input type='text' id='disc_price' name='disc_price'>" +
+                            "<input type='text' id='disc_price' name='disc_price' class='form-control'>" +
                             "<input type='hidden' id='counter' name='counter' value='" + counter + "'>" +
                             "<input type='hidden' id='original_price' name='original_price' value='" + original_price + "'>" +
                             "<input type='hidden' name='entry_by' value='"+ prodata[2].userID +"'>"+
-                            "<button type='submit' >Save</button>" +
+                            "<button type='submit' class='btn btn-primary my-2' >Save</button>" +
                             "</form>";
                     }
 

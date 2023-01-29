@@ -9,15 +9,24 @@ $(document).ready(function () {
             },
 
             success: function (data) {
-
+                // var role = data[1];
                 // clear the data container
+                var interacted = data[3];
                 $('#discounts-list').empty();
+                // console.log(data[2].store.storeID);
                 // filter the data and take only the ones with discounts in the store
-                const filteredDiscs = data[0].filter(item => item.storeID === "node/1643373636" && item.original_price !== item.disc_price);
+                // const filteredDiscs = data[0].filter(item => item.storeID === data[2].store.storeID && item.original_price !== item.disc_price);
+                const filteredDiscs = data[0];
                 console.log(filteredDiscs);
                 var { stock , restock , txtstyle , likebtn , dislikebtn } = ""
                 // Display data on website
                 if(filteredDiscs.length>0) {
+                    let timestamp = Date.parse(filteredDiscs[0].entry_date);
+                    let date = new Date(timestamp);
+                    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                    let dateString = date.toLocaleDateString('en-US', options);
+
+                    $('.last-date').append(`<b>${dateString}</b>`);
                     $('.show-discounts-btn').append(`${filteredDiscs.length} Active Discounts`);
                     // $('.show-discounts-btn').click(function() {
                         for (let i = 0; i < filteredDiscs.length; i++) {
@@ -35,6 +44,18 @@ $(document).ready(function () {
                                 likebtn = 'success'
                                 dislikebtn = 'danger'
                             }
+
+                            if(interacted==filteredDiscs[i].counter) {                         
+                                likebtn = 'outine-dark disabled'
+                                dislikebtn = 'outine-dark disabled'
+                            }
+
+                            let timestamp = Date.parse(filteredDiscs[i].entry_date);
+                            let date = new Date(timestamp);
+                            let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                            let dateString = date.toLocaleDateString('en-US', options);
+                            
+
                             $('#discounts-list').append(
                             `   <!-- discount number ${i+1}-->
                                 <div class="row p-2 bg-white border rounded mt-2">
@@ -55,7 +76,7 @@ $(document).ready(function () {
                                         <div class="mt-1 mb-1 figure-caption">
                                             <span class="dot"></span>
                                             <span>Date:</span>
-                                            <span>${filteredDiscs[i].entry_date}<br></span>
+                                            <span>${dateString}<br></span>
                                         </div>
                                         
                                         <div class="mt-1 mb-1 figure-caption">
@@ -86,9 +107,9 @@ $(document).ready(function () {
                                                 </button>
                                             </form>                                       
                                             <form action="/auth/review" method="POST">
-                                            <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
-                                            <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}"> 
-                                            <input type="hidden" name="entry_by" value="${filteredDiscs[i].userID}">  
+                                                <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                                <input type="hidden" name="disc_price" value="${filteredDiscs[i].disc_price}"> 
+                                                <input type="hidden" name="entry_by" value="${filteredDiscs[i].userID}">  
                                                 <input type="hidden" name="interact" value="0">  
                                                 <button class="btn btn-${dislikebtn} btn-sm"
                                                     type="submit">
@@ -96,7 +117,7 @@ $(document).ready(function () {
                                                 </button>
                                             </form>
                                             <form action="/auth/stock" method="POST">
-                                            <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
+                                                <input type="hidden" name="product_counter" value="${filteredDiscs[i].counter}">  
                                                 <input type="hidden" name="stock" value="${filteredDiscs[i].stock}">   <!-- if interact=0 must do it stock=1,if interact=1 must do it stock=0 -->
                                                 <button class="btn btn-outline-dark btn-sm mt-2"
                                                     type="submit">
@@ -129,6 +150,8 @@ $(document).ready(function () {
 
 
                 } else {
+                    
+                    $('.last-date').append(`<b>No Discounts Yet.</b>`);
                     $('.show-discounts-btn').append(`${filteredDiscs.length} Active Discounts`);
                     $('#discounts-list').append(
                         `<h4 class="alert alert-danger mt-4">No Discounts yet in this store. Try later.</h4>`

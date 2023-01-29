@@ -120,9 +120,7 @@ app.use('/welcome', checkAuthenticated);
 app.use('/profile', checkAuthenticated);
 app.use('/reviews', checkAuthenticated);
 app.use('/edit', checkAuthenticated);
-app.use('/map', checkAuthenticated);
-// app.use('/discounts', checkAuthenticated);
-// app.use('/stores', checkAuthenticated);
+// app.use('/map', checkAuthenticated);
 
 
 function checkAuthAdmin (req, res, next) {
@@ -141,8 +139,6 @@ app.use('/statistics', checkAuthAdmin);
 app.use('/leaderboard', checkAuthAdmin);
 app.use('/admin-poi', checkAuthAdmin);
 app.use('/admin-products', checkAuthAdmin);
-// app.use('/discounts', checkAuthAdmin);
-// app.use('/stores', checkAuthAdmin);
 
 
 /* ==== Connect with mySQL Database ====*/

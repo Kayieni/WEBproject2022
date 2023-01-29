@@ -8,7 +8,7 @@ const mysql = require('mysql');
 
 
 router.get('/', (req,res) => {
-    res.render('index');
+    res.render('login');
 });
 
 router.get('/register', (req,res) => {
@@ -67,16 +67,27 @@ router.get('/admin', (req,res) => {
 
 router.get('/reviews', (req,res) => {
     // checkAuth up there
-    console.log(req.session.user_data[0])
-    res.render('reviews', {user_data: req.session.user_data[0]});
+    console.log(req.session.user_data[0]);
+    console.log("=========", req.session.storeclicked.store.storeID);
+    res.render('reviews', {user_data: req.session.user_data[0], storeclicked: req.session.storeclicked.store});
 })
 
 router.get('/map', (req,res) => {
     res.render('map');
 })
 
+router.post('/submit_disc', (req,res) => {
+    let id = req.body.storeID;
+    let name = req.body.storeName;
+    // let type = req.body.storeType;
+    let store = req.body.storeclicked;
+    req.session.storeclicked = { store };
+    console.log(req.session);
+    res.redirect('/submit_disc');
+})
+
 router.get('/submit_disc', (req,res) => {
-    res.render('submit_disc')    
+  res.render('submit_disc');
 })
 
 router.get('/statistics', (req,res) => {
@@ -109,26 +120,27 @@ const db = mysql.createConnection({
     database: process.env.DATABASE
 });
 
-// Create route to retrieve discounts from database
+// Create route to retrieve discounts to appear on the stores from database
 router.get('/discounts', (req, res) => {
-
-    db.query('SELECT * FROM discount INNER JOIN users ON discount.entry_by = users.userID INNER JOIN product ON product.counter=discount.counter', (error, results) => {
+  //all the discounts of the selected store after submit button
+    db.query('SELECT discount.*, users.*, product.* FROM discount INNER JOIN users ON discount.entry_by = users.userID INNER JOIN product ON product.counter=discount.counter WHERE storeID = ? AND discount.entry_date = (SELECT MAX(entry_date) FROM discount WHERE discount.counter = product.counter) GROUP BY discount.counter ORDER BY discount.entry_date DESC', [req.session.storeclicked.store.storeID], (error, results) => {
       if (error) {
         res.status(500).send(error);
 
       } 
       // this has to change when we fix admin
       else if (req.session.role=='admin') {
-        res.json(results);
+      res.json(results);
       }else {
-        res.json([results, req.session.user_data[0]]);
+        console.log(results[0].counter);
+        res.json([results, req.session.user_data[0], req.session.storeclicked]);
         // res.json(results);
       }
     });
 
 })
 
-// Create route to retrieve products and discounts from database
+// Create route to retrieve products and discounts of a store selected from database
 router.get('/products', (req, res) => {
 
     db.query('SELECT product.* , stores.store_name FROM product JOIN stores WHERE stores.storeID = product.storeID', (error, results) => {
@@ -143,7 +155,7 @@ router.get('/products', (req, res) => {
         }else if (req.session.role=='admin') {
           res.json(results,rest);
         }else {
-          res.json([results, rest, req.session.user_data[0]]);
+          res.json([results, rest, req.session.user_data[0], req.session.storeclicked]);
         }
       });
     });
@@ -173,7 +185,7 @@ router.get('/sub-categories', (req, res) => {
 
 // Create route to retrieve discounts from database
 router.get('/stores', (req, res) => {
-
+    
     // db.query('SELECT * FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter', (error, results) => {
     db.query('SELECT * FROM stores', (error, results) => {
       if (error) {
@@ -181,9 +193,9 @@ router.get('/stores', (req, res) => {
       } 
     //   this has to change when we fix admin
       else if (req.session.role=='admin') {
-        res.json(results);
+        res.json([results, req.session.role]);
       }else {
-        res.json(results);
+        res.json([results, req.session.role]);
         // res.json(results);
       }
     });
@@ -193,14 +205,21 @@ router.get('/stores', (req, res) => {
 // Create route to retrieve interactions of user from database
 router.get('/user_history', (req, res) => {
     // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
-    db.query('SELECT * FROM interaction INNER JOIN product ON product.counter = interaction.counter WHERE userID = ?', [req.session.user_data[0].userID], (error, results) => {
+    db.query('SELECT * FROM interaction INNER JOIN product ON product.counter = interaction.counter WHERE userID = ? ORDER BY interaction.timestamp DESC', [req.session.user_data[0].userID], (error, results) => {
       if (error) {
         res.status(500).send(error);
 
-      } else {
-        res.json(results);
-        // res.json(results);
-      }
+      } 
+
+      db.query('SELECT * FROM discount INNER JOIN product ON product.counter = discount.counter WHERE entry_by = ? ORDER BY discount.entry_date DESC',[req.session.user_data[0].userID], (err, rest) => {
+        if (err) {
+          res.status(500).send(err);
+        }else if (req.session.role=='admin') {
+          res.json(results,rest);
+        }else {
+          res.json([results, rest, req.session.user_data[0]]);
+        }
+      });
     });
 
 })
