@@ -20,7 +20,45 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
+    
+    {{!-- jQuery for AJAX load --}}
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 
+    <style>
+        #loading-container {
+        display: none; /* hide by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        }
+
+        .loading {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 5px solid #f3f3f3;
+        border-top-color: #3498db;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -25px;
+        margin-left: -25px;
+        }
+
+        @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+        }
+    </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
@@ -157,6 +195,9 @@
                                 <h6 class="text-white text-capitalize ps-3">Leaderboard</h6>
                             </div>
                         </div>
+
+                        
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -168,14 +209,14 @@
                                             {{!-- Status --}}
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Score</th>
+                                                Total Score</th>
                                             {{!-- Author --}}
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 User</th>
                                             {{!-- Function --}}
                                             <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Tokens</th>
                                             {{!-- Employed --}}
                                             <th
@@ -183,7 +224,14 @@
                                                 Total Tokens</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+
+                                    <div id="loading-container">
+                                        <div class="loading"></div>
+                                    </div>
+
+                                    <tbody class="leaderboard">
+                                        
+
                                         {{!-- #1 --}}
                                         <tr>
                                             {{!-- ranking --}}
@@ -197,15 +245,14 @@
                                             {{!-- user --}}
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div>
+                                                    {{!-- <div>
                                                         <img src="images/team-2.jpg"
                                                             class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                                    </div>
+                                                    </div> --}}
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm">John Michael</h6>
                                                         <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="88e2e7e0e6c8ebfaede9fce1feeda5fce1e5a6ebe7e5">[email&#160;protected]</a>
+                                                                href="mailto: email@of.user">email@of.user</a>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -213,7 +260,7 @@
                                             {{!-- tokens --}}
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">current 83</p>
-                                                <p class="text-xs text-secondary mb-0">whatever</p>
+                                                {{!-- <p class="text-xs text-secondary mb-0">whatever</p> --}}
                                             </td>
                                             {{!-- total tokens --}}
                                             <td class="align-middle text-center">
@@ -410,181 +457,6 @@
                                                 <span class="text-secondary text-xs font-weight-bold">total675</span>
                                             </td>
                                         </tr>
-
-
-
-{{!-- 
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="images/team-3.jpg"
-                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user2">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                                                        <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="6f0e030a170e2f0c1d0a0e1b06190a421b0602410c0002">[email&#160;protected]</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                                <p class="text-xs text-secondary mb-0">Developer</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                     
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="images/team-4.jpg"
-                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                                                        <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="224e435750474c566241504743564b54470f564b4f0c414d4f">[email&#160;protected]</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Executive</p>
-                                                <p class="text-xs text-secondary mb-0">Projects</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">Online</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">19/09/17</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                      
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="images/team-3.jpg"
-                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user4">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Michael Levi</h6>
-                                                        <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="0865616b60696d64486b7a6d697c617e6d257c6165266b6765">[email&#160;protected]</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                                <p class="text-xs text-secondary mb-0">Developer</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">Online</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">24/12/08</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="images/team-2.jpg"
-                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user5">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Richard Gran</h6>
-                                                        <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="fe8c979d969f8c9abe9d8c9b9f8a97889bd38a9793d09d9193">[email&#160;protected]</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Manager</p>
-                                                <p class="text-xs text-secondary mb-0">Executive</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">04/10/21</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="images/team-4.jpg"
-                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user6">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                                                        <p class="text-xs text-secondary mb-0"><a
-                                                                href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="066b6f746f676b4665746367726f70632b726f6b2865696b">[email&#160;protected]</a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                                <p class="text-xs text-secondary mb-0">Developer</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-
-                                         --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -592,7 +464,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+
+            {{!-- projects --}}
+            {{!-- <div class="row">
                 <div class="col-12">
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -848,7 +722,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{!-- footer --}}
             <footer class="footer py-4  ">
@@ -902,6 +776,9 @@
     <script src="js/plugins/perfect-scrollbar.min.js"></script>
     <script src="js/plugins/smooth-scrollbar.min.js"></script>
     <script src="js/material-dashboard.min.js?v=3.0.0"></script>
+    <script src="js/userslead.js"></script>
+
+
     {{!-- Scrollbar --}}
     <script>
         var win = navigator.platform.indexOf('Win') > -1;

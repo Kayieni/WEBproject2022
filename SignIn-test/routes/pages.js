@@ -224,6 +224,19 @@ router.get('/user_history', (req, res) => {
 
 })
 
+router.get('/userslead', (req, res) => {
+  // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
+  db.query('SELECT * FROM users WHERE total_score > 0 ORDER BY users.total_score DESC', (error, results) => {
+    // 
+    if (error) {
+      res.status(500).send(error);
+
+    }else {
+      res.json(results);
+    }
+  })
+})
+
 // dbx.end();
 
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it
