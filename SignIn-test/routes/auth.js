@@ -2,6 +2,10 @@ const express = require('express');
 const authController = require('../controllers/auth');
 const router = express.Router();
 
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({storage: storage});
+
 //performing tasks on a particular path is called routing
 
 //access only by POST method
@@ -13,6 +17,8 @@ router.post('/updatepass', authController.updatepass);
 router.post('/review', authController.review);
 router.post('/stock', authController.stock);
 router.post('/save_discount', authController.save_discount);
+router.post('/update_products',upload.single('file'), authController.update_products);
+
 
 //with this command in node we can create a new module
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it

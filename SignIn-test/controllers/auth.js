@@ -1,6 +1,11 @@
 //first import the database in here
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
+const fs = require('fs');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({storage: storage});
+
 
 //start the connection
 const db = mysql.createConnection({
@@ -473,15 +478,32 @@ exports.save_discount = (req,res) => {
         });
     });
 
-
-    
-
-
-
-
     console.log('price = ', price);
     console.log('counter = ', counter);
     console.log('original = ', original_price);
 
     // "node/354449389"
 }
+
+
+exports.update_products = (req,res,next) => {
+
+
+    const myObj = JSON.parse(req.file.buffer.toString());
+
+        // const myObj = JSON.parse(this.data.toString());
+        for (let k = 0; k < (myObj.products.length); k++) {
+            db.query('UPDATE product SET original_price = ? WHERE prodID = ?',[myObj.products[k].price,myObj.products[k].id],(error,results)=>{
+                        if(error){
+                            console.log('error updating product table');
+                            console.log(error);
+                        }else{
+                            console.log('product price updated :) <3 ');
+                            // res.redirect("/reviews");
+                        }
+                    });
+        }
+        res.send('Data uploaded successfully!');
+    }
+
+
