@@ -427,6 +427,10 @@ exports.save_discount = (req,res) => {
     console.log('inside save discount');
     const price = parseFloat(req.body.disc_price);
     const counter = parseInt(req.body.counter);
+    const prodID = parseInt(req.body.prodID);
+    console.log("prodID =", prodID);
+    const store_name = req.body.store_name;
+    console.log('store_name =',store_name);
     const original_price = parseFloat(req.body.original_price);
     const entry_by= req.body.entry_by;
     console.log("userID=",entry_by);
@@ -437,60 +441,90 @@ exports.save_discount = (req,res) => {
 
     db.query(checkOriginalPriceQuery, (err, result) => {
         if (err) {
-        console.log("error1: No original prices found");
-        return console.log(err);
-
+            console.log("error1: No original prices found");
+            return console.log(err);
         }
+
         const originalPrice = result[0].original_price;
         db.query(checkDiscountedPriceQuery, (err, result) => {
             if (err) {
-            console.log("error2: No discount prices found");
-            return console.log(err);
+                console.log("error2: No discount prices found");
+                return console.log(err);
             }
-            if (result.length > 0) {
-                const currentPrice = result[0].disc_price;
-                if (price < (0.8 * currentPrice)) {
-                    const insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by})`;
-                    // const insertDiscountQuery = `START TRANSACTION; UPDATE product SET stock = 1 WHERE counter = ${counter}; INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by}); COMMIT;`;
-                    
-                    db.query(insertDiscountQuery, (err, result) => {
+            
+            // to insert the discount in all the storesIDs of the same chain of markets
+            const discount_selector = 'SELECT product.prodID, product.counter, stores.storeID, stores.store_name FROM product INNER JOIN stores ON stores.storeID = product.storeID WHERE stores.store_name = ? AND product.prodID = ?';
+
+            if (result.length > 0) {                
+                const currentPrice = result[0].disc_price;                
+                if (price < 0.8 * currentPrice) {
+                    db.query(discount_selector,[store_name, prodID],(err, result) => {
                         if (err) {
-                        console.log("error3");
-                        return console.log(err);
+                            console.log("error2.5: No stores found in the chain");
+                            return console.log(err);
                         }
+                        for (i = 0; i<result.length; i++) {
+                            let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, NOW(), ${entry_by})`;
+                            db.query(insertDiscountQuery, (err, result) => {
+                                if (err) {
+                                    console.log("error3");
+                                    return console.log(err);
+                                } else { 
+                                    console.log("done");                                  
+                                }
+                            });
+                        }
+                        res.redirect("/submit_disc");
                     });
-                } else{
-                    console.log("Discounted price must be less than 20% of the current price.");
+                
+                } else {
+                    req.session.message = "Discounted price must be less than 20% of the current price.";
+                    console.log(req.session.message);
+                    res.redirect("/submit_disc");
                 }
-            } else{
+
+            } else {               
                 if (price < originalPrice) {
-                    const insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${counter}, ${price}, NOW(), ${entry_by})`;
-                    db.query(insertDiscountQuery, (err, result) => {
-                        if (err) {
-                        console.log("error4");
-                        return console.log(err);
+                    console.log(prodID);
+                    console.log(store_name);
+                    db.query(discount_selector, [store_name, prodID], (err, result) => {
+                            if (err) {
+                                console.log("error2.5 stin else: No stores found in the chain");
+                                return console.log(err);
+                            }
+                            console.log("result= ",result);
+                            for (i = 0; i<result.length; i++) {
+                                let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, NOW(), ${entry_by})`;
+                                console.log("inside for loop");
+                                db.query(insertDiscountQuery, (err, result) => {
+                                    if (err) {
+                                        console.log("error3");
+                                        return console.log(err);
+                                    } else {
+                                        console.log("done");
+                                    }
+                                });
+                            }
+                            res.redirect("/submit_disc");
                         }
-                    });
-                } else{
-                    console.log("Discounted price must be less than the original price.");
+                    );
+                } else {
+                    req.session.message ="Discounted price must be less than the original price.";
+                    console.log(req.session.message);
+                    res.rendirect('/submit_disc')
                 }
-            }
+            }    
         });
     });
-
     console.log('price = ', price);
     console.log('counter = ', counter);
     console.log('original = ', original_price);
-
     // "node/354449389"
 }
 
 
 exports.update_products = (req,res,next) => {
-
-
     const myObj = JSON.parse(req.file.buffer.toString());
-
         // const myObj = JSON.parse(this.data.toString());
         for (let k = 0; k < (myObj.products.length); k++) {
             db.query('UPDATE product SET original_price = ? WHERE prodID = ?',[myObj.products[k].price,myObj.products[k].id],(error,results)=>{
@@ -504,6 +538,8 @@ exports.update_products = (req,res,next) => {
                     });
         }
         res.send('Data uploaded successfully!');
-    }
+}
 
+exports.update_pois = (req,res,next) => {
+}
 

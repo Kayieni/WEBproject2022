@@ -46,7 +46,7 @@ $(document).ready(function () {
                     console.log("products",products);
                     console.log("filteredProducts", filteredProducts);
                     
-                    function openDiscountForm(counter,original_price) {
+                    function openDiscountForm(counter,original_price,prodID,store_name) {
                         var formContainer = document.getElementById("discount_form_container");
                         formContainer.innerHTML = "";
                         formContainer.style.display = "block";
@@ -55,6 +55,8 @@ $(document).ready(function () {
                             "<label for='disc_price'>Enter the new discounted price:</label>" +
                             "<input type='text' id='disc_price' name='disc_price' class='form-control'>" +
                             "<input type='hidden' id='counter' name='counter' value='" + counter + "'>" +
+                            "<input type='hidden' id='store_name' name='store_name' value='" + store_name + "'>" +
+                            "<input type='hidden' id='prodID' name='prodID' value='" + prodID + "'>" +
                             "<input type='hidden' id='original_price' name='original_price' value='" + original_price + "'>" +
                             "<input type='hidden' name='entry_by' value='"+ prodata[2].userID +"'>"+
                             "<button type='submit' class='btn btn-primary my-2' >Save</button>" +
@@ -98,7 +100,7 @@ $(document).ready(function () {
                                     let button = document.createElement("button");
                                     button.innerHTML = "Add Discount";
                                     button.id = "addDiscount";
-                                    button.onclick = function () { openDiscountForm(product.counter,product.original_price) };
+                                    button.onclick = function () { openDiscountForm(product.counter,product.original_price,product.prodID,product.store_name) };
                                     //button.addEventListener("click", openDiscountForm(product.counter) );
                                     li.appendChild(button);
                                     productsList.appendChild(li);

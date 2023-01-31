@@ -87,7 +87,9 @@ router.post('/submit_disc', (req,res) => {
 })
 
 router.get('/submit_disc', (req,res) => {
-  res.render('submit_disc');
+  let message = req.session.message;
+  req.session.message = null;
+  res.render("submit_disc", { message: message });
 })
 
 router.get('/statistics', (req,res) => {

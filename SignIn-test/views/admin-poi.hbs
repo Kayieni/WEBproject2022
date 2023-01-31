@@ -160,7 +160,7 @@
         <div class="container-drag">
             {{!-- header of drag and drop --}}
             <div class="header-section">
-                <h1>Uplead Files Here</h1>
+                <h1>Upload New Store Data</h1>
                 <p>Upload files for the local stores available in your area, in .json or .xml format.</p>
                 <p>JSON and XML files are allowed.</p>
             </div>
@@ -173,7 +173,7 @@
                     <span>Drag & Drop your files here</span>
                     <span>OR</span>
                     <button class="file-selector">Browse Files</button>
-                    <form enctype="multipart/form-data" action="/auth/update_products" method="POST">
+                    <form enctype="multipart/form-data" action="/auth/update_pois" method="POST">
                         <input type="file" name="file" id="" class="file-selector-input" multiple>
                         <button class="btn btn-success" type="submit"></button>
                     </form>
@@ -184,7 +184,7 @@
             </div>
             {{!-- list after upload --}}
             <div class="list-section">
-                <div class="list-title">Upload Files</div>
+                <div class="list-title">Upload Stores</div>
                 <div class="list">
                 </div>
             </div>

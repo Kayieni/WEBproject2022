@@ -18,6 +18,7 @@ router.post('/review', authController.review);
 router.post('/stock', authController.stock);
 router.post('/save_discount', authController.save_discount);
 router.post('/update_products',upload.single('file'), authController.update_products);
+router.post('/update_pois',upload.single('file'), authController.update_pois);
 
 
 //with this command in node we can create a new module

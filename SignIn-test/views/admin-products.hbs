@@ -14,6 +14,7 @@
 
     <link href="css/nucleo-icons.css" rel="stylesheet" />
     <link href="css/nucleo-svg.css" rel="stylesheet" />
+    <link href="css/dragdrop.css" rel="stylesheet" />
 
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
@@ -151,7 +152,40 @@
                 </div>
             </div>
         </nav>
-        {{!-- main body elements , right part --}}
+        {{!-- main drag and drop files --}}
+        <div class="container-drag">
+            {{!-- header of drag and drop --}}
+            <div class="header-section">
+                <h1>Upload New Products' Prices</h1>
+                <p>Upload files for the local stores available in your area, in .json or .xml format.</p>
+                <p>JSON and XML files are allowed.</p>
+            </div>
+            {{!-- drop section for drag or upload button --}}
+            <div class="drop-section">
+                <div class="col">
+                    <div class="cloud-icon">
+                        <img src="images/logos/cloud.png" alt="cloud-icon">
+                    </div>
+                    <span>Drag & Drop your files here</span>
+                    <span>OR</span>
+                    <button class="file-selector">Browse Files</button>
+                    <form enctype="multipart/form-data" action="/auth/update_products" method="POST">
+                        <input type="file" name="file" id="" class="file-selector-input" multiple>
+                        <button class="btn btn-success" type="submit"></button>
+                    </form>
+                </div>
+                <div class="col">
+                    <div class="drop-here">Drop here</div>
+                </div>
+            </div>
+            {{!-- list after upload --}}
+            <div class="list-section">
+                <div class="list-title">Upload New Prices</div>
+                <div class="list">
+                </div>
+            </div>
+        
+        </div>
 
             {{!-- footer --}}
         <footer class="footer py-4">
@@ -206,6 +240,8 @@
     <script src="js/plugins/smooth-scrollbar.min.js"></script>
     <script src="js/plugins/chartjs.min.js"></script>
     <script src="js/material-dashboard.min.js?v=3.0.0"></script>
+    <script src="js/dragdropPrices.js"></script>
+
     <script>
         //ScrollBar
         var win = navigator.platform.indexOf('Win') > -1;

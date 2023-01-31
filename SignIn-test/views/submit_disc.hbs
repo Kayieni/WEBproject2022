@@ -245,7 +245,9 @@
 
             
                             <div id="discount_form_container" style="display:none;"></div>
-            
+                            {{#if message}}
+                            <span class="alert alert-danger">{{message}}</span>
+                            {{/if}}
             
                         {{!-- </div> --}}
                     </div>
