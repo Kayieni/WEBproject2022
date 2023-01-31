@@ -253,6 +253,19 @@ router.get('/charts',(req,res)=>{
   })
 })
 
+router.get('/searchbar',(req,res)=>{
+  // the following query will give me all the data needed for the charts
+  const chartsdata = '???';
+  db.query(chartsdata, (error, results) => {
+    // 
+    if (error) {
+      res.status(500).send(error);
+
+    }else {
+      res.json(results);
+    }
+  })
+})
 // dbx.end();
 
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it
