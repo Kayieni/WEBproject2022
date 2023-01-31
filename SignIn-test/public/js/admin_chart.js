@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:5000/discounts',
+        url: 'http://localhost:5000/charts',
 
         //to start the loading animation until process is finished 
         beforeSend: function() {
