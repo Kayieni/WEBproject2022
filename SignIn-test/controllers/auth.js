@@ -194,7 +194,7 @@ exports.login = (req,res) => {
                 console.log(req.session);
                 db.query('SELECT * FROM users WHERE username = ?', [logname], async (error, results) => {
                     if (error) {
-                      console.log(error);
+                        console.log(error);
                     } else {
                         if(results.length > 0){
                             // req.session.user_data = JSON.stringify(results); 
@@ -527,7 +527,7 @@ exports.update_products = (req,res,next) => {
     const myObj = JSON.parse(req.file.buffer.toString());
         // const myObj = JSON.parse(this.data.toString());
         for (let k = 0; k < (myObj.products.length); k++) {
-            db.query('UPDATE product SET original_price = ? WHERE prodID = ?',[myObj.products[k].price,myObj.products[k].id],(error,results)=>{
+            db.query('UPDATE product SET original_price = ?, stock=1 WHERE prodID = ?',[myObj.products[k].price,myObj.products[k].id],(error,results)=>{
                         if(error){
                             console.log('error updating product table');
                             console.log(error);
@@ -540,6 +540,11 @@ exports.update_products = (req,res,next) => {
         res.send('Data uploaded successfully!');
 }
 
+exports.delete_products = (req, res) => {
+}
+
 exports.update_pois = (req,res,next) => {
 }
 
+exports.delete_pois = (req, res) => {
+}

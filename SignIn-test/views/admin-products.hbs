@@ -171,7 +171,7 @@
                     <button class="file-selector">Browse Files</button>
                     <form enctype="multipart/form-data" action="/auth/update_products" method="POST">
                         <input type="file" name="file" id="" class="file-selector-input" multiple>
-                        <button class="btn btn-success" type="submit"></button>
+                        <button class="btn btn-success" type="submit">Submit File</button>
                     </form>
                 </div>
                 <div class="col">
@@ -184,6 +184,10 @@
                 <div class="list">
                 </div>
             </div>
+            <form action="/auth/delete_products" method="POST">
+                <input type="hidden" name="delete" id="" class="delete">
+                <button class="btn btn-danger" type="submit">Delete All Data</button>
+            </form>
         
         </div>
 

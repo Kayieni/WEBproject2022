@@ -139,6 +139,7 @@ app.use('/statistics', checkAuthAdmin);
 app.use('/leaderboard', checkAuthAdmin);
 app.use('/admin-poi', checkAuthAdmin);
 app.use('/admin-products', checkAuthAdmin);
+// app.use("/map", checkAuthenticated);
 
 
 /* ==== Connect with mySQL Database ====*/
