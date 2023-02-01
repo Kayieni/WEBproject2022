@@ -220,15 +220,15 @@
                 <p>Title</p>
             </div>
 
-            <div class="chartCard">
+            {{!-- <div class="chartCard">
                 <div class="chartBox">
-                    <canvas id="myChart"></canvas>
-                    <button onclick="timeFrame(this)" value="day">Day</button>
-                    <button onclick="timeFrame(this)" value="week">Week</button>
-                    <button onclick="timeFrame(this)" value="month">Month</button>
+                    <label for="month">What month would you like to see the #discounts for?</label>
+                    <input onchange="filterData(this)" type="month" value="2023-01" name="month" id="month" min="2022-01" value="2030-12" required />
+                    <canvas id="myChart" class="chart-canvas" height="170"></canvas>
                 </div>
-            </div>
+            </div> --}}
                 
+
 
             {{!-- Charts --}}
             <div class="row mt-4 justify-content-md-center">
@@ -236,9 +236,11 @@
                 <div class="col-lg-10 col-md-6 mt-4 mb-4">
                     <div class="card z-index-2 ">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                            <div class="bg-gradient-info shadow-primary border-radius-lg py-3 pe-1">
                                 <div class="chart">
-                                    <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
+                                    <label for="month">What month would you like to see the #discounts for?</label>
+                                    <input onchange="filterData(this)" type="month" value="2023-01" name="month" id="month" min="2022-01" value="2030-12" required />
+                                    <canvas id="myChart" class="chart-canvas" height="100"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -345,122 +347,11 @@
         </a>
     </div>
 
-    {{!-- needed for dates in x  --}}
+    {{!-- needed for charts / plugins --}}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    
-
-
-    <script>
-        const day = [
-            {x: Date.parse('2021-11-01 00:00:00 GMT+0200'), y: 18},
-            {x: Date.parse('2021-11-02 00:00:00 GMT+0200'), y: 12},
-            {x: Date.parse('2021-11-03 00:00:00 GMT+0200'), y: 6},
-            {x: Date.parse('2021-11-04 00:00:00 GMT+0200'), y: 9},
-            {x: Date.parse('2021-11-05 00:00:00 GMT+0200'), y: 12},
-            {x: Date.parse('2021-11-06 00:00:00 GMT+0200'), y: 3},
-            {x: Date.parse('2021-11-07 00:00:00 GMT+0200'), y: 9},
-        ];
-
-        const week = [
-            {x: Date.parse('2021-10-31 00:00:00 GMT+0200'), y: 50},
-            {x: Date.parse('2021-11-07 00:00:00 GMT+0200'), y: 70},
-            {x: Date.parse('2021-11-14 00:00:00 GMT+0200'), y: 100},
-            {x: Date.parse('2021-11-21 00:00:00 GMT+0200'), y: 60},
-            {x: Date.parse('2021-11-28 00:00:00 GMT+0200'), y: 30},
-        ];
-
-        const month = [
-            {x: Date.parse('2021-08-01 00:00:00 GMT+0200'), y: 500},
-            {x: Date.parse('2021-09-01 00:00:00 GMT+0200'), y: 700},
-            {x: Date.parse('2021-10-01 00:00:00 GMT+0200'), y: 300},
-            {x: Date.parse('2021-11-01 00:00:00 GMT+0200'), y: 500},
-            {x: Date.parse('2021-12-01 00:00:00 GMT+0200'), y: 700},
-            {x: Date.parse('2022-01-01 00:00:00 GMT+0200'), y: 333},
-        ];
-
-
-        // setup
-        const data = {
-            //labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [{
-                label: 'Weekly Sales',
-                data: month,
-                //data: [18, 12, 6, 9, 12, 3, 9],
-                backgroundColor: [
-                    'rgba(255,26,104,0.2)',
-                    'rgba(54,162,235,0.2)',
-                    'rgba(255,206,86,0.2)',
-                    'rgba(75,192,192,0.2)',
-                    'rgba(153,105,255,0.2)',
-                    'rgba(255,159,64,0.2)',
-                    'rgba(0,0,0,0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,26,104,1)',
-                    'rgba(54,162,235,1)',
-                    'rgba(255,206,86,1)',
-                    'rgba(75,192,192,1)',
-                    'rgba(153,105,255,1)',
-                    'rgba(255,159,64,1)',
-                    'rgba(0,0,0,1)'
-                ],
-                borderWidth: 1
-            }]
-        };
-
-        // config 
-        const config = {
-            type: 'bar',
-            data,
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month'
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        };
-
-        // render init block
-        const myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
-
-    function timeFrame(period){
-        //console.log(period)
-        //console.log(period.value)
-        if(period.value == 'day') {
-            myChart.config.options.scales.x.time.unit = period.value;
-            myChart.config.data.datasets[0].data = day;
-        }
-        
-        if(period.value == 'week') {
-            myChart.config.options.scales.x.time.unit = period.value;
-            myChart.config.data.datasets[0].data = week;
-        }
-
-        if(period.value == 'month') {
-            myChart.config.options.scales.x.time.unit = period.value;
-            myChart.config.data.datasets[0].data = month;
-        }
-
-        myChart.update();
-
-    }
-
-
-
-    </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js" integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="js/core/popper.min.js"></script>
     <script src="js/admin_chart.js"></script>
