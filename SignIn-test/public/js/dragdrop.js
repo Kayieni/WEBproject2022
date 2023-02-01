@@ -17,7 +17,7 @@ fileSelectorInput.onchange = () => {
 // check the file type
 function typeValidation(type) {
     var splitType = type.split('/')[0]
-    console.log('splitype:', splitType, " and type: " , type)
+    console.log('splitype:', splitType, " and type: ", type)
     // if (type == 'application/pdf' || splitType == 'image' || splitType == 'video') {
     if (type == 'application/json' || type == 'text/xml') {
         return true
