@@ -185,7 +185,7 @@ router.get('/sub-categories', (req, res) => {
 
 })
 
-// Create route to retrieve discounts from database
+// Create route to retrieve stores from database
 router.get('/stores', (req, res) => {
     
     // db.query('SELECT * FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter', (error, results) => {
@@ -201,6 +201,25 @@ router.get('/stores', (req, res) => {
         // res.json(results);
       }
     });
+
+})
+
+
+// Create route to retrieve discounted stores from database //// Discount store only if it has a discount the past 7 days 
+router.get('/disc_stores', (req, res) => {
+   db.query('SELECT DISTINCT stores.storeID, stores.store_name, stores.store_longtitude, stores.store_latitude FROM stores INNER JOIN product ON stores.storeID = product.storeID INNER JOIN discount ON product.counter=discount.counter  WHERE discount.entry_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)', (error, results) => {
+  //db.query('SELECT * FROM stores', (error, results) => {
+    if (error) {
+      res.status(500).send(error);
+    } 
+  //   this has to change when we fix admin
+    else if (req.session.role=='admin') {
+      res.json([results, req.session.role]);
+    }else {
+      res.json([results, req.session.role]);
+      // res.json(results);
+    }
+  });
 
 })
 
@@ -228,8 +247,8 @@ router.get('/user_history', (req, res) => {
 
 router.get('/userslead', (req, res) => {
   // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
-  db.query('SELECT * FROM users WHERE total_score > 0 ORDER BY users.total_score DESC', (error, results) => {
-    // 
+  db.query('SELECT * FROM users ORDER BY users.total_score DESC', (error, results) => {
+    //  WHERE total_score > 0
     if (error) {
       res.status(500).send(error);
 
@@ -255,7 +274,7 @@ router.get('/charts',(req,res)=>{
 
 router.get('/searchbar',(req,res)=>{
   // the following query will give me all the data needed for the charts
-  const chartsdata = '???';
+  const chartsdata = 'SELECT categories.category_name, discount.counter, stores.store_longtitude, stores.store_latitude FROM stores  JOIN product ON stores.storeID = product.storeID   JOIN subcategories ON product.subID = subcategories.subID   JOIN categories ON subcategories.catID = categories.catID   JOIN discount ON product.counter = discount.counter WHERE discount.entry_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)';
   db.query(chartsdata, (error, results) => {
     // 
     if (error) {

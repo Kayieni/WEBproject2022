@@ -20,6 +20,14 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.min.js"></script>
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css"
+		integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+		crossorigin="" />
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css"
+		integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+		crossorigin="" />
 
 	<title>E-Discount</title>
 	<style>
@@ -30,7 +38,7 @@
 		}
 	
 		#map {
-			width: 1000px;
+			width: 100%;
 			/* 100% of the parent container */
 			height: 500px;
 			margin: 25px;
@@ -45,11 +53,13 @@
 		}
 
 		.container {
+			width: 80%;
 			display: center;
 			justify-content: center;
 			align-items: center;
 			
 		}
+		
 
 		
 
@@ -96,7 +106,7 @@
 
 <!-- showcase -->
  <section class="bg-gradient-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
-	<div class="container">
+	<div class="container col-9">
 		<div class="d-sm-flex align-items-center justify-content-between">
 			<div class="row">
 				<div class="col-9 ">
@@ -112,9 +122,9 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class=" col-9">
+					<div id="map"class=" col-12">
 						<!-- Here will be the map instead of the image    -->
-						<div id="map"></div>
+						{{!-- <div ></div> --}}
 						{{!-- <img class="img-fluid w-50 d-none d-sm-block p-2" src="img/prezkermit.jpg" alt=""> --}}
 	
 					</div>
@@ -201,7 +211,7 @@
 	 <div class="row align-items-center justify-content-between">
 		<div class="col-md p-5">
 		 <h2 class="text-white">Everyday Represantation of US</h2>
-		 <p class="lead">Completing this project was a daily challenge through out our semester. Everyday our nerves were going from bad to worse and our last week we looked like our firend on the right. But we did it finally. Our site is ready and we have acomplished the maximum that we could during this period. We laughed. We cried. We celebrate. Now please pass us so we can go to the bless of GOD!</p>
+		 <p class="lead">Completing this project was a daily challenge through out our semester. Everyday our nerves were going from bad to worse and our last week we looked like our friend on the right. But we did it finally. Our site is ready and we have acomplished the maximum that we could during this period. We laughed. We cried. We celebrate. Now please pass us so we can go to the bless of GOD!</p>
 		 <a href="#" class="btn btn-light mt-3">
 			<i class="bi bi-chevron-right"></i>Read More
 		 </a>
@@ -424,7 +434,7 @@
 
  <!-- JavaScript Bundle -->
 <script src="js/map.js"></script>
-{{!-- <script src="js/map2.js"></script> --}}
+
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
 	integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
