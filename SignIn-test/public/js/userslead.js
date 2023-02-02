@@ -80,8 +80,8 @@ $(document).ready(function () {
 
             console.log(data);
             if (data.length > 0) {
-                ///// let entriesPerPage = 10; ///////// when we have enough users in the DB 
-                let entriesPerPage = 2;
+                ///// let entriesPerPage = 2; ///////// when we dont have enough users in the DB 
+                let entriesPerPage = 10;
                 let numberOfPages = Math.ceil(data.length / entriesPerPage);
                 let currentPage = 1;
 
