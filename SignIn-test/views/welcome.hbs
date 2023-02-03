@@ -28,7 +28,12 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css"
 		integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
 		crossorigin="" />
+	        {{!-- from template admin --}}
+        <link href="css/nucleo-icons.css" rel="stylesheet" />
+        <link href="css/nucleo-svg.css" rel="stylesheet" />
+	 <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 	<title>E-Discount</title>
 	<style>
 		body::before {
@@ -96,9 +101,14 @@
 		 <li class="nav-item">
 			<a href="/profile" class="nav-link text-white">Profile</a>
 		 </li>
-		 <li class="nav-item">
-			<a href="/logout" class="nav-link text-white">Logout</a>
-		 </li>
+		  <li class="nav-item ">
+                    <a href="/logout" class="nav-link text-white  ">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Log Out</span>
+                    </a>
+                </li>
 		</ul>
 	 </div>
 	</div>
