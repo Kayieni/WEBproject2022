@@ -156,6 +156,8 @@ $(document).ready(function () {
                             "<button type='submit' class='btn btn-primary my-2' >Save</button>" +
                             "</form>";
                     }
+                   
+                    
 
                     // function saveDiscount() {
                     //     var formData = new FormData(document.getElementById("discount_form"));
@@ -200,6 +202,7 @@ $(document).ready(function () {
                                     button.id = "addDiscount";
                                     button.onclick = function () {
                                         openDiscountForm(product.counter, product.original_price, product.prodID, product.store_name);
+                                        
                                     };
                                     
                                     

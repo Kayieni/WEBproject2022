@@ -11,6 +11,20 @@ router.get('/', (req,res) => {
     res.render('login');
 });
 
+router.get('/admin-review', (req,res) => {
+  let message = req.session.message;
+  req.session.message = null;
+  res.render('admin-review', { message: message, storeclicked: req.session.storeclicked.store });
+});
+router.post('/admin-review', (req,res) => {
+  let id = req.body.storeID;
+  let name = req.body.storeName;
+  // let type = req.body.storeType;
+  let store = req.body.storeclicked;
+  req.session.storeclicked = { store };
+  console.log(req.session);
+  res.redirect('/admin-review');
+})
 router.get('/register', (req,res) => {
     const message = req.session.successMessage;
     console.log(req.session);
@@ -87,9 +101,15 @@ router.post('/submit_disc', (req,res) => {
 })
 
 router.get('/submit_disc', (req,res) => {
+
   let message = req.session.message;
+  let message2 = req.session.message2;
+  //let extra_score = req.session.points;
+  console.log(req.session);
+  //req.session.points = null;
   req.session.message = null;
-  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store });
+  req.session.message2 = null;
+  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store, message2: message2});
 })
 
 router.get('/statistics', (req,res) => {
@@ -132,7 +152,7 @@ router.get('/discounts', (req, res) => {
       } 
       // this has to change w hen we fix admin
       else if (req.session.role=='admin') {
-      res.json(results);
+      res.json([results, req.session.role, req.session.storeclicked]);
       }else {
         // console.log(results[0].counter);
         res.json([results, req.session.user_data[0], req.session.storeclicked]);
@@ -232,7 +252,7 @@ router.get('/user_history', (req, res) => {
 
       } 
 
-      db.query('SELECT discount.*, product.*, stores.store_name, stores.storeID FROM discount INNER JOIN product ON product.counter = discount.counter INNER JOIN stores ON product.storeID = stores.storeID WHERE entry_by = ? GROUP BY product.prodID, discount.disc_price ORDER BY `discount`.`entry_date` DESC;',[req.session.user_data[0].userID], (err, rest) => {
+      db.query('SELECT discount.*, product.*, stores.store_name, stores.storeID FROM discount INNER JOIN product ON product.counter = discount.counter INNER JOIN stores ON product.storeID = stores.storeID WHERE entry_by = ? GROUP BY product.prodID, discount.disc_price, discount.entry_date ORDER BY discount.`entry_date` DESC;',[req.session.user_data[0].userID], (err, rest) => {
         if (err) {
           res.status(500).send(err);
         }else if (req.session.role=='admin') {
@@ -247,8 +267,8 @@ router.get('/user_history', (req, res) => {
 
 router.get('/userslead', (req, res) => {
   // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
-  db.query('SELECT * FROM users ORDER BY users.total_score DESC', (error, results) => {
-    //  WHERE total_score > 0
+  db.query('SELECT * FROM users WHERE total_score > 0 ORDER BY users.total_score DESC', (error, results) => {
+     
     if (error) {
       res.status(500).send(error);
 
@@ -258,16 +278,34 @@ router.get('/userslead', (req, res) => {
   })
 })
 
+
 router.get('/charts',(req,res)=>{
   // the following query will give me all the data needed for the charts
-  const chartsdata = 'SELECT discount.*, product.prodID, stores.storeID, stores.store_name FROM discount INNER JOIN product ON product.counter=discount.counter INNER JOIN stores ON stores.storeID=product.storeID';
-  db.query(chartsdata, (error, results) => {
+  // it returns all the data of the discounts, with the product ID related to it, and the store name and id related to it
+  const chartsdata = 'SELECT discount.*, product.prodID, product.subID, stores.storeID, stores.store_name FROM discount INNER JOIN product ON product.counter=discount.counter INNER JOIN stores ON stores.storeID=product.storeID';
+  const discs_unique = 'SELECT discount.*, product.*, stores.store_name, stores.storeID FROM discount INNER JOIN product ON product.counter = discount.counter INNER JOIN stores ON product.storeID = stores.storeID GROUP BY product.prodID, discount.disc_price, discount.entry_by, discount.entry_date ORDER BY discount.`entry_date` DESC;';
+  const categories = 'SELECT * FROM categories';
+  const subcategories = 'SELECT * FROM subcategories';
+
+  db.query(discs_unique, (error, discs) => {
     // 
     if (error) {
       res.status(500).send(error);
 
     }else {
-      res.json(results);
+      db.query(categories, (err,cats) => {
+        if (err) {
+          res.status(500).send(err);
+        }else {
+          db.query(subcategories, (er,subcats) => {
+            if (er) {
+              res.status(500).send(er);
+            } else {
+                res.json({discs,cats,subcats});
+            }
+          })
+        }
+      })
     }
   })
 })
@@ -289,3 +327,63 @@ router.get('/searchbar',(req,res)=>{
 
 //to ensure that we can export this "router" that we created and we are giving it to our pages. So we need to export it
 module.exports = router;
+
+router.get('/endMonth', (req, res) => {
+  const cron = require('node-cron');
+  const mysql = require('mysql2');
+
+  // Schedule a task to run at the end of each month
+  // cron.schedule('0 0 28 * *', () => {
+  cron.schedule('* * * * *', () => {
+    // Calculate the total number of users
+    db.query(`SELECT COUNT(*) as total_users FROM users`, (error, results) => {
+      if (error) throw error;
+      const totalUsers = results[0].total_users;
+      console.log("1. Calculated the total number of users : totalUsers = ", totalUsers);
+
+      // Calculate the total month_score
+      db.query(`SELECT SUM(month_score) as total_month_score FROM users`, (error, results) => {
+        if (error) throw error;
+        const totalMonthScore = results[0].total_month_score;
+        console.log("2. Calculated the total month_score : totalMonthScore = ", totalMonthScore);
+
+        // Share the 80% of 100 * @total_users tokens based on month_score
+        db.query(`UPDATE users SET month_tokens = (0.8 * 100 * ${totalUsers} * month_score) / ${totalMonthScore}`, (error) => {
+          if (error) throw error;
+          console.log("3. Shared the 80% of 100 * @total_users tokens based on month_score ");
+
+          // Add the month_score to the total_score and set month_score to 0
+          db.query(`UPDATE users SET total_score = total_score + month_score, month_score = 0`, (error) => {
+            if (error) throw error;
+            console.log("4. Added the month_score to the total_score and set month_score to 0 ");
+
+
+            // Add the month_tokens to the total_tokens and set month_tokens to 0
+            db.query(`UPDATE users SET total_tokens = total_tokens + month_tokens, month_tokens = 0`, (error) => {
+              if (error) throw error;
+              console.log("5. Added the month_tokens to the total_tokens and set month_tokens to 0 ");
+
+            });
+          });
+        });
+      });
+    });
+  });
+})
+
+router.get('/startMonth', (req, res) => {
+  const cron = require('node-cron');
+  const mysql = require('mysql2');
+  // cron.schedule('0 0 1 * *', () => {
+  cron.schedule('* * * * *', () => {
+    // Set the month_tokens for all users to 100
+    db.query(`UPDATE users SET month_tokens = 100`, (error, results) => {
+      if (error) {
+        console.log("error: Can set the month_tokens for all users to 100");
+        return console.log(error);
+      } else {
+        console.log("Set the month_tokens for all users to 100  ");
+      }
+    });
+  });
+})

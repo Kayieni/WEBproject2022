@@ -421,47 +421,161 @@ exports.stock = (req, res) => {
 
 
 exports.save_discount = (req, res) => {
-    console.log('inside save discount');
+    console.log('inside save discount\n');
     const price = parseFloat(req.body.disc_price);
     const counter = parseInt(req.body.counter);
     const prodID = parseInt(req.body.prodID);
     console.log("prodID =", prodID);
     const store_name = req.body.store_name;
     console.log('store_name =', store_name);
+    const storeID = req.session.storeclicked.store.storeID;
+    console.log('storeID =', storeID);
     const original_price = parseFloat(req.body.original_price);
     const entry_by = req.body.entry_by;
-    console.log("'entry by userID=", entry_by);
+    console.log("entry by userID=", entry_by);
+    const currentTime = new Date();
+    console.log("currentTime = ", currentTime);
+    const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
+    console.log("formattedTime = ", formattedTime, "\n");
+    let points = 0;
 
     const checkOriginalPriceQuery = `SELECT original_price FROM product WHERE counter=${counter}`;
     const checkDiscountedPriceQuery = `SELECT disc_price FROM discount  WHERE counter=${counter} ORDER BY entry_date DESC`;
-    // 
-
     db.query(checkOriginalPriceQuery, (err, result) => {
         if (err) {
             console.log("error1: No original prices found");
             return console.log(err);
         }
-
         const originalPrice = result[0].original_price;
         db.query(checkDiscountedPriceQuery, (err, result) => {
             if (err) {
                 console.log("error2: No discount prices found");
                 return console.log(err);
             }
-
             // to insert the discount in all the storesIDs of the same chain of markets
             const discount_selector = 'SELECT product.prodID, product.counter, stores.storeID, stores.store_name FROM product INNER JOIN stores ON stores.storeID = product.storeID WHERE stores.store_name = ? AND product.prodID = ?';
-
+            //gia kathe proin apo kathe alisida. An den ipirxan alisides posa proionta tha eixame
+            // let sql1 = 'SELECT DISTINCT stores.store_name, product.prodID, product.original_price, COALESCE(discount.disc_price, NULL) AS disc_price FROM stores INNER JOIN product ON product.storeID = stores.storeID LEFT JOIN discount ON discount.counter = product.counter WHERE product.prodID =? ';
             if (result.length > 0) {
+
+                //////////////////////////////////////// FOR MEAN YESTERDAY //////////////////////////////////////////////////////// START
+                var startOfYesterday = new Date();
+                startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+                startOfYesterday.setHours(0, 0, 0, 0);
+                console.log("startOfYesterday = ", startOfYesterday);
+
+                var endOfYesterday = new Date();
+                endOfYesterday.setDate(endOfYesterday.getDate() - 1);
+                endOfYesterday.setHours(23, 59, 59, 999);
+                console.log("endOfYesterday = ", endOfYesterday);
+
+                let sql1 = `SELECT DISTINCT stores.store_name, product.prodID, product.original_price, COALESCE(discount.disc_price, NULL) AS disc_price 
+            FROM stores 
+            INNER JOIN product ON product.storeID = stores.storeID 
+            LEFT JOIN (
+                SELECT counter, disc_price, entry_date 
+                FROM discount 
+                WHERE entry_date = (
+                    SELECT MAX(entry_date) 
+                    FROM discount 
+                    WHERE counter = discount.counter AND discount.entry_date BETWEEN '${startOfYesterday.toISOString()}' AND  '${endOfYesterday.toISOString()}'
+                )
+            ) AS discount ON discount.counter = product.counter  
+            WHERE product.prodID = ? `;
+                let mean_last_day;
+                db.query(sql1, [prodID], (err, result1) => {
+                    if (err) {
+                        console.log("error");
+                        return console.log(err);
+                    } else {
+                        var returned = result1;
+                        var paranomasths = returned.length;
+                        var arithmiths = 0;
+                        for (i = 0; i < paranomasths; i++) {
+                            if (returned[i].disc_price === null) {
+                                arithmiths += Number(returned[i].original_price);
+                            } else {
+                                arithmiths += Number(returned[i].disc_price)
+                            }
+                        }
+                        arithmiths = arithmiths.toFixed(2);
+                        var mean_price = (arithmiths / paranomasths).toFixed(2);
+                        mean_last_day = mean_price;
+                        console.log("mean_last_day (yesterday) = ", mean_last_day, "\n");
+                    }
+                });
+                //////////////////////////////////////// FOR MEAN YESTERDAY //////////////////////////////////////////////////////// END
+                //////////////////////////////////////// FOR MEAN LAST WEEK //////////////////////////////////////////////////////// START
+                var startOfLastWeek = new Date();
+                startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+                startOfLastWeek.setHours(0, 0, 0, 0);
+                console.log("startOfLastWeek = ", startOfLastWeek);
+
+                var endOfLastWeek = new Date();
+                endOfLastWeek.setDate(endOfLastWeek.getDate() - 1);
+                endOfLastWeek.setHours(23, 59, 59, 999);
+                console.log("endOfLastWeek = ", endOfLastWeek);
+
+                var startAndEndDates = [];
+                for (var i = 0; i < 7; i++) {
+                    var start = new Date();
+                    start.setDate(start.getDate() - (7 - i));
+                    start.setHours(0, 0, 0, 0);
+                    var end = new Date();
+                    end.setDate(end.getDate() - (7 - i - 1));
+                    end.setHours(23, 59, 59, 999);
+                    startAndEndDates.push([start, end]);
+                }
+                let sql2 = `SELECT DISTINCT stores.store_name, product.prodID, product.original_price, COALESCE(discount.disc_price, NULL) AS disc_price 
+            FROM stores 
+            INNER JOIN product ON product.storeID = stores.storeID 
+            LEFT JOIN (
+                SELECT counter, disc_price, entry_date 
+                FROM discount 
+                WHERE counter = discount.counter AND discount.entry_date BETWEEN '${startOfLastWeek.toISOString()}' AND  '${endOfLastWeek.toISOString()}'
+            ) AS discount ON discount.counter = product.counter  
+            WHERE product.prodID = ? `;
+                var week_means = [];
+                let mean;
+                for (var j = 0; j < startAndEndDates.length; j++) {
+                    db.query(sql2, [prodID, startAndEndDates[j][0], startAndEndDates[j][1]], (err, result2) => {
+                        if (err) {
+                            console.log("error");
+                            return console.log(err);
+                        } else {
+                            var returned = result2;
+                            var paranomasths = returned.length;
+                            var arithmiths = 0;
+                            for (i = 0; i < paranomasths; i++) {
+                                if (returned[i].disc_price === null) {
+                                    arithmiths += Number(returned[i].original_price);
+                                } else {
+                                    arithmiths += Number(returned[i].disc_price)
+                                }
+                            }
+                            arithmiths = arithmiths.toFixed(2);
+                            var mean_price = (arithmiths / paranomasths).toFixed(2);
+                            const mean_last_week = mean_price;
+                            week_means.push(mean_last_week);
+                        }
+                        let sum = 0;
+                        for (let i = 0; i < week_means.length; i++) {
+                            sum += Number(week_means[i]);
+                        }
+                        mean = (sum / week_means.length).toFixed(2);
+                        console.log("mean of last week = ", mean);
+                    });
+                }
+                //////////////////////////////////////// FOR MEAN LAST WEEK //////////////////////////////////////////////////////// END
                 const currentPrice = result[0].disc_price;
                 if (price < 0.8 * currentPrice) {
                     db.query(discount_selector, [store_name, prodID], (err, result) => {
                         if (err) {
                             console.log("error2.5: No stores found in the chain");
                             return console.log(err);
-                        }
+                        };
                         for (i = 0; i < result.length; i++) {
-                            let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, NOW(), ${entry_by})`;
+                            let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, STR_TO_DATE('${formattedTime}', '%Y-%m-%d %H:%i:%s'), ${entry_by})`;
                             db.query(insertDiscountQuery, (err, result) => {
                                 if (err) {
                                     console.log("error3");
@@ -475,32 +589,47 @@ exports.save_discount = (req, res) => {
                                         } else {
                                             console.log('Users month_score=', results[0].month_score);
                                             month_score = results[0].month_score;
-                                            month_score = month_score + 50;
-                                            console.log('Users new month_score=', month_score);
-                                            db.query('UPDATE users SET month_score = ? WHERE userID = ?', [month_score, entry_by], (error, results) => {
-                                                if (error) {
-                                                    console.log(error);
-                                                } else {
-                                                    console.log('Users score updated');
-                                                    //res.redirect("/reviews");
-                                                }
-                                            });
+                                            let check_week = 0;
+                                            let check_yesterday = 0;
+                                            if (price < 0.8 * mean_last_day) {
+                                                check_yesterday = price;
+                                                console.log("check_yesterday = ", check_yesterday);
+                                                month_score = month_score + 50;
+                                                points = 50;
+                                                console.log('Users new month_score=', month_score);
+                                            } else if (price < 0.8 * mean) {
+                                                check_week = price;
+                                                console.log("check_week = ", check_week);
+                                                month_score = month_score + 20;
+                                                points = 20;
+                                                console.log('Users new month_score=', month_score);
+                                            }
                                         }
+                                        db.query('UPDATE users SET month_score = ? WHERE userID = ?', [month_score, entry_by], (error, results) => {
+                                            if (error) {
+                                                console.log(error);
+                                            } else {
+                                                console.log('Users score updated');
+                                            }
+                                        });
                                     });
-                                    //
-
                                     ///////////// new for score
                                 }
                             });
                         }
+                        req.session.message2 = "Congratulations! Your discount has submitted successfully.";
+                        // console.log(points);
+                        // req.session.points = points;
                         res.redirect("/submit_disc");
                     });
-                } else {
+                }
+                else {
                     req.session.message = "Discounted price must be less than 20% of the current price.";
                     console.log(req.session.message);
                     res.redirect("/submit_disc");
                 }
-            } else {
+            }
+            else {
                 if (price < originalPrice) {
                     console.log(prodID);
                     console.log(store_name);
@@ -511,7 +640,7 @@ exports.save_discount = (req, res) => {
                         }
                         console.log("result= ", result);
                         for (i = 0; i < result.length; i++) {
-                            let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, NOW(), ${entry_by})`;
+                            let insertDiscountQuery = `INSERT INTO discount (counter, disc_price, entry_date, entry_by) VALUES (${result[i].counter}, ${price}, STR_TO_DATE('${formattedTime}', '%Y-%m-%d %H:%i:%s'), ${entry_by})`;
                             console.log("inside for loop");
                             db.query(insertDiscountQuery, (err, result) => {
                                 if (err) {
@@ -526,7 +655,8 @@ exports.save_discount = (req, res) => {
                                         } else {
                                             console.log('Users month_score=', results[0].month_score);
                                             month_score = results[0].month_score;
-                                            month_score = month_score + 20;
+                                            month_score = month_score + 10;
+                                            points = 10;
                                             console.log('Users new month_score=', month_score);
                                             db.query('UPDATE users SET month_score = ? WHERE userID = ?', [month_score, entry_by], (error, results) => {
                                                 if (error) {
@@ -539,11 +669,13 @@ exports.save_discount = (req, res) => {
                                         }
                                     });
                                     //
-
                                     ///////////// new for score
                                 }
                             });
                         }
+                        req.session.message2 = "Congratulations! Your discount has submitted successfully.";
+                        // console.log(points);
+                        // req.session.points = points;
                         res.redirect("/submit_disc");
                     }
                     );
@@ -560,6 +692,7 @@ exports.save_discount = (req, res) => {
     console.log('original = ', original_price);
     // "node/354449389"
 }
+
 
 
 exports.update_products = (req, res, next) => {
@@ -707,6 +840,20 @@ exports.delete_pois = (req, res) => {
         } else {
             console.log("Store data deleted :O whyyyy houman? ");
             res.redirect('/admin-products')
+        }
+    });
+}
+
+
+exports.delete_discount = (req, res) => {
+    const id_disc = parseInt(req.body.id_disc);
+    db.query('DELETE FROM discount WHERE discount.id_disc = ?',[id_disc], (err, result) => {
+        if (err) {
+            console.log("Discount could not be deleted :(( ");
+            console.log(err);
+        } else {
+            console.log("Discount deleted :O whyyyy houman? ");
+            res.redirect('/admin-review')
         }
     });
 }

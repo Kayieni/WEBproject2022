@@ -21,6 +21,7 @@ router.post('/update_products',upload.single('file'), authController.update_prod
 router.post('/delete_products', authController.delete_products);
 router.post('/update_pois',upload.single('file'), authController.update_pois);
 router.post('/delete_pois', authController.delete_pois);
+router.post('/delete_discount',authController.delete_discount);
 
 
 //with this command in node we can create a new module

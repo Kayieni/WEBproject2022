@@ -81,7 +81,7 @@ $(document).ready(function () {
                                 //console.log("markerPosition", markerPosition);
 
                                 // Get the user's position
-                                const userPosition = L.latLng(38.236023, 21.737156);
+                                const userPosition = L.latLng(position.coords.latitude, position.coords.longitude);
                                 //console.log('user position', userPosition);
 
                                 // Calculate the distance between the user's position and the marker position
@@ -97,11 +97,7 @@ $(document).ready(function () {
                                         '<button id="buttonSubmit' + i + '">Submit New Discount</button>' +
                                         '<button id="buttonReview' + i + '">Review Discounts</button>';
 
-                                    // For last question
-                                    if (role === 'admin') {
-                                        div.innerHTML += '<button type="button" data-toggle="modal" data-target="#exampleModal" id="buttonDelete' + i + '">Delete Discounts</button>';
-                                    }
-
+                                  
                                     
 
                                     var marker = L.marker([data[i].store_latitude, data[i].store_longtitude], {
@@ -116,7 +112,7 @@ $(document).ready(function () {
                                     marker.bindPopup(div);
                                     let buttonSubmit = div.querySelector('#buttonSubmit' + i);
                                     let buttonReview = div.querySelector('#buttonReview' + i);
-                                    let buttonDelete = div.querySelector('#buttonDelete' + i);
+                                    
                                     let storeidclicked = data[i].storeID;
                                     let storenameclicked = data[i].store_name;
                                     let storeclicked = data[i];
@@ -151,23 +147,7 @@ $(document).ready(function () {
                                         })
                                     });
 
-                                    // last for delete discount from admin
-                                    if (role === "admin") {
-                                        buttonDelete.addEventListener('click', function () {
-                                            // alert('Submit Discount!');
-                                            //console.log('storeID = ', storeidclicked, "store Name = ", storenameclicked);
-                                            $.ajax({
-                                                type: 'POST',
-                                                url: '/submit_disc',
-                                                data: { storeclicked: storeclicked },
-                                                success: function (response) {
-                                                    alert('Delete Discount!')
-                                                    window.location.href = 'http://localhost:5000/map';
-                                                }
-                                            })
-                                        });
-
-                                    }
+                                 
 
                                     markerClusterGroup.addLayer(marker);
 
@@ -201,7 +181,7 @@ $(document).ready(function () {
                                 url: "http://localhost:5000/disc_stores",
                                 dataType: "json",
 
-               
+                                
                                 success: function (results) {
                                     var discStores = results[0]; // stores
                                     console.log(discStores);
@@ -302,17 +282,17 @@ $(document).ready(function () {
                                     searchInput2.addEventListener('keyup', function (z) {
                                         // Only search when the user presses the enter key
                                         if (z.key === 'Enter') {
-                                          var searchValue2 = searchInput2.value;
-                                          //if (!searchValue2) return;
-                                      
-                                          if (!searchValue2) {
-                                            markerClusterGroup.getLayers().forEach(function (marker) {
-                                              marker.setOpacity(1);
-                                            });
-                                            map.addLayer(markerClusterGroup);
-                                            return;
-                                          }
+                                            var searchValue2 = searchInput2.value;
+                                            //if (!searchValue2) return;
 
+                                            if (!searchValue2) {
+                                                markerClusterGroup.getLayers().forEach(function (marker) {
+                                                    marker.setOpacity(1);
+                                                });
+                                                map.addLayer(markerClusterGroup);
+                                                return;
+                                            }
+                                           
                                           $.ajax({
                                             url: "http://localhost:5000/searchbar",
                                             dataType: "json",
@@ -332,6 +312,8 @@ $(document).ready(function () {
                                                             if (coordlat === marker._latlng.lat && coordlng === marker._latlng.lng) {
                                                                 foundMarker = marker;
                                                                 foundMarker.setOpacity(1);
+                                                                 // For last question
+                                                                
                                                                 discStoresClusterGroup.addLayer(foundMarker);
                                                                 map.setView(foundMarker.getLatLng(), 15);
                                                                 foundMarker.openPopup();
@@ -353,6 +335,9 @@ $(document).ready(function () {
                                             }
                                         });
                                         
+                                   
+
+
                                         }
                                       });
                                       

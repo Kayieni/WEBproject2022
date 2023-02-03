@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-<head>
-            <meta charset="utf-8" />
+    <head>
+        <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="icon" type="image/png" href="favicon.svg">
-       <title>Submit Discounts</title>
+        <title>
+            Review Discounts
+        </title>
         
         <link rel="stylesheet" type="text/css"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -23,7 +25,6 @@
 
         {{!-- jQuery for AJAX load --}}
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    
         
         <style>
             #loading-container {
@@ -51,16 +52,6 @@
             margin-left: -25px;
             }
 
-            .form-control{
-            border: 1px solid grey;
-            }
-
-            .select-box{
-            border: 1px solid grey;
-            }
-
-
-
             @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -71,90 +62,67 @@
             }
         </style>
 
-
-    
-  
-
-</head>
+    </head>
 
     <body class="g-sidenav-show  bg-gray-200">
         <aside
-            class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
-            id="sidenav-main">
-            <div class="sidenav-header">
-                <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                    aria-hidden="true" id="iconSidenav"></i>
-                <a class="navbar-brand m-0" href="/profile">
-                    <i class="large material-icons opacity-10 navbar-brand-img h-100">account_circle</i>
-                    <span class="ms-1 font-weight-bold text-white">Welcome User</span>
-                </a>
-            </div>
-            <hr class="horizontal light mt-0 mb-2">
-            <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/welcome">
+        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+        id="sidenav-main">
+        <div class="sidenav-header">
+            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0" href="/admin">
+                <i class="large material-icons opacity-10 navbar-brand-img h-100">verified_user</i>
+                <span class="ms-1 font-weight-bold text-white">Admin</span>
+            </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+            <ul class="navbar-nav">
+                 <li class="nav-item">
+                        <a class="nav-link text-white active bg-gradient-primary" href="/map">
                             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="material-icons opacity-10">room</i>
                             </div>
                             <span class="nav-link-text ms-1">Discount Stores</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="/reviews">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">thumbs_up_down</i>
-                            </div>
-                            <span class="nav-link-text ms-1">Review Discount</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white active bg-gradient-primary" href="/submit_disc">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">add_circle_outline</i>
-                            </div>
-                            <span class="nav-link-text ms-1">Submit Discount</span>
-                        </a>
-                    </li>
-                    {{!-- <li class="nav-item">
-                        <a class="nav-link text-white  active bg-gradient-primary" href="/admin-poi">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">edit_location</i>
-                            </div>
-                            <span class="nav-link-text ms-1">POIs Data</span>
-                        </a>
-                    </li> --}}
-                    <li class="nav-item mt-3">
-                        <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
-                        </h6>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="/profile">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">person</i>
-                            </div>
-                            <span class="nav-link-text ms-1">Profile</span>
-                        </a>
-                    </li>
-                    {{!-- <li class="nav-item">
-                        <a class="nav-link text-white " href="/login">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">login</i>
-                            </div>
-                            <span class="nav-link-text ms-1">Sign In</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="/register">
-                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10">assignment</i>
-                            </div>
-                            <span class="nav-link-text ms-1">Sign Up</span>
-                        </a>
-                    </li> --}}
-                </ul>
-            </div>
-        </aside>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/statistics">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">insert_chart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Statistics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/leaderboard">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">dashboard</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Leaderboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/admin-products">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">shopping_cart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Product Data</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/admin-poi">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">edit_location</i>
+                        </div>
+                        <span class="nav-link-text ms-1">POIs Data</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </aside>
         {{!-- Main Content --}}
         <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
             {{!-- Main navigation bar elements --}}
@@ -166,9 +134,9 @@
                         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/admin">User</a>
                             </li>
-                            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Submit Discount</li>
+                            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Reviews</li>
                         </ol>
-                        <h6 class="font-weight-bolder mb-0">Submit Discount</h6>
+                        <h6 class="font-weight-bolder mb-0">Reviews</h6>
                     </nav>
                     {{!-- Upper Nav Bar --}}
                     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -202,55 +170,29 @@
                     </div>
                 </div>
             </nav>
-            {{!-- main body elements , up right part --}}
 
             
-            <div class="container pt-4 mt-5 mb-5 ">
-                <div class="d-flex justify-content-center  row">
+            {{!-- main body elements , up right part --}}
+            <div class="container pt-4 m-auto">
+                <div class="d-flex justify-content-center row">
                     <div class="row p-2 bg-white border rounded">
                         <div class="col-12 col-lg-4 offset-lg-2 d-flex align-items-start justify-content-center">
                             <img class="store-img"
-                                src="img/super.png">
+                                src="https://warply.s3.amazonaws.com/applications/ed840ad545884deeb6c6b699176797ed/store_pictures/mymarket_stores.png">
                         </div>
                         <div class="store-details col-12 col-lg-4 d-flex flex-column justify-content-center align-items-center">
                             <h1 class="store-name text-primary font-weight-bold">{{storeclicked.store_name}}</h1>
                             <div class="last-date">
-                                <h5 class="store-text"><b>Did you found a discount?<br> Congratulations!!<br>Submit it now and win
-                                    tokens</b></p>
-                                </h5>
+                                <h5 class="store-date-text">Last Discount submitted on:</h5>
+                                {{!-- <b>{{storeclicked.store.lastdiscount}}</b> --}}                           
                             </div>
+                            <br>
+                            <button class="show-discounts-btn store-products btn btn-primary btn-sm"></button>
+                            {{!-- <button class="product-add-btn add-btn" data-ember-action="" data-ember-action-271="271"><img
+                                    class="product-cart" src="favicon.svg">Προσθήκη στο καλάθι</button> --}}
                         </div>
-             
-                        {{!-- <div class="dropdown-container"> --}}
-                            <div class="form-group row">
-                                <div class="col-sm-4">
-                                    <label for="category_select">Select a category</label>
-                                    <select class="form-control my-2 select-box" id="category_select">
-                                        <option value="" disabled selected>Select</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <label for="subcategory_select">Select a subcategory</label>
-                                    <select class="form-control my-2 select-box" id="subcategory_select" disabled>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <label for="subcategory_select">Search for a product</label>
-                                    <input type="text" id="search_input" class="form-control my-2 select-box">
-                                </div>
-                            </div>
-                            
-
-            
-                            <div id="discount_form_container" class="list col-md-10"  style="display:none;"></div>
-                            {{#if message2}}
-                            <h4 class="alert alert-success mt-4"> {{message2}} </h4>
-                            {{/if }}
-                           
-            
-            
-                        {{!-- </div> --}}
                     </div>
+                </div>
                 {{!-- of sorting --}}
                 {{!-- <div class="d-flex align-items-center ml-lg-5 pl-lg-5 mt-5">
                     <div class="sort-icon-bg" data-ember-action="" data-ember-action-272="272">
@@ -274,27 +216,11 @@
                     </div>
                 </div> --}}
             </div>
-            
-            {{!-- list after upload --}}
-            {{!-- <div class="list-section">
-                <div class="list-title">Upload Files</div>
-                <div class="list">
-                </div>
-            </div> --}}
 
-            {{!-- main body elements , up right part --}}
+            {{!-- main body elements , down right part --}}
             <div class=" list-section container mt-5 mb-5">
                 <div class="d-flex justify-content-center row">
                     <div id="discounts-list" class="list col-md-10 ">
-
-                        <h3>Products:</h3>
-                        
-                        <ul id="products_list">
-                        </ul>
-                        
-                      
-                        <div id="message_container"></div>
-    
                         
                         {{!-- loading animation that will be displaied until filtering of discounts is finished --}}
                         <div id="loading-container">
@@ -355,8 +281,7 @@
         <script src="js/plugins/smooth-scrollbar.min.js"></script>
         <script src="js/plugins/chartjs.min.js"></script>
         <script src="js/material-dashboard.min.js?v=3.0.0"></script>
-        <script src="js/pagination.js"></script>
-        <script src="js/categories-search.js"></script>
+        <script src="js/delete.js"></script>
         <script>
             //ScrollBar
             var win = navigator.platform.indexOf('Win') > -1;
@@ -367,12 +292,6 @@
                 Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
             }
         </script>
-
-        <script>
-
-            
-
-        </script>
-</body>
+    </body>
 
 </html>
