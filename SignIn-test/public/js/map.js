@@ -201,31 +201,7 @@ $(document).ready(function () {
                                 url: "http://localhost:5000/disc_stores",
                                 dataType: "json",
 
-                                // success: function (results) {
-                                //     var discStores = results[0]; // stores
-                                //     console.log(discStores);
-                                //     var discStoreMarker;
-                                //     if (discStores.length > 0) {
-                                //         for (i = 0; i < discStores.length; i++) {
-                                //             markerClusterGroup.getLayers().forEach(function (marker) {
-                                //                 if (marker._latlng.lat === discStores[i].store_latitude && marker._latlng.lng === discStores[i].store_longtitude) {
-                                //                     marker = L.marker([discStores[i].store_latitude, discStores[i].store_longtitude], {
-                                //                         icon: manIcon,
-                                //                         name: discStores[i].store_name
-                                //                     });
-                                                   
-                                //                 }
-                                //                 console.log(discStoreMarker);
-                                //                 if(discStoreMarker){
-                                //                     markerClusterGroup.addLayer(discStoreMarker);
-                                //                 }
-                                //             })
-
-                                //         }
-                                        
-                                //     }
-                                    
-                                // }
+               
                                 success: function (results) {
                                     var discStores = results[0]; // stores
                                     console.log(discStores);
