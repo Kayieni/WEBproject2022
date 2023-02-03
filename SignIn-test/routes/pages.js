@@ -89,7 +89,7 @@ router.post('/submit_disc', (req,res) => {
 router.get('/submit_disc', (req,res) => {
   let message = req.session.message;
   req.session.message = null;
-  res.render("submit_disc", { message: message });
+  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store });
 })
 
 router.get('/statistics', (req,res) => {

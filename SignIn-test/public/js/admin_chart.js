@@ -23,17 +23,138 @@ $(document).ready(function () {
         success: function (results) {
 
             console.log(results);
+            setData(results);
 
             window.onload = function() {
+                // LOAD CHART 1
+                // to do it for the default vaule of month when loading the page
                 const defaultValue = document.getElementById("month");
                 console.log(defaultValue);
                 console.log(defaultValue.value);
-                filterData(defaultValue);
-            };
+                filterData1(defaultValue);
+                filterbyCategory();
 
-            setData(results);
+                                
+                // fix week navigation
+                // var datePicker = document.getElementById("datePicker");
+
+                // datePicker.addEventListener("change", function() {
+                //     var selectedDate = new Date(this.value);
+
+                //     // Go to the start of the week (Sunday)
+                //     var startOfWeek = new Date(selectedDate);
+                //     startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
+
+                //     // Go to the end of the week (Saturday)
+                //     var endOfWeek = new Date(startOfWeek);
+                //     endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+                //     // Log the start of the week
+                //     console.log("Start of week:", startOfWeek.toDateString());
+                //     var startWeek = startOfWeek.toDateString();
+                //     document.getElementById("startWeek").value = startWeek;
+                    
+                //     // Log the end of the week
+                //     console.log("End of week:", endOfWeek.toDateString());
+                //     var endWeek = endOfWeek.toDateString();
+                //     document.getElementById("startWeek").value = endWeek;
+                // });
+
+                // selectedWeek();
+
+            };
             
-        
+            var categories = results.cats; // contains: catID, category_name
+            var subcategories = results.subcats; // contains: catID, subID, subcategory_name 
+            var discounts = results.discs; // contains: catID, subID, subcategory_name 
+            
+            console.log("categories",categories);
+            console.log("subcategories",subcategories);
+            console.log("dsicounts",discounts);
+            
+            // append the categories in the dropdown
+            categories.forEach(function (category) {
+                $('#categories').append(
+                    `<option value="${category.catID}"> ${category.category_name} </option>`
+                );
+                // console.log(category.catID);
+                // console.log(`<option value="${category.catID}"> ${category.category_name} </option>`);
+            });
+            
+            // function to add event listeners to dropdowns of 2nd chart
+            function init() {
+                console.log("----------------");
+                // Add an event listener to the first drop-down menu
+                var selectcat = document.getElementById("categories");
+                console.log("selectcat",selectcat); //this logs the whole html select element
+                selectcat.addEventListener("change", function () {
+                    // Get the selected option value
+                    var selected_catID = this.value;
+                    var subcategory_select = document.getElementById("subcategories");
+                    // var productsList = document.getElementById("products_list");
+                    // var messageContainer = document.getElementById("message_container");
+                    if (selected_catID) {
+                        // filter the subcategories and display only the ones that belong to the selected category
+                        subcategory_select.innerHTML = "";
+                        subcategory_select.innerHTML += "<option value='' selected>Select</option>";
+                        filteredSubcategories = subcategories.filter(function (subcategory) {
+                            if (subcategory.catID == selected_catID) {
+                                subcategory_select.innerHTML += "<option value='" + subcategory.subID + "'>" + subcategory.subcategory_name + "</option>";
+                                return true;
+                            }
+                            return false;
+                        });
+                        subcategory_select.disabled = false;
+                        // productsList.innerHTML = "";
+                        // filteredProducts = [];
+                        // productsList.style.display = "none";
+                        // messageContainer.innerHTML = "";
+                        
+                    } else {
+                        subcategory_select.innerHTML = "";
+                        subcategory_select.disabled = true;
+                        // productsList.innerHTML = "";
+                        // filteredProducts = [];
+                        // productsList.style.display = "none";
+                        // messageContainer.innerHTML = "";
+                    }
+                });
+                
+                // // Add event listener to the second drop-down menu
+                // document.getElementById("subcategory_select").addEventListener("change", function () {
+                    // // $("#subcategory_select").addEventListener("change", function () {
+                        //     // Get the selected option value
+                        //     console.log("----------------");
+                        //     var selected_subID = this.value;
+                        //     var search_input = document.getElementById("search_input").value;
+                        //     var productsList = document.getElementById("products_list");
+                        //     var messageContainer = document.getElementById("message_container");
+                        //     productsList.innerHTML = "";
+                        //     // filter the products and display only the ones that match the selected subcategory and the search input
+                //     filteredProducts = products.filter(function (product) {
+                //         if (product.subID == selected_subID && product.product_name.toLowerCase().includes(search_input.toLowerCase())) {
+                //             return true;
+                //         }
+                //         return false;
+                //     });
+                //     if (filteredProducts.length > 0) {
+                //         productsList.style.display = "block";
+                //         messageContainer.innerHTML = "";
+                //         displayProducts();
+                //     } else {
+                //         productsList.style.display = "none";
+                //         messageContainer.innerHTML = "No products found";
+                //     }
+                // });
+
+
+
+
+            }
+
+            // call the function of dropdowns initiation
+            init();
+    
         },
 
         // to stop the animation of loading
@@ -49,45 +170,29 @@ $(document).ready(function () {
 
 })
 
+// ================================================================
+// ================================================================
+// create chart 1
 
-
+// length of each month in days
 var monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+// initiate the first 28 days bc its standard for each month
 const days = [];
 for(let i=0; i<28; i++) {
     days.push(i+1);
 };
-
 console.log(days);
 
-// set the final results
+// initiate set of the final results for chart 1
 const datapoints = [];
 
-// setup
+// setup data of chart 1
 const data = {
     labels: days,
     datasets: [{
         label: 'Amount of Daily Discounts',
         data: datapoints,
-        //data: [18, 12, 6, 9, 12, 3, 9],
-        // backgroundColor: [
-        //     'rgba(255,26,104,0.2)',
-        //     'rgba(54,162,235,0.2)',
-        //     'rgba(255,206,86,0.2)',
-        //     'rgba(75,192,192,0.2)',
-        //     'rgba(153,105,255,0.2)',
-        //     'rgba(255,159,64,0.2)',
-        //     'rgba(0,0,0,0.2)'
-        // ],
-        // borderColor: [
-        //     'rgba(255,26,104,1)',
-        //     'rgba(54,162,235,1)',
-        //     'rgba(255,206,86,1)',
-        //     'rgba(75,192,192,1)',
-        //     'rgba(153,105,255,1)',
-        //     'rgba(255,159,64,1)',
-        //     'rgba(0,0,0,1)'
-        // ],
         borderWidth: 1,
         datalabels: {
             color: 'white',
@@ -104,10 +209,10 @@ const data = {
     }]
 };
 
-// config 
+// configuration of chart 1
 const config = {
     type: 'bar',
-    data,
+    data: data,
     plugins: [ChartDataLabels],
      
     options: {
@@ -162,14 +267,14 @@ const config = {
     }
 };
 
-// render init block
+// render init block for chart 1
 const myChart = new Chart(
     document.getElementById('myChart'),
     config
 );
 
 // to filter the data based on month and year selection
-function filterData(monthinput) {
+function filterData1(monthinput) {
     // manage the labels based on month
     var days2 = [...days];
     var monthdays = [];
@@ -206,15 +311,17 @@ function filterData(monthinput) {
 
     // add data from get request
     var fetched = getData();
+    var discs = fetched.discs;
     console.log("fetched : ",fetched);
+    console.log("discs : ",discs);
 
     var year;
     var month;
     var date;
 
     // store the fetched data in local storage history
-    for (let i = 0; i < fetched.length; i++) {
-        const entry_date = fetched[i].entry_date;
+    for (let i = 0; i < discs.length; i++) {
+        const entry_date = discs[i].entry_date;
         const entryDate = new Date(entry_date);
         year=entryDate.getFullYear();
         month=entryDate.getMonth()+1;
@@ -240,36 +347,67 @@ function isLeapYear(year) {
     return (year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0);
 }
 
+// end chart 1
+// =============================================================
+// =============================================================
 
-var ctx = document.getElementById("chart-bars").getContext("2d");
 
-new Chart(ctx, {
-    type: "bar",
-    data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
-        datasets: [{
-            label: "Sales",
-            tension: 0.4,
-            borderWidth: 0,
-            borderRadius: 4,
-            borderSkipped: false,
-            backgroundColor: "rgba(255, 255, 255, .8)", 
-            data: [50, 20, 10, 22, 50, 10, 40], // the values of the graph
-            maxBarThickness: 6
-        },],
-    },
+// =============================================================
+// =============================================================
+// start chart 2
+
+// initiate the labels and the data for chart 2
+var weekdays = ["M", "T", "W", "T", "F", "S", "S"];
+var weeklydata = [2,12,0,62,5.5,5,12];
+
+
+
+
+
+
+
+// var ctx = document.getElementById("myChart-2").getContext("2d");
+
+
+
+
+// if selected category and NO subcategory, display average discount of all discounts in selected category
+
+// if selected category and subcategory, display average discount of all discounts in selection
+
+// first view = current week
+// navigate between weeks
+
+// calculate average discount 
+
+const data2 = {
+    labels: weekdays,
+    datasets: [{
+        label: 'Amount of Daily Discounts',
+        data: weeklydata,
+        borderWidth: 1,
+        datalabels: {
+            color: 'white',
+            anchor: 'end',
+            align: 'top'
+        },
+        maxBarThickness: 10,
+        tension: 0.4,
+        borderWidth: 0,
+        borderRadius: 4,
+        borderSkipped: false,
+        backgroundColor: "rgba(255, 255, 255, .8)"
+
+    }]
+};
+
+// config chart 2
+const config2 = {
+    type: 'bar',
+    data: data2,
+    plugins: [ChartDataLabels],
+     
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false,
-            }
-        },
-        interaction: {
-            intersect: false,
-            mode: 'index',
-        },
         scales: {
             y: {
                 grid: {
@@ -317,9 +455,104 @@ new Chart(ctx, {
                     },
                 }
             },
-        },
-    },
-});
+        }
+    }
+};
+// console.log(config2);
+
+// render init block
+const myChart2 = new Chart(
+    document.getElementById('myChart-2'),
+    config2
+);
+
+// create function that is called after changing the value of categoties/subcategories
+function filterbyCategory() {
+    var selected_cat = document.getElementById("categories").value;
+    var selected_subcat = document.getElementById("subcategories").value;
+
+    // call the discount
+    averageDiscount(selected_cat,selected_subcat);
+}
+  
+
+function averageDiscount(cat,subcat) {
+    console.log("Selected category: ", cat);
+    console.log("Selected subcategory: ", subcat);
+    
+    // add data from get request
+    var fetched = getData();
+    var discs = fetched.discs;
+    console.log("fetched2 : ",fetched);
+    console.log("discs2 : ",discs);
+
+    // filter the data and take only the discounts of this subcategory
+    const discsofSubcat = discs.filter(item =>item.subID === subcat);
+    console.log("=====by sub : ",discsofSubcat); 
+
+    // ypologismos diaforwn 
+    var difference = [];
+    // estw mesi timi proigoumenis vdomasas == original price
+    for (let i = 0; i < discsofSubcat.length; i++) {
+        difference[i] = discsofSubcat[i].original_price - discsofSubcat[i].disc_price;        
+    }
+
+    //ypologismos mesis timis
+    var sum=0;
+    for (let i = 0; i < difference.length; i++) {
+        sum += difference[i];
+    }
+    var mesi_timi = Math.round((sum/difference.length)*100);
+
+    var mesi_ekptosi = [];
+    for (let i = 0; i < 7; i++) {
+        mesi_ekptosi[i] = mesi_timi;
+    }
+
+    //replace the data in the chart
+    myChart2.config.data.datasets[0].data = mesi_ekptosi;
+    myChart2.config.data.labels = weekdays;
+    // load the updates to the canva of the chart
+    myChart2.update();
+}
+
+
+
+// function selectedWeek() {
+//     const weekdays2 = [...weekdays];
+//     const startweek = document.getElementById('startWeek');
+//     console.log(startweek.value);
+//     const date = new Date(startweek.value);
+//     console.log(date);
+
+//     // const endweek = document.getElementById('endWeek');
+//     var filterWeek = [];
+//     for (let i = 0; i < 7; i++) {
+//         // const element = array[i];
+//         // filterWeek.push(startweek + i);
+//         let nextDay = new Date(date);
+//         nextDay.setDate(nextDay.getDate() + i);
+//         filterWeek.push(nextDay.toDateString().slice(0, 10));
+//     }
+//     console.log("im inside select week");
+//     console.log("filterweek", filterWeek);
+//     myChart2.config2.data.labels = filterWeek;
+//     myChart2.update();
+
+    
+// }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // var ctx2 = document.getElementById("chart-line").getContext("2d");
 
@@ -403,6 +636,10 @@ new Chart(ctx, {
 //         },
 //     },
 // });
+
+
+
+
 
 // var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
 
