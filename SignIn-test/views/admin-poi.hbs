@@ -22,6 +22,12 @@
 
     <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
 
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+
 
 </head>
 
@@ -141,6 +147,9 @@
         <div class="container-drag">
             {{!-- header of drag and drop --}}
             <div class="header-section">
+                {{#if message}}
+                    <h4 class="alert alert-success mt-4">{{message}}</h4> 
+                {{/if}}
                 <h1>Upload New Store Data</h1>
                 <p>Upload files for the local stores available in your area, in .json or .xml format.</p>
                 <p>JSON and XML files are allowed.</p>
@@ -155,8 +164,9 @@
                     <span>OR</span>
                     <button class="file-selector">Browse Files</button>
                     <form enctype="multipart/form-data" action="/auth/update_pois" method="POST">
-                        <input type="file" name="file" id="" class="file-selector-input" multiple>
-                        <button class="btn btn-success" type="submit">Submit POIs</button>
+                        <input type="file" name="file" id="" class="file-selector-input" multiple>    
+                        <div class="list-submit">
+                        </div>
                     </form>
                 </div>
                 <div class="col">
@@ -169,11 +179,9 @@
                 <div class="list">
                 </div>
             </div>
-
-            <form action="/auth/delete_pois" method="POST">
-                <input type="hidden" name="delete" id="" class="delete">
-                <button class="btn btn-danger" type="submit">Delete All POIs</button>
-            </form>
+            <button class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#deleteModal">
+                <i class="large material-icons opacity-10 navbar-brand-img h-100">delete_forever</i>Delete All Data
+            </button>
 
         </div>
 
@@ -224,6 +232,36 @@
         <a href="#upper" aria-current="page" class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-icons py-2">arrow_upward</i>
         </a>
+    </div>
+
+        <!-- Modal -->
+    <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="exampleModalLabel">Delete All Data</h5>
+                    <button type="button" class="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2 class="h2">Are you sure you want to delete <span class="text-danger">ALL DATA</span> ?</h2>
+                    <h5 class="h5">After that there is not way back, and you will need to
+                    upload a file with new data in order for the application to work properly.</h5> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <form action="/auth/delete_pois" method="POST">
+                        <input type="hidden" name="delete" id="" class="delete">
+                        <button class="btn btn-danger" type="submit"data-toggle="modal" data-target="#deleteModal">
+                            <i class="large material-icons opacity-10 navbar-brand-img h-100">delete_forever</i>
+                            Delete All POIs</button>
+                    </form>
+                    {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/core/popper.min.js"></script>

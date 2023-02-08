@@ -142,7 +142,7 @@ exports.login = (req, res) => {
     //start questing into the database
 
     // check if its a user
-    db.query('SELECT password FROM users WHERE username = ?', [logname], async (error, results) => {
+    db.query('SELECT password FROM users WHERE BINARY username = ?', [logname], async (error, results) => {
         //error handling
         //----------------------------------------------------------------------
         //!!! prepei na kanw to username case sensitive, diladi to Emma =/= emma
@@ -230,7 +230,7 @@ exports.updatename = (req, res) => {
             console.log(req.session);
             req.session.successMessage = 'That username is already taken';
             req.session.inputData = req.body;
-            return res.redirect("/profile/edit");
+            return res.redirect("/edit");
         }
 
         //check if the old password is correct
@@ -255,13 +255,21 @@ exports.updatename = (req, res) => {
                             console.log(req.session);
                             req.session.successMessage = 'You changed your account details successfully';
                             req.session.inputData = null;
-                            return res.redirect("/profile/edit");
+                            db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    req.session.user_data = results;
+                                    console.log(req.session);    
+                                    return res.redirect("/profile");
+                                }
+                            });
                         }
                     });
                 } else {
                     console.log(req.session);
                     req.session.successMessage = 'Your current password in incorrect, please try again.';
-                    return res.redirect("/profile");
+                    return res.redirect("/edit");
                 }
             })
         });
@@ -291,11 +299,11 @@ exports.updatepass = (req, res) => {
                 if (oldpassword == newpassword) {
                     console.log(req.session);
                     req.session.successMessage = 'You cannot use the same password';
-                    return res.redirect("/profile/edit");
+                    return res.redirect("/edit");
                 } else if (strength < 4) {
                     console.log(req.session);
                     req.session.successMessage = 'The new password is not strong enough';
-                    return res.redirect("/profile/edit");
+                    return res.redirect("/edit");
                 } else {
                     // successfull update
                     let hashedPassword = await bcrypt.hash(newpassword, 8); //await bc this process of encrypting passwords could take a few seconds more. The default of 8 rounds of hashing should be an ok encryption
@@ -310,7 +318,15 @@ exports.updatepass = (req, res) => {
                             console.log(req.session);
                             req.session.successMessage = 'You changed your account details successfully';
                             req.session.inputData = null;
-                            return res.redirect("/profile");
+                            db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    req.session.user_data = results;
+                                    console.log(req.session);    
+                                    return res.redirect("/profile");
+                                }
+                            });
                         }
                     });
                 }
@@ -339,7 +355,7 @@ exports.review = (req, res) => {
     let current_date = new Date().toJSON();
     console.log("current_date", current_date);
     var month_score;
-    db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? ', [counter], async (error, results) => {
+    db.query('SELECT interaction.counter, userID, price FROM interaction WHERE interaction.counter = ? AND interaction.userID = ?', [counter, req.session.user_data[0].userID], async (error, results) => {
         if (error) {
             console.log(error); //so i know what is the error and i an fix it
         } else if (results.length < 1) {
@@ -350,7 +366,13 @@ exports.review = (req, res) => {
                     console.log(error);
                 } else {
                     console.log('Interaction inserted to db');
-
+                    db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            req.session.user_data = results;
+                        }
+                    });
                 }
             });
             db.query('SELECT month_score FROM users WHERE userID = ?', [entry_by], async (error, results) => {
@@ -371,7 +393,14 @@ exports.review = (req, res) => {
                             console.log(error);
                         } else {
                             console.log('Users score updated');
-                            res.redirect("/reviews");
+                            db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    req.session.user_data = results;
+                                    res.redirect("/reviews");
+                                }
+                            });
                         }
                     });
                 }
@@ -388,7 +417,14 @@ exports.review = (req, res) => {
     // monthly_score -1 if disklike
 
     // if i do like, it has to disable both like and dislike 
-
+    // db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
+    //         req.session.user_data = results;
+    //     }
+    // });
+    console.log(req.session);
 }
 
 
@@ -403,7 +439,15 @@ exports.stock = (req, res) => {
                 console.log(error);
             } else {
                 console.log('Stock set to 0');
-                res.redirect("/reviews");
+                db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        req.session.user_data = results;
+                        console.log(req.session);
+                        res.redirect("/reviews");
+                    }
+                });
             }
         });
     } else if (stock === 0) {
@@ -413,7 +457,15 @@ exports.stock = (req, res) => {
                 console.log(error);
             } else {
                 console.log('Stock set to 1');
-                res.redirect("/reviews");
+                db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        req.session.user_data = results;
+                        console.log(req.session);
+                        res.redirect("/reviews");
+                    }
+                });
             }
         });
     }
@@ -610,6 +662,13 @@ exports.save_discount = (req, res) => {
                                                 console.log(error);
                                             } else {
                                                 console.log('Users score updated');
+                                                db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                                                    if (error) {
+                                                        console.log(error);
+                                                    } else {
+                                                        req.session.user_data = results;
+                                                    }
+                                                });
                                             }
                                         });
                                     });
@@ -618,8 +677,7 @@ exports.save_discount = (req, res) => {
                             });
                         }
                         req.session.message2 = "Congratulations! Your discount has submitted successfully.";
-                        // console.log(points);
-                        // req.session.points = points;
+                        console.log(req.session);
                         res.redirect("/submit_disc");
                     });
                 }
@@ -663,6 +721,13 @@ exports.save_discount = (req, res) => {
                                                     console.log(error);
                                                 } else {
                                                     console.log('Users score updated');
+                                                    db.query('SELECT * FROM users WHERE userID = ?', [req.session.user_data[0].userID], async (error, results) => {
+                                                        if (error) {
+                                                            console.log(error);
+                                                        } else {
+                                                            req.session.user_data = results;
+                                                        }
+                                                    });
                                                     //res.redirect("/reviews");
                                                 }
                                             });
@@ -674,7 +739,7 @@ exports.save_discount = (req, res) => {
                             });
                         }
                         req.session.message2 = "Congratulations! Your discount has submitted successfully.";
-                        // console.log(points);
+                        console.log(req.session);
                         // req.session.points = points;
                         res.redirect("/submit_disc");
                     }
@@ -694,7 +759,7 @@ exports.save_discount = (req, res) => {
 }
 
 
-
+// for admin
 exports.update_products = (req, res, next) => {
     var myObjArr = JSON.parse(req.file.buffer.toString());
     const myObjArray = myObjArr.products;
@@ -702,7 +767,7 @@ exports.update_products = (req, res, next) => {
     console.log("parsed json");
     db.query('SELECT COUNT(*) as count FROM product', (err, result) => {
         if (err) {
-            console.log("error: i dont know is the product table is empty or not");
+            console.log("error: i dont know if the product table is empty or not");
             return console.log(err);
         }
         if (result[0].count === 0) {
@@ -762,13 +827,16 @@ exports.update_products = (req, res, next) => {
                     }
                 });
             }
-            res.send('Data updated successfully!');
+            console.log('Data updated successfully!');
+            req.session.message = "Product Data updated successfully! ";
+            res.redirect('/admin-products');
         }
     });
 
 
 }
 
+// for admin
 exports.delete_products = (req, res) => {
 
     db.query('DELETE FROM product', (err, result) => {
@@ -782,6 +850,7 @@ exports.delete_products = (req, res) => {
     });
 }
 
+// for admin
 exports.update_pois = (req, res, next) => {
     var myObjStr = JSON.parse(req.file.buffer.toString());
     const myObjStores = myObjStr[2].data;
@@ -807,7 +876,10 @@ exports.update_pois = (req, res, next) => {
             return;
         }
         console.log("good");
-        res.send('Data uploaded successfully!');
+        // res.send('Data uploaded successfully!');
+        console.log('Data updated successfully!');
+        req.session.message = "POI Data updated successfully! ";
+        res.redirect('/admin-poi');
     });
 
 
@@ -831,7 +903,7 @@ exports.update_pois = (req, res, next) => {
     //     });
 }
 
-
+// for admin
 exports.delete_pois = (req, res) => {
     db.query('DELETE FROM stores', (err, result) => {
         if (err) {
@@ -844,7 +916,7 @@ exports.delete_pois = (req, res) => {
     });
 }
 
-
+// for admin
 exports.delete_discount = (req, res) => {
     const id_disc = parseInt(req.body.id_disc);
     db.query('DELETE FROM discount WHERE discount.id_disc = ?',[id_disc], (err, result) => {

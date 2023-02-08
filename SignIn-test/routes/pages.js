@@ -121,11 +121,16 @@ router.get('/leaderboard', (req,res) => {
 })
 
 router.get('/admin-products', (req,res) => {
+    var message = req.session.message;
+    req.session.message = null; 
+    res.render('admin-poi', {message: message});
     res.render('admin-products');
 })
 
 router.get('/admin-poi', (req,res) => {
-    res.render('admin-poi');
+    var message = req.session.message;
+    req.session.message = null; 
+    res.render('admin-poi', {message: message});
 })
 
 router.get('/edit', (req,res) => {
@@ -149,17 +154,22 @@ router.get('/discounts', (req, res) => {
       if (error) {
         res.status(500).send(error);
 
-      } 
-      // this has to change w hen we fix admin
-      else if (req.session.role=='admin') {
-      res.json([results, req.session.role, req.session.storeclicked]);
-      }else {
-        // console.log(results[0].counter);
-        res.json([results, req.session.user_data[0], req.session.storeclicked]);
-        // res.json(results);
+      } else {
+        db.query('SELECT interaction.*, discount.id_disc, product.counter FROM interaction INNER JOIN discount ON discount.counter = interaction.counter INNER JOIN product ON product.counter=discount.counter WHERE storeID = ?', [req.session.storeclicked.store.storeID], (err, rest) => {
+          if (err) {
+            res.status(500).send(err);
+            
+          }else if (req.session.role=='admin') {
+          // this has to change w hen we fix admin
+          res.json([results, req.session.role, req.session.storeclicked]);
+          }else {
+            // console.log(results[0].counter);
+            res.json([results, req.session.user_data[0], req.session.storeclicked, rest]);
+            // res.json(results);
+          }
+        });
       }
     });
-
 })
 
 // Create route to retrieve products and discounts of a store selected from database
@@ -243,7 +253,7 @@ router.get('/disc_stores', (req, res) => {
 
 })
 
-// Create route to retrieve interactions of user from database
+// Create route to retrieve interactions and submissions of user from database
 router.get('/user_history', (req, res) => {
     // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
     db.query('SELECT * FROM interaction INNER JOIN product ON product.counter = interaction.counter WHERE userID = ? ORDER BY interaction.timestamp DESC', [req.session.user_data[0].userID], (error, results) => {

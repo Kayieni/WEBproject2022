@@ -9,9 +9,17 @@ $(document).ready(function () {
             },
 
             success: function (data) {
-                // var role = data[1];
+                console.log("discounts", data[0]);
+                console.log("user logged", data[1]);
+                console.log("store clicked", data[2]);
+                console.log("interactions total", data[3]);
+                // retrieve user interactions
+                var interactions = data[3];
+
+                // contains the users history of interactions in order to disable the button if already interacted
+                console.log("interactions",interactions);
+
                 // clear the data container
-                var interacted = data[3];
                 $('#discounts-list').empty();
                 // console.log(data[2].store.storeID);
                 // filter the data and take only the ones with discounts in the store
@@ -25,6 +33,9 @@ $(document).ready(function () {
                     let date = new Date(timestamp);
                     let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
                     let dateString = date.toLocaleDateString('en-US', options);
+                    let total_likes = 0;
+                    let total_dislikes = 0; 
+                    // let interacted = 0;
 
                     $('.last-date').append(`<b>${dateString}</b>`);
                     $('.show-discounts-btn').append(`${filteredDiscs.length} Active Discounts`);
@@ -35,8 +46,8 @@ $(document).ready(function () {
                                 stock = 'Out of Stock'
                                 restock = 'Back in stock'
                                 txtstyle = 'danger' 
-                                likebtn = 'outine-dark disabled'
-                                dislikebtn = 'outine-dark disabled'
+                                likebtn = 'outline-dark disabled'
+                                dislikebtn = 'outline-dark disabled'
                             } else {
                                 stock = 'In Stock'
                                 restock = 'Run out of stock'
@@ -45,10 +56,28 @@ $(document).ready(function () {
                                 dislikebtn = 'danger'
                             }
 
-                            if(interacted==filteredDiscs[i].counter) {                         
-                                likebtn = 'outine-dark disabled'
-                                dislikebtn = 'outine-dark disabled'
+                            // to not let someone like the same discount by disabling the button
+                            for (let j = 0; j < interactions.length; j++) {
+                                if(interactions[j].counter === filteredDiscs[i].counter) {
+                                    if (interactions[j].userID === data[1].userID){
+                                        if(interactions[j].interaction==1){
+                                            likebtn = 'outline-success disabled'
+                                            dislikebtn = 'outine-dark disabled'   
+                                        } else if (interactions[j].interaction==0) {
+                                            likebtn = 'outine-dark disabled'
+                                            dislikebtn = 'outline-danger disabled' 
+                                        }
+                                    }
+
+                                    if(interactions[j].interaction==1){
+                                        total_likes++;
+                                    } else if (interactions[j].interaction==0) {
+                                        total_dislikes++;
+                                    }
+                                } 
+                                
                             }
+
 
                             let timestamp = Date.parse(filteredDiscs[i].entry_date);
                             let date = new Date(timestamp);
@@ -70,8 +99,8 @@ $(document).ready(function () {
                                             <hr class="hr horizontal dark">
                                         </div>
                                         <div class="d-flex flex-row">
-                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span id="NumOfLikes">0</span></div>
-                                            <div class="text-danger mr-2"><i class="large p-2 material-icons opacity-10">thumb_down</i><span>310</span></div>
+                                            <div class="text-success mr-2"><i class="large p-2 material-icons opacity-10">thumb_up</i><span id="NumOfLikes">${total_likes}</span></div>
+                                            <div class="text-danger mr-2"><i class="large p-2 material-icons opacity-10">thumb_down</i><span>${total_dislikes}</span></div>
                                         </div>
                                         <div class="mt-1 mb-1 figure-caption">
                                             <span class="dot"></span>
@@ -131,22 +160,6 @@ $(document).ready(function () {
                             );
                         
                         }
-                        //new
-                        // let count = 0;
-                        // document.querySelector('.likebtn').addEventListener('click', function() {
-                        //     count++;
-                        //     console.log('Number of likes = ',count);
-                        //     document.getElementById('NumOfLikes').innerHTML = count;
-                        // });
-
-                    // });
-                            // var count = 0;
-                            // var btnlike = document.getElementById("btnlike");
-                            // var displikes = document.getElementById("NumOfLikes"); 
-                            // btnlike.onclick = function () {
-                            // count++;
-                            // displikes.innerHTML = count;
-                            // }
 
 
                 } else {
@@ -168,5 +181,7 @@ $(document).ready(function () {
                 console.log(error);
             }
         });
+
+
 
 });

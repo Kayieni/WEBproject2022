@@ -1,18 +1,23 @@
 const dropArea = document.querySelector('.drop-section')
 const listSection = document.querySelector('.list-section')
 const listContainer = document.querySelector('.list')
+const listSubmitButton = document.querySelector('.list-submit')
 const fileSelector = document.querySelector('.file-selector')
 const fileSelectorInput = document.querySelector('.file-selector-input')
+const SubmitFile = document.querySelector('.submit-file')
+
 
 // upload files with browse button
 fileSelector.onclick = () => fileSelectorInput.click()
 fileSelectorInput.onchange = () => {
     [...fileSelectorInput.files].forEach((file) => {
         if (typeValidation(file.type)) {
-            uploadFile(file)
+            appendSelectedFile(file)
         }
     })
 }
+
+
 
 // check the file type
 function typeValidation(type) {
@@ -46,27 +51,70 @@ dropArea.ondrop = (e) => {
             if (item.kind === 'file') {
                 const file = item.getAsFile();
                 if (typeValidation(file.type)) {
-                    uploadFile(file)
+                    appendSelectedFile(file)
                 }
             }
         })
     } else {
         [...e.dataTransfer.files].forEach((file) => {
             if (typeValidation(file.type)) {
-                uploadFile(file)
+                appendSelectedFile(file)
             }
         })
     }
 }
 
 // upload file function
-function uploadFile(file) {
+// function uploadFile(file) {
+//     listSection.style.display = 'block'
+//     var li = document.createElement('li')
+//     li.classList.add('in-prog')
+//     li.innerHTML = `
+//         <div class="col">
+//             <img src="images/logos/${iconSelector(file.type)}" alt="file-type-image">
+//         </div>
+//         <div class="col">
+//             <div class="file-name">
+//                 <div class="name">${file.name}</div>
+//                 <span>0%</span>
+//             </div>
+//             <div class="file-progress">
+//                 <span></span>
+//             </div>
+//             <div class="file-size">${(file.size / (1024 * 1024)).toFixed(2)} MB</div>
+//         </div>
+//         <div class="col">
+//             <svg xmlns="http://www.w3.org/2000/svg" class="cross" height="20" width="20"><path d="m5.979 14.917-.854-.896 4-4.021-4-4.062.854-.896 4.042 4.062 4-4.062.854.896-4 4.062 4 4.021-.854.896-4-4.063Z"/></svg>
+//             <svg xmlns="http://www.w3.org/2000/svg" class="tick" height="20" width="20"><path d="m8.229 14.438-3.896-3.917 1.438-1.438 2.458 2.459 6-6L15.667 7Z"/></svg>
+//         </div>
+//     `
+//     listContainer.prepend(li)
+//     var http = new XMLHttpRequest()
+//     var data = new FormData()
+//     data.append('file', file)
+//     http.onload = () => {
+//         li.classList.add('complete')
+//         li.classList.remove('in-prog')
+//     }
+//     http.upload.onprogress = (e) => {
+//         var percent_complete = (e.loaded / e.total) * 100
+//         li.querySelectorAll('span')[0].innerHTML = Math.round(percent_complete) + '%'
+//         li.querySelectorAll('span')[1].style.width = percent_complete + '%'
+//     }
+//     // http.open('POST', '/auth/update_pois', true)
+//     // http.send(data)
+//     li.querySelector('.cross').onclick = () => http.abort()
+//     http.onabort = () => li.remove()
+// }
+
+// Append selected file function
+function appendSelectedFile(file) {
     listSection.style.display = 'block'
     var li = document.createElement('li')
     li.classList.add('in-prog')
     li.innerHTML = `
         <div class="col">
-            <img src="images/logos/${iconSelector(file.type)}" alt="">
+            <img src="images/logos/${iconSelector(file.type)}" alt="file-type-image">
         </div>
         <div class="col">
             <div class="file-name">
@@ -82,11 +130,25 @@ function uploadFile(file) {
             <svg xmlns="http://www.w3.org/2000/svg" class="cross" height="20" width="20"><path d="m5.979 14.917-.854-.896 4-4.021-4-4.062.854-.896 4.042 4.062 4-4.062.854.896-4 4.062 4 4.021-.854.896-4-4.063Z"/></svg>
             <svg xmlns="http://www.w3.org/2000/svg" class="tick" height="20" width="20"><path d="m8.229 14.438-3.896-3.917 1.438-1.438 2.458 2.459 6-6L15.667 7Z"/></svg>
         </div>
+        
     `
     listContainer.prepend(li)
+    listSubmitButton.innerHTML =
+    `<button class="submit-file btn btn-success" onclick="uploadFile(file,li)" type="submit">Submit POIs</button>`
+
+    li.querySelector('.cross').onclick = () => {
+        listSubmitButton.remove(); 
+        li.remove();
+    }
+
+    return li;
+}
+
+// Upload file function
+function uploadFile(file, li) {
     var http = new XMLHttpRequest()
-    var data = new FormData()
-    data.append('file', file)
+    // var data = new FormData()
+    // data.append('file', file)
     http.onload = () => {
         li.classList.add('complete')
         li.classList.remove('in-prog')
@@ -96,11 +158,13 @@ function uploadFile(file) {
         li.querySelectorAll('span')[0].innerHTML = Math.round(percent_complete) + '%'
         li.querySelectorAll('span')[1].style.width = percent_complete + '%'
     }
-    // http.open('POST', '/auth/update_products', true)
+    // http.open('POST', '/auth/update_pois', true)
     // http.send(data)
-    li.querySelector('.cross').onclick = () => http.abort()
-    http.onabort = () => li.remove()
+    // li.querySelector('.cross').onclick = () => http.abort()
+    // http.onabort = () => li.remove()
 }
+
+
 // find icon for file
 function iconSelector(type) {
     // var splitType = (type.split('/')[0] == 'application') ? type.split('/')[1] : type.split('/')[0];

@@ -116,7 +116,7 @@
  </nav>
 
 <!-- showcase -->
- <section class="bg-gradient-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
+ <section id="upper" class="bg-gradient-dark text-light p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
 	<div class="container col-9">
 		<div class="d-sm-flex align-items-center justify-content-between">
 			<div class="row">
@@ -127,9 +127,9 @@
 						{{/if}}<p class="lead my-4">
 							Search for a discount or submit a new one and win tokens everyday!
 						</p>
-						<a href="/reviews" role="button" class="btn btn-primary btn-lg" {{!-- data-bs-toggle="modal" --}}
+						<a href="/profile" role="button" class="btn btn-primary btn-lg" {{!-- data-bs-toggle="modal" --}}
 							data-bs-target="#enroll">
-							Review a Discount here</a>
+							Check your Profile here!</a>
 					</div>
 				</div>
 				<div class="row">
@@ -219,6 +219,7 @@
 	</div>
  </section> --}}
 
+{{!-- everyday representation of us section --}}
  <section id="learn" class="p-5 bg-gradient-dark text-light">
 	<div class="container">
 	 <div class="row align-items-center justify-content-between">
@@ -401,14 +402,15 @@
 <!-- footer -->
  <footer class="p-5 bg-gradient-dark text-white text-center position-relative">
 	<div class="container">
-	 <p class="lead">Copyright &copy; 2023 WEBx3F </p>
-	 <a href="" class="position-absolute bottom-0 end-0 p-5">
+	 <p class="lead">Copyright &copy; January 2023 | WEBx3F </p>
+	 <a href="#upper" class="position-absolute bottom-0 end-0 p-5">
 		<i class="bi bi-arrow-up-circle h1"></i>
 	 </a>
 	</div>
  </footer>
+
 <!-- Modal -->
- <div class="modal fade" id="enroll" tabindex="-1" aria-labelledby="enrollLabel" aria-hidden="true">
+ {{!-- <div class="modal fade" id="enroll" tabindex="-1" aria-labelledby="enrollLabel" aria-hidden="true">
 	<div class="modal-dialog">
 	 <div class="modal-content">
 		<div class="modal-header">
@@ -442,7 +444,7 @@
 		</div>
 	 </div>
 	</div>
- </div>
+ </div> --}}
 
 
  <!-- JavaScript Bundle -->
