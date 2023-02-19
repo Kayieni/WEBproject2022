@@ -153,7 +153,7 @@ const db = mysql.createConnection({
 // Create route to retrieve discounts to appear on the stores from database
 router.get('/discounts', (req, res) => {
   //all the discounts of the selected store after submit button
-    db.query('SELECT discount.*, users.*, product.* FROM discount INNER JOIN users ON discount.entry_by = users.userID INNER JOIN product ON product.counter=discount.counter WHERE storeID = ? AND discount.entry_date = (SELECT MAX(entry_date) FROM discount WHERE discount.counter = product.counter) GROUP BY discount.counter ORDER BY discount.entry_date DESC', [req.session.storeclicked.store.storeID], (error, results) => {
+    db.query('SELECT discount.*, users.*, product.* FROM discount INNER JOIN users ON discount.entry_by = users.userID INNER JOIN product ON product.counter=discount.counter WHERE storeID = ? AND discount.entry_date = (SELECT MAX(entry_date) FROM discount WHERE discount.counter = product.counter)  AND discount.entry_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) GROUP BY discount.counter ORDER BY discount.entry_date DESC', [req.session.storeclicked.store.storeID], (error, results) => {
       if (error) {
         res.status(500).send(error);
 
