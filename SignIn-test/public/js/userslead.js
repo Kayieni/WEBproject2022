@@ -157,6 +157,10 @@ $(document).ready(function () {
 
                               
                 }
+            }else {
+                $('.leaderboard').append(
+                    `<tr><td colspan="5"><h4 class=" text-center alert alert-danger mt-4">No Users with Score Yet.</h4></td></tr>`
+                )
             }
         },
         // to stop the animation of loading

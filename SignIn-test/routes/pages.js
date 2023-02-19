@@ -123,8 +123,7 @@ router.get('/leaderboard', (req,res) => {
 router.get('/admin-products', (req,res) => {
     var message = req.session.message;
     req.session.message = null; 
-    res.render('admin-poi', {message: message});
-    res.render('admin-products');
+    res.render('admin-products', {message: message});
 })
 
 router.get('/admin-poi', (req,res) => {

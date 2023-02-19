@@ -486,32 +486,106 @@ function averageDiscount(cat,subcat) {
     console.log("fetched2 : ",fetched);
     console.log("discs2 : ",discs);
 
+
+    // Get the start and end dates for the current week (Monday to Sunday)
+    const now = new Date();
+    const daysSinceMonday = now.getDay() - 1;
+    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
+    const endOfWeek = new Date(now.getFullYear(), now.getMonth(), startOfWeek.getDate() + 6);
+
+    console.log("now:",now);
+    console.log("startOfWeek:", startOfWeek);
+    console.log("endOfWeek:",endOfWeek);
+
+    // identify category of product
+    function catofProduct(product) {
+        console.log("--- product: ", product);
+        console.log("--- product subid: ", product.subID);
+        console.log("--- fetched sub: ", fetched.subcats);
+        for (let i = 0; i < fetched.subcats.length; i++) {
+            if (product.subID == fetched.subcats[i].subID) {
+                console.log("cat of product: ",fetched.subcats[i].catID);
+                return fetched.subcats[i].catID;
+                break;
+            }
+        }
+    }
+
+    // if selected only category
+    // ... 
+
+    // filter all the products of this category or subcategory
+    // const productsByCat = discs.filter(product => product.catID === cat);
+    const selectedProducts = discs.filter(product => product.subID === subcat || catofProduct(product) === cat);
+    console.log("--productsByCat", selectedProducts);
+
+    // select only products of the current week
+    const filteredProducts = selectedProducts.filter(product => {
+        const entryDate = new Date(product.entryDate);
+        return entryDate >= startOfWeek && entryDate <= endOfWeek;
+    });
+
+    // first group the selected products by entry date using the reduce method 
+    //to create an object where each key represents an entry date, 
+    //and each value is an array of products that were entered on that day
+    const groupedByEntryDate = filteredProducts.reduce((result,product)=> {
+        // extract the date from the entryDate property by splitting the string at the 'T' character and taking the first part
+        const entryDate = product.entry_date.split('T')[0];
+        if(!result[entryDate]){
+            result[entryDate] = [];
+        }
+        result[entryDate].push(product);
+        console.log("-------------- wtf: ",result)
+        return result;
+    }, {});
+
+    // calculate the average price for each entry date by iterating over the grouped products and summing up the prices for each date, and dividing by the number of products for that date
+    const averagePricesByEntryDate = {};
+    for (const entryDate in groupedByEntryDate) {
+        averagePricesByEntryDate[entryDate] = groupedByEntryDate[entryDate].reduce((total,product) => total + product.original_price, 0) / groupedByEntryDate[entryDate].length;    
+    }
+
+    // calculate the average discount for each entry date by iterating over the grouped products, calculating the discount for each product, and then finding the average discount for all the products for that date
+    const averageDiscountByEntryDate = {};
+    for (const entryDate in groupedByEntryDate) {
+        const discounts = groupedByEntryDate[entryDate].map(product => (averagePricesByEntryDate[entryDate] - product.disc_price) / averagePricesByEntryDate[entryDate]);
+        averageDiscountByEntryDate[entryDate] = discounts.reduce((total, discount) => total + discount, 0) / discounts.length;
+    }
+
     // filter the data and take only the discounts of this subcategory
     const discsofSubcat = discs.filter(item =>item.subID === subcat);
     console.log("=====by sub : ",discsofSubcat); 
 
-    // ypologismos diaforwn 
-    var difference = [];
-    // estw mesi timi proigoumenis vdomasas == original price
-    for (let i = 0; i < discsofSubcat.length; i++) {
-        difference[i] = discsofSubcat[i].original_price - discsofSubcat[i].disc_price;        
-    }
+    // labels contains the entry dates 
+    // dataValues contains the average discount values for each date
+    const labels = Object.keys(averageDiscountByEntryDate);
+    const dataValues = labels.map(entryDate => averageDiscountByEntryDate[entryDate] || 0);
+    
+    myChart2.config.data.datasets[0].data = dataValues;
+    myChart2.config.data.labels = labels;
 
-    //ypologismos mesis timis
-    var sum=0;
-    for (let i = 0; i < difference.length; i++) {
-        sum += difference[i];
-    }
-    var mesi_timi = Math.round((sum/difference.length)*100);
+    // // ypologismos diaforwn 
+    // var difference = [];
+    // // estw mesi timi proigoumenis vdomasas == original price
+    // for (let i = 0; i < discsofSubcat.length; i++) {
+    //     difference[i] = discsofSubcat[i].original_price - discsofSubcat[i].disc_price;        
+    // }
 
-    var mesi_ekptosi = [];
-    for (let i = 0; i < 7; i++) {
-        mesi_ekptosi[i] = mesi_timi;
-    }
+    // //ypologismos mesis timis
+    // var sum=0;
+    // for (let i = 0; i < difference.length; i++) {
+    //     sum += difference[i];
+    // }
+    // var mesi_timi = Math.round((sum/difference.length)*100);
+
+    // var mesi_ekptosi = [];
+    // for (let i = 0; i < 7; i++) {
+    //     mesi_ekptosi[i] = mesi_timi;
+    // }
 
     //replace the data in the chart
-    myChart2.config.data.datasets[0].data = mesi_ekptosi;
-    myChart2.config.data.labels = weekdays;
+    // myChart2.config.data.datasets[0].data = mesi_ekptosi;
+    // myChart2.config.data.labels = weekdays;
     // load the updates to the canva of the chart
     myChart2.update();
 }
