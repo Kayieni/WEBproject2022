@@ -86,7 +86,9 @@
                     aria-hidden="true" id="iconSidenav"></i>
                 <a class="navbar-brand m-0" href="/profile">
                     <i class="large material-icons opacity-10 navbar-brand-img h-100">account_circle</i>
-                    <span class="ms-1 font-weight-bold text-white">Welcome User</span>
+                    {{#if user}}
+                    <span class="ms-1 font-weight-bold text-white">Welcome {{user}}</span>
+                    {{/if}}
                 </a>
             </div>
             <hr class="horizontal light mt-0 mb-2">
@@ -164,7 +166,7 @@
                     {{!-- Path for Page upper left corner --}}
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/welcome">User</a>
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/profile">User</a>
                             </li>
                             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Submit Discount</li>
                         </ol>
@@ -322,18 +324,18 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                             <ul class="nav nav-footer justify-content-center justify-content-lg-end">
                                 <li class="nav-item">
-                                    <a href="/report" class="nav-link text-muted" target="_blank">Project</a>
+                                    <a class="nav-link text-muted" target="_blank">Project</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/aboutus" class="nav-link text-muted" target="_blank">About Us</a>
+                                    <a  class="nav-link text-muted" target="_blank">About Us</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/cookies" class="nav-link text-muted" target="_blank">Cookies</a>
+                                    <a  class="nav-link text-muted" target="_blank">Cookies</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/tnt" class="nav-link pe-0 text-muted" target="_blank">Terms & Conditions</a>
+                                    <a class="nav-link pe-0 text-muted" target="_blank">Terms & Conditions</a>
                                 </li>
                             </ul>
                         </div>

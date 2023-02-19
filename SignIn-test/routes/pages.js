@@ -51,8 +51,9 @@ router.get('/welcome', (req,res) => {
 });
 
 router.get('/profile', (req,res) => {
+    const username = req.session.user_data[0].username;
     console.log(req.session)
-    res.render('profile',{user_data: req.session.user_data[0]});
+    res.render('profile',{user_data: req.session.user_data[0], user: username});
 })
 
 router.get('/logout', (req,res) => {
@@ -81,9 +82,10 @@ router.get('/admin', (req,res) => {
 
 router.get('/reviews', (req,res) => {
     // checkAuth up there
+    const username = req.session.user_data[0].username;
     console.log(req.session.user_data[0]);
     console.log("=========", req.session.storeclicked.store.storeID);
-    res.render('reviews', {user_data: req.session.user_data[0], storeclicked: req.session.storeclicked.store});
+    res.render('reviews', {user_data: req.session.user_data[0], storeclicked: req.session.storeclicked.store, user: username});
 })
 
 router.get('/map', (req,res) => {
@@ -98,10 +100,11 @@ router.post('/submit_disc', (req,res) => {
     req.session.storeclicked = { store };
     console.log(req.session);
     res.redirect('/submit_disc');
+    
 })
 
 router.get('/submit_disc', (req,res) => {
-
+  const username = req.session.user_data[0].username;
   let message = req.session.message;
   let message2 = req.session.message2;
   //let extra_score = req.session.points;
@@ -109,7 +112,7 @@ router.get('/submit_disc', (req,res) => {
   //req.session.points = null;
   req.session.message = null;
   req.session.message2 = null;
-  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store, message2: message2});
+  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store, message2: message2, user: username});
 })
 
 router.get('/statistics', (req,res) => {
@@ -133,9 +136,10 @@ router.get('/admin-poi', (req,res) => {
 })
 
 router.get('/edit', (req,res) => {
+    const username = req.session.user_data[0].username;
     const message = req.session.successMessage;
     req.session.successMessage = null;
-    res.render('profile-edit', {message: message});
+    res.render('profile-edit', {message: message, user: username});
 })
 
 
