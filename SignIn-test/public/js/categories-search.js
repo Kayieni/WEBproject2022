@@ -204,37 +204,34 @@ $(document).ready(function () {
                                         openDiscountForm(product.counter, product.original_price, product.prodID, product.store_name);
                                         
                                     };
-                                    
-                                    
+                                
+
                                     li.innerHTML =
                                         `
-                                        <div class="row p-2 bg-white border rounded mt-2">
-                                            <div class="col-md-3 mt-1">
-                                                <img class="img-fluid img-responsive rounded w-40"
-                                                    src="${product.image_link}">
-                                            </div>
-                                            <div class="col-md-6 mt-1">
-                                                <h5>${product.product_name}</h5>
-                                                <span><em>product ID: ${product.prodID}</em></span>
-                                                <div class="d-flex flex-row">
-                                                    <hr class="hr horizontal dark">
-                                                </div>
-                                            </div>
-                                            <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                                                <div class="d-flex flex-row align-items-center">
-                                                    <h4 class="mr-1">${product.original_price}€</h4><span class="text-decoration-line-through text-danger">${product.disc_price}€</span>
-                                                </div>
-                                               
-                                                <div class="d-flex flex-column mt-4">
-                                                    <div >
-                                                       
-                                                       
-                                                    </div>                                        
-                                                </div>
+                                    <div class="row p-2 bg-white border rounded mt-2">
+                                        <div class="col-md-3 mt-1">
+                                            <img class="img-fluid img-responsive rounded w-40"
+                                                src="${product.image_link}">
+                                        </div>
+                                        <div class="col-md-6 mt-1">
+                                            <h5>${product.product_name}</h5>
+                                            <span><em>product ID: ${product.prodID}</em></span>
+                                            <div class="d-flex flex-row">
+                                                <hr class="hr horizontal dark">
                                             </div>
                                         </div>
-                                    `  
-                                    ;
+                                        <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                                        <div class="d-flex flex-row align-items-center">
+                                            ${product.disc_price ? `<h4 class="mr-1">${product.disc_price}€</h4><span class="text-decoration-line-through text-danger">${product.original_price}€</span>` : `<h4 class="mr-1">${product.original_price}€</h4>`}
+                                        </div>
+                                        ${product.disc_price ? '' : '<div class="d-flex flex-column mt-4"></div>'}
+                                    </div>
+                                    
+
+
+                                    </div>
+                                `  
+                                ;
                                     li.appendChild(button);
                                     // <input type="hidden" name="product_counter" value="${product.counter}">  
                                     // <input type="hidden" name="disc_price" value="${product.disc_price}">    

@@ -215,7 +215,7 @@
                         <div class="store-details col-12 col-lg-4 d-flex flex-column justify-content-center align-items-center">
                             <h1 class="store-name text-primary font-weight-bold">{{storeclicked.store_name}}</h1>
                             <div class="last-date">
-                                <h5 class="store-text"><b>Did you found a discount?<br> Congratulations!!<br>Submit it now and win
+                                <h5 class="store-text"><b>Did you find a discount?<br> Congratulations!!<br>Submit it now and win
                                     tokens</b></p>
                                 </h5>
                             </div>
@@ -246,7 +246,9 @@
                             {{#if message2}}
                             <h4 class="alert alert-success mt-4"> {{message2}} </h4>
                             {{/if }}
-                           
+                           {{#if message}}
+                            <h4 class="alert alert-danger mt-4"> {{message}} </h4>
+                            {{/if }}
             
             
                         {{!-- </div> --}}
