@@ -174,7 +174,7 @@ router.get('/discounts', (req, res) => {
 // Create route to retrieve products and discounts of a store selected from database
 router.get('/products', (req, res) => {
 
-    db.query('SELECT product.* , stores.store_name FROM product JOIN stores WHERE stores.storeID = product.storeID', (error, results) => {
+    db.query('SELECT product.* , stores.store_name, COALESCE(discount.disc_price, NULL) AS disc_price FROM product  INNER JOIN stores ON product.storeID = stores.storeID LEFT JOIN discount ON discount.counter = product.counter ', (error, results) => {
       if (error) {
         res.status(500).send(error);
 
