@@ -34,7 +34,11 @@ $(document).ready(function () {
                 filterData1(defaultValue);
                 filterbyCategory();
 
-                                
+                const categoriesDropdown = document.getElementById("categories");
+                const subcategoriesDropdown = document.getElementById("subcategories");
+
+                categoriesDropdown.addEventListener("change", filterbyCategory);
+                subcategoriesDropdown.addEventListener("change", filterbyCategory);
                 // fix week navigation
                 // var datePicker = document.getElementById("datePicker");
 
@@ -480,11 +484,19 @@ function averageDiscount(cat,subcat) {
     console.log("Selected category: ", cat);
     console.log("Selected subcategory: ", subcat);
     
+    if(!subcat) {
+    // if subcategory is not selected
+    // to calculate all the products of the category
+
+    }else {
+    // category and subcategory
+    }
+
     // add data from get request
     var fetched = getData();
     var discs = fetched.discs;
-    console.log("fetched2 : ",fetched);
-    console.log("discs2 : ",discs);
+    console.log("fetched2 : ",fetched); // has cat, subcat, discs
+    console.log("discs2 : ",discs); // all the discs submitted
 
 
     // Get the start and end dates for the current week (Monday to Sunday)
@@ -506,24 +518,28 @@ function averageDiscount(cat,subcat) {
             if (product.subID == fetched.subcats[i].subID) {
                 console.log("cat of product: ",fetched.subcats[i].catID);
                 return fetched.subcats[i].catID;
-                break;
             }
         }
     }
 
-    // if selected only category
-    // ... 
-
-    // filter all the products of this category or subcategory
-    // const productsByCat = discs.filter(product => product.catID === cat);
-    const selectedProducts = discs.filter(product => product.subID === subcat || catofProduct(product) === cat);
-    console.log("--productsByCat", selectedProducts);
+    // filter all the products of this subcategory
+    const selectedProducts = discs.filter(product => product.subID === subcat);
+    // const selectedProducts = discs.filter(product => product.subID === subcat || catofProduct(product) === cat);
+    console.log("--productsByCat", selectedProducts); // selectedProducts of subcategory
 
     // select only products of the current week
-    const filteredProducts = selectedProducts.filter(product => {
-        const entryDate = new Date(product.entryDate);
+    const filteredProducts = selectedProducts.filter(discount => {
+        console.log(discount);
+        console.log(discount.entry_date);
+        const entryDate = new Date(discount.entry_date);
+        // entryDate.setDate(entryDate.getDate() - 1);
+        console.log(entryDate);
+        console.log(startOfWeek);
+        console.log(entryDate<startOfWeek);
         return entryDate >= startOfWeek && entryDate <= endOfWeek;
     });
+
+    console.log("filteredProducts:  ",filteredProducts);
 
     // first group the selected products by entry date using the reduce method 
     //to create an object where each key represents an entry date, 
@@ -559,10 +575,16 @@ function averageDiscount(cat,subcat) {
     // labels contains the entry dates 
     // dataValues contains the average discount values for each date
     const labels = Object.keys(averageDiscountByEntryDate);
-    const dataValues = labels.map(entryDate => averageDiscountByEntryDate[entryDate] || 0);
+    // const labels = [];
+    const dataValues = labels.map(entryDate => averageDiscountByEntryDate[entryDate].toFixed(4)*100 || 0);
+    
+    // myChart2.config.data.labels = labels;
+    // for (let i = 0; i < 7; i++) {   
+    //     labels.push(startOfWeek.getDate() + i);
+    // }
+    myChart2.config.data.labels = labels;
     
     myChart2.config.data.datasets[0].data = dataValues;
-    myChart2.config.data.labels = labels;
 
     // // ypologismos diaforwn 
     // var difference = [];
