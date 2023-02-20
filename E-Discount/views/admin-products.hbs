@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="favicon.svg">
+    <title>
+        Administrator Panel
+    </title>
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+
+    <link href="css/nucleo-icons.css" rel="stylesheet" />
+    <link href="css/nucleo-svg.css" rel="stylesheet" />
+    <link href="css/dragdrop.css" rel="stylesheet" />
+
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+
+
+</head>
+
+<body class="g-sidenav-show  bg-gray-200">
+    {{!-- Navigation Bar of available pages in admin panel --}}
+    <aside
+        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+        id="sidenav-main">
+        <div class="sidenav-header">
+            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0" href="/admin">
+                <i class="large material-icons opacity-10 navbar-brand-img h-100">verified_user</i>
+                <span class="ms-1 font-weight-bold text-white">Admin Panel</span>
+            </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+            <ul class="navbar-nav">
+                 <li class="nav-item">
+                        <a class="nav-link text-white" href="/map">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">room</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Discount Stores</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/statistics">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">insert_chart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Statistics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/leaderboard">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">dashboard</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Leaderboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white active bg-gradient-primary" href="/admin-products">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">shopping_cart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Product Data</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/admin-poi">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">edit_location</i>
+                        </div>
+                        <span class="nav-link-text ms-1">POIs Data</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </aside>
+    {{!-- Main Content --}}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        {{!-- Main navigation bar elements --}}
+        <nav id="upper" class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+            navbar-scroll="true">
+            <div class="container-fluid py-1 px-3">
+                {{!-- Path for Page upper left corner --}}
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/admin">Admin</a>
+                        </li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Product Data</li>
+                    </ol>
+                    <h6 class="font-weight-bolder mb-0">Product Data</h6>
+                </nav>
+                {{!-- Upper Nav Bar --}}
+                <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                    {{!-- Search Bar --}}
+                    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                        <div class="input-group input-group-outline">
+                            <label class="form-label"> Search here...</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    {{!-- Right Part Control Buttons --}}
+                    <ul class="navbar-nav  justify-content-end">
+                        {{!-- Log Out Button --}}
+                        <li class="nav-item d-flex align-items-center">
+                            <a href="/logout" class="nav-link text-body font-weight-bold px-0">
+                                <i class="fa fa-user me-sm-1"></i>
+                                <span class="d-sm-inline d-none">Log Out</span>
+                            </a>
+                        </li>
+                        {{!-- Side Navigation Bar sandwitch button --}}
+                        <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                            <a href="#" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                                <div class="sidenav-toggler-inner">
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {{!-- main drag and drop files --}}
+        <div class="container-drag">
+            {{!-- header of drag and drop --}}
+            <div class="header-section">
+                {{#if message}}
+                    <h4 class="alert alert-success mt-4">{{message}}</h4> 
+                {{/if}}
+                <h1>Upload New Products' Prices</h1>
+                <p>Upload files for the local stores available in your area, in .json or .xml format.</p>
+                <p>JSON and XML files are allowed.</p>
+            </div>
+            {{!-- drop section for drag or upload button --}}
+            <div class="drop-section">
+                <div class="col">
+                    <div class="cloud-icon">
+                        <img src="images/logos/cloud.png" alt="cloud-icon">
+                    </div>
+                    <span>Drag & Drop your files here</span>
+                    <span>OR</span>
+                    <button class="file-selector">Browse Files</button>
+                    <form enctype="multipart/form-data" action="/auth/update_products" method="POST">
+                        <input type="file" name="file" id="" class="file-selector-input" multiple>
+                        {{!-- <button class="btn btn-success" type="submit">Submit File</button>     --}}
+                        <div class="list-submit">
+                        </div>
+                    </form>
+                </div>
+                <div class="col">
+                    <div class="drop-here">Drop here</div>
+                </div>
+            </div>
+            {{!-- list after upload --}}
+            <div class="list-section">
+                <div class="list-title">Upload New Prices</div>
+                <div class="list">
+                </div>
+            </div>
+            <button class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#deleteModal">
+                <i class="large material-icons opacity-10 navbar-brand-img h-100">delete_forever</i>Delete All Data</button>
+        </div>
+
+            {{!-- footer --}}
+        <footer class="footer py-4">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="copyright text-center text-sm text-muted text-lg-start">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>,
+                            made with <i class="fa fa-heart"></i> by
+                            <a href="/aboutus" class="font-weight-bold" target="_blank">WEBx3F</a>
+                            for CEID WEB Project 2022-2023.
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                            <li class="nav-item">
+                                <a  class="nav-link text-muted"
+                                    target="_blank">Project</a>
+                            </li>
+                            <li class="nav-item">
+                                <a  class="nav-link text-muted"
+                                    target="_blank">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a  class="nav-link text-muted"
+                                    target="_blank">Cookies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link pe-0 text-muted"
+                                    target="_blank">Terms & Conditions</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        {{!-- </div> --}}
+    </main>
+    {{!-- fixed plugin: go up --}}
+    <div class="fixed-plugin">
+        <a href="#upper" aria-current="page" class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+            <i class="material-icons py-2">arrow_upward</i>
+        </a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="exampleModalLabel">Delete All Data</h5>
+                    <button type="button" class="close btn btn-outline-dark" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2 class="h2">Are you sure you want to delete <span class="text-danger">ALL DATA</span> ?</h2>
+                    <h5 class="h5">After that there is not way back, and you will need to
+                    upload a file with new data in order for the application to work properly.</h5> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <form action="/auth/delete_products" method="POST">
+                        <input type="hidden" name="delete" id="" class="delete">
+                        <button class="btn btn-danger" type="submit" data-toggle="modal" data-target="#deleteModal">
+                            <i class="large material-icons opacity-10 navbar-brand-img h-100">delete_forever</i>
+                            Delete All Data</button>
+                    </form>
+                    {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/core/popper.min.js"></script>
+    <script src="js/core/bootstrap.min.js"></script>
+    <script src="js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="js/plugins/smooth-scrollbar.min.js"></script>
+    <script src="js/plugins/chartjs.min.js"></script>
+    <script src="js/material-dashboard.min.js?v=3.0.0"></script>
+    <script src="js/admin-products.js"></script>
+
+    <script>
+        //ScrollBar
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+    </script>
+</body>
+
+</html>

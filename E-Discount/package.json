@@ -1,0 +1,38 @@
+{
+  "name": "sign-in",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "__comment__": "whenever we run npm start in the terminal, node.js actually is going to run this command. This is the dependancy we installed in wpm i --"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bootstrap": "^5.2.3",
+    "chartjs": "^0.3.24",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "connect-mysql2": "^2.2.6",
+    "cookie-parser": "^1.4.6",
+    "date-fns": "^2.29.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-mysql-session": "^2.1.8",
+    "express-session": "^1.17.3",
+    "hbs": "^4.2.0",
+    "http": "^0.0.1-security",
+    "jquery": "^3.6.3",
+    "jsonwebtoken": "^9.0.0",
+    "leaflet-search": "^3.0.9",
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "node-cron": "^3.0.2",
+    "nodemon": "^2.0.20",
+    "uuid": "^9.0.0"
+  }
+}

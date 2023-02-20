@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.svg">
+    <title>
+        Discount Stores
+    </title>
+
+         <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+
+    <link href="css/nucleo-icons.css" rel="stylesheet" />
+    <link href="css/nucleo-svg.css" rel="stylesheet" />
+    <link href="css/dragdrop.css" rel="stylesheet" />
+
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+		integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+		crossorigin=""/> 
+
+
+        {{!-- Add leaflet --}}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+            integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css"
+            integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+            crossorigin="" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css"
+            integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+            crossorigin="" />
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.1/dist/leaflet.markercluster.js"
+            integrity="sha512-+Zr0llcuE/Ho6wXRYtlWypMyWSEMxrWJxrYgeAMDRSf1FF46gQ3PAVOVp5RHdxdzikZXuHZ0soHpqRkkPkI3KA=="
+            crossorigin="">
+        </script>
+
+        <!-- File Layer plugin -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/leaflet-filelayer@1.2.0"></script>
+
+        {{!-- GeoLocation GeoJSON --}}
+        <script src="https://unpkg.com/togeojson@0.16.0"></script>
+
+       <!-- for CSS -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css"
+		integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+		crossorigin="" />
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css"
+		integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+		crossorigin="" />
+        {{!-- jQuery for AJAX load --}}
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+
+        
+        <style>
+            #loading-container {
+            display: none; /* hide by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            }
+
+            .loading {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid #f3f3f3;
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -25px;
+            }
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+        </style>
+
+        <style>
+         
+            #map {
+                width: 100%;
+			/* 100% of the parent container */
+			height: 500px;
+			margin: 25px;
+			align-self:center;
+            }
+
+            .icon {
+                max-width: 70%;
+                max-height: 70%;
+                margin: 4px;
+            }
+        </style>
+    </head>
+
+<body class="g-sidenav-show  bg-gray-200">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    {{!-- Navigation Bar of available pages in admin panel --}}
+    <aside
+        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+        id="sidenav-main">
+        <div class="sidenav-header">
+            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0" href="/admin">
+                <i class="large material-icons opacity-10 navbar-brand-img h-100">verified_user</i>
+                <span class="ms-1 font-weight-bold text-white">Admin Panel</span>
+            </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+            <ul class="navbar-nav">
+                 <li class="nav-item">
+                        <a class="nav-link text-white active bg-gradient-primary" href="/map">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">room</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Discount Stores</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/statistics">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">insert_chart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Statistics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/leaderboard">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">dashboard</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Leaderboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/admin-products">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">shopping_cart</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Product Data</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="/admin-poi">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">edit_location</i>
+                        </div>
+                        <span class="nav-link-text ms-1">POIs Data</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </aside>
+    {{!-- Main Content --}}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        {{!-- Main navigation bar elements --}}
+        <nav id="upper" class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+            navbar-scroll="true">
+            <div class="container-fluid py-1 px-3">
+                {{!-- Path for Page upper left corner --}}
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/admin">Admin</a>
+                        </li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Discount Stores</li>
+                    </ol>
+                    <h6 class="font-weight-bolder mb-0">Discount Stores</h6>
+                </nav>
+                {{!-- Upper Nav Bar --}}
+                <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                    {{!-- Search Bar --}}
+                    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                        <div class="input-group input-group-outline">
+                            <label class="form-label"> Search here...</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    {{!-- Right Part Control Buttons --}}
+                    <ul class="navbar-nav  justify-content-end">
+                      
+                        <li class="nav-item">
+                            <a class="nav-link text-body font-weight-bold px-0 " href="/admin-review">
+                                <div class=" text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i class="material-icons opacity-10">thumbs_up_down</i>
+                                    <span class="nav-link-text ms-1">Delete Discount</span>
+                                </div>
+                                
+                            </a>
+                        </li>
+                        {{!-- Log Out Button --}}
+                        <li class="nav-item d-flex align-items-center">
+                            <a href="/logout" class="nav-link text-body font-weight-bold px-0">
+                                <i class="fa fa-user me-sm-1"></i>
+                                <span class="d-sm-inline d-none">Log Out</span>
+                            </a>
+                        </li>
+                        {{!-- Side Navigation Bar sandwitch button --}}
+                        <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                            <a href="#" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                                <div class="sidenav-toggler-inner">
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+ {{!-- main drag and drop files --}}
+        <div class="container-drag width=1000px height=1000px">
+                {{!-- loading animation that will be displaied until filtering of discounts is finished --}}
+                {{!-- <div id="loading-container">
+                    <div class="loading"></div> --}}
+                     <div id="map"></div>
+                {{!-- </div> --}}
+
+        </div>
+
+
+             {{!-- footer --}}
+        <footer class="footer py-4">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="copyright text-center text-sm text-muted text-lg-start">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>,
+                            made with <i class="fa fa-heart"></i> by
+                            <a href="/aboutus" class="font-weight-bold" target="_blank">WEBx3F</a>
+                            for CEID WEB Project 2022-2023.
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                         <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-muted" target="_blank">Project</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a  class="nav-link text-muted" target="_blank">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a  class="nav-link text-muted" target="_blank">Cookies</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pe-0 text-muted" target="_blank">Terms & Conditions</a>
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        {{!-- </div> --}}
+    </main>
+    {{!-- fixed plugin: go up --}}
+    <div class="fixed-plugin">
+        <a href="#upper" aria-current="page" class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+            <i class="material-icons py-2">arrow_upward</i>
+        </a>
+    </div>
+
+    <script src="js/map.js"></script>
+    <script src="js/core/popper.min.js"></script>
+    <script src="js/core/bootstrap.min.js"></script>
+    <script src="js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="js/plugins/smooth-scrollbar.min.js"></script>
+    <script src="js/plugins/chartjs.min.js"></script>
+    <script src="js/material-dashboard.min.js?v=3.0.0"></script>
+
+    
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+	integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+	crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/togeojson@0.16.0"></script>
+<script src="https://unpkg.com/leaflet-filelayer@1.2.0"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.min.js"></script>
+	
+
+<script src="https://unpkg.com/leaflet.markercluster@1.5.1/dist/leaflet.markercluster.js"
+	integrity="sha512-+Zr0llcuE/Ho6wXRYtlWypMyWSEMxrWJxrYgeAMDRSf1FF46gQ3PAVOVp5RHdxdzikZXuHZ0soHpqRkkPkI3KA=="
+	crossorigin="">
+	</script>
+   
+
+
+</body>
+
+</html>

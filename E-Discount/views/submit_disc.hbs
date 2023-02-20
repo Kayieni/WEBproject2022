@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+            <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/png" href="favicon.svg">
+       <title>Submit Discounts</title>
+        
+        <link rel="stylesheet" type="text/css"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+        {{!-- from template admin --}}
+        <link href="css/nucleo-icons.css" rel="stylesheet" />
+        <link href="css/nucleo-svg.css" rel="stylesheet" />
+        {{!-- from e-katanalotis --}}
+        <link href="css/reviews.css" rel="stylesheet" />
+
+        <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+        <link id="pagestyle" href="css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
+
+        {{!-- jQuery for AJAX load --}}
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    
+        
+        <style>
+            #loading-container {
+            display: none; /* hide by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            }
+
+            .loading {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid #f3f3f3;
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -25px;
+            }
+
+            .form-control{
+            border: 1px solid grey;
+            }
+
+            .select-box{
+            border: 1px solid grey;
+            }
+
+
+
+            @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+        </style>
+
+
+    
+  
+
+</head>
+
+    <body class="g-sidenav-show  bg-gray-200">
+        <aside
+            class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+            id="sidenav-main">
+            <div class="sidenav-header">
+                <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                    aria-hidden="true" id="iconSidenav"></i>
+                <a class="navbar-brand m-0" href="/welcome">
+                    <i class="large material-icons opacity-10 navbar-brand-img h-100">account_circle</i>
+                    {{#if user}}
+                    <span class="ms-1 font-weight-bold text-white">Welcome {{user}}</span>
+                    {{/if}}
+                </a>
+            </div>
+            <hr class="horizontal light mt-0 mb-2">
+            <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/welcome">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">room</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Discount Stores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="/reviews">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">thumbs_up_down</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Review Discount</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white active bg-gradient-primary" href="/submit_disc">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">add_circle_outline</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Submit Discount</span>
+                        </a>
+                    </li>
+                    {{!-- <li class="nav-item">
+                        <a class="nav-link text-white  active bg-gradient-primary" href="/admin-poi">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">edit_location</i>
+                            </div>
+                            <span class="nav-link-text ms-1">POIs Data</span>
+                        </a>
+                    </li> --}}
+                    <li class="nav-item mt-3">
+                        <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
+                        </h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="/profile">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">person</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Profile</span>
+                        </a>
+                    </li>
+                    {{!-- <li class="nav-item">
+                        <a class="nav-link text-white " href="/login">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">login</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Sign In</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="/register">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="material-icons opacity-10">assignment</i>
+                            </div>
+                            <span class="nav-link-text ms-1">Sign Up</span>
+                        </a>
+                    </li> --}}
+                </ul>
+            </div>
+        </aside>
+        {{!-- Main Content --}}
+        <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+            {{!-- Main navigation bar elements --}}
+            <nav id="upper" class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
+                id="navbarBlur" navbar-scroll="true">
+                <div class="container-fluid py-1 px-3">
+                    {{!-- Path for Page upper left corner --}}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/welcome">User</a>
+                            </li>
+                            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Submit Discount</li>
+                        </ol>
+                        <h6 class="font-weight-bolder mb-0">Submit Discount</h6>
+                    </nav>
+                    {{!-- Upper Nav Bar --}}
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                        {{!-- Search Bar --}}
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                            <div class="input-group input-group-outline">
+                                <label class="form-label"> Search here...</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        {{!-- Right Part Control Buttons --}}
+                        <ul class="navbar-nav  justify-content-end">
+                            {{!-- Log Out Button --}}
+                            <li class="nav-item d-flex align-items-center">
+                                <a href="/logout" class="nav-link text-body font-weight-bold px-0">
+                                    <i class="fa fa-user me-sm-1"></i>
+                                    <span class="d-sm-inline d-none">Log Out</span>
+                                </a>
+                            </li>
+                            {{!-- Side Navigation Bar sandwitch button --}}
+                            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                                <a href="#" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                                    <div class="sidenav-toggler-inner">
+                                        <i class="sidenav-toggler-line"></i>
+                                        <i class="sidenav-toggler-line"></i>
+                                        <i class="sidenav-toggler-line"></i>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            {{!-- main body elements , up right part --}}
+
+            
+            <div class="container pt-4 mt-5 mb-5 ">
+                <div class="d-flex justify-content-center  row">
+                    <div class="row p-2 bg-white border rounded">
+                        <div class="col-12 col-lg-4 offset-lg-2 d-flex align-items-start justify-content-center">
+                            <img class="store-img" src="img/sale.jpg" width="300" height="220">
+
+                        </div>
+                        <div class="store-details col-12 col-lg-4 d-flex flex-column justify-content-center align-items-center">
+                            <h1 class="store-name text-primary font-weight-bold">{{storeclicked.store_name}}</h1>
+                            <div class="last-date">
+                                <h5 class="store-text"><b>Did you find a discount?<br> Congratulations!!<br>Submit it now and win
+                                    tokens</b></p>
+                                </h5>
+                            </div>
+                        </div>
+             
+                        {{!-- <div class="dropdown-container"> --}}
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    <label for="category_select">Select a category</label>
+                                    <select class="form-control my-2 select-box" id="category_select">
+                                        <option value="" disabled selected>Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="subcategory_select">Select a subcategory</label>
+                                    <select class="form-control my-2 select-box" id="subcategory_select" disabled>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="subcategory_select">Search for a product</label>
+                                    <input type="text" id="search_input" class="form-control my-2 select-box">
+                                </div>
+                            </div>
+                            
+
+            
+                            <div id="discount_form_container" class="list col-md-10"  style="display:none;"></div>
+                            {{#if message2}}
+                            <h4 class="alert alert-success mt-4"> {{message2}} </h4>
+                            {{/if }}
+                           {{#if message}}
+                            <h4 class="alert alert-danger mt-4"> {{message}} </h4>
+                            {{/if }}
+            
+            
+                        {{!-- </div> --}}
+                    </div>
+                {{!-- of sorting --}}
+                {{!-- <div class="d-flex align-items-center ml-lg-5 pl-lg-5 mt-5">
+                    <div class="sort-icon-bg" data-ember-action="" data-ember-action-272="272">
+                        <span class="sort-icon">⇵</span>
+                    </div>
+                    <div class="product-sort-power-select">
+                        <div id="ember275" class="ember-basic-dropdown ember-view">
+                            <div aria-owns="ember-basic-dropdown-content-ember275" tabindex="0"
+                                data-ebd-id="ember275-trigger" role="button" id="ember278"
+                                class="ember-power-select-trigger ember-basic-dropdown-trigger ember-basic-dropdown-trigger--in-place ember-view">
+                                <span class="ember-power-select-selected-item"> Φθίνουσα Σειρά
+
+                                </span>
+                                <span class="ember-power-select-clear-btn">×</span>
+                                <span class="ember-power-select-status-icon"></span>
+                            </div>
+                            <div id="ember-basic-dropdown-content-ember275"
+                                class="ember-basic-dropdown-content-placeholder" style="display: none;"></div>
+
+                        </div>
+                    </div>
+                </div> --}}
+            </div>
+            
+            {{!-- list after upload --}}
+            {{!-- <div class="list-section">
+                <div class="list-title">Upload Files</div>
+                <div class="list">
+                </div>
+            </div> --}}
+
+            {{!-- main body elements , up right part --}}
+            <div class=" list-section container mt-5 mb-5">
+                <div class="d-flex justify-content-center row">
+                    <div id="discounts-list" class="list col-md-10 ">
+
+                        <h3>Products:</h3>
+                        
+                        <ul id="products_list">
+                        </ul>
+                        
+                      
+                        <div id="message_container"></div>
+    
+                        
+                        {{!-- loading animation that will be displaied until filtering of discounts is finished --}}
+                        <div id="loading-container">
+                            <div class="loading"></div>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
+            {{!-- footer --}}
+            <footer class="footer py-4">
+                <div class="container-fluid">
+                    <div class="row align-items-center justify-content-lg-between">
+                        <div class="col-lg-6 mb-lg-0 mb-4">
+                            <div class="copyright text-center text-sm text-muted text-lg-start">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script>,
+                                made with <i class="fa fa-heart"></i> by
+                                <a href="/aboutus" class="font-weight-bold" target="_blank">WEBx3F</a>
+                                for CEID WEB Project 2022-2023.
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                             <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-muted" target="_blank">Project</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a  class="nav-link text-muted" target="_blank">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a  class="nav-link text-muted" target="_blank">Cookies</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link pe-0 text-muted" target="_blank">Terms & Conditions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            {{!-- </div> --}}
+        </main>
+        
+        {{!-- fixed plugin: go up --}}
+        <div class="fixed-plugin">
+            <a href="#upper" aria-current="page" class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+                <i class="material-icons py-2">arrow_upward</i>
+            </a>
+        </div>
+
+
+        <script src="js/core/popper.min.js"></script>
+        <script src="js/core/bootstrap.min.js"></script>
+        <script src="js/plugins/perfect-scrollbar.min.js"></script>
+        <script src="js/plugins/smooth-scrollbar.min.js"></script>
+        <script src="js/plugins/chartjs.min.js"></script>
+        <script src="js/material-dashboard.min.js?v=3.0.0"></script>
+        <script src="js/pagination.js"></script>
+        <script src="js/submit_disc.js"></script>
+        <script>
+            //ScrollBar
+            var win = navigator.platform.indexOf('Win') > -1;
+            if (win && document.querySelector('#sidenav-scrollbar')) {
+                var options = {
+                    damping: '0.5'
+                }
+                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            }
+        </script>
+
+        <script>
+
+            
+
+        </script>
+</body>
+
+</html>
