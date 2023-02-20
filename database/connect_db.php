@@ -5,19 +5,28 @@ $username = "root";
 $password = "";
 $dbname = "webproject";
 
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 // Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 echo "Connected successfully<br>";
 echo "<br>";  
+
+
 $filepath = './newThing.json';
+
 //read the json file contents
+// file -> string
 $jsondata = file_get_contents($filepath);
+
 //convert json object to php associative array
+// true: return an associative array(instead of an object).
 $json_data = json_decode($jsondata, true);
+
 
 $flpth = './export.geojson';
 //read the json file contents
@@ -29,10 +38,13 @@ $jsn_dt = json_decode($jsndt, true);
 // ALTER TABLE product AUTO_INCREMENT = 1;
 ///////////////////////////////////////////////////////////////////////
 //  PRODUCTS array inside json //
+
 // use prepare statement for insert query
 $stmt = $conn->prepare("INSERT INTO product(prodID, subID, product_name,storeID, original_price,stock,image_link) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
 // bind variables to insert query params
 $stmt -> bind_param("ssssdis", $productID, $subcategory, $name,$storeID, $price,$stock, $image);
+
 // loop through the products array
 $products=$json_data['products'];
 $inserted_rows=0;
@@ -47,7 +59,6 @@ foreach ($products as $row) {
   $price = $row['price'];
   $stock = 1;
   $image = $row['image'];
-  // $imagedata =  base64_encode(file_get_contents($image));
   var_dump($productID);   
   var_dump($subcategory);  
   var_dump($name); 
@@ -58,8 +69,10 @@ foreach ($products as $row) {
   $storeID = $id;
   var_dump($storeID);
   echo "<br>";  
+
   //execute insert query
-  //$stmt -> execute(); //  <------------------------------
+  // $stmt -> execute(); //  <------------------------------
+
   $inserted_rows++;
   echo "<br>";
 }
@@ -128,57 +141,6 @@ foreach ($categories as $row) {
   }
 }
 echo "<br>";
-
-
-
-
-//close connection
-//$conn->close();
-
-
-
-
-// if ($conn->multi_query($sql) === TRUE) {
-//   echo "New records created successfully";
-// } else {
-//   echo "Error: " . $stmt . "<br>" . $conn->error;
-// }
-
-
-
-
-//parse the above JSON array element one by one and store them into PHP variables
-// $products = $json_data['products'][0]['id'];
-// //var_dump($products)
-// //insert into mysql table
-//   $sql = "INSERT INTO product(prodID,product_name) VALUES('$products', '$json_data['products'][0]['id']')";
-//  if ($conn->multi_query($sql) === TRUE) {
-//   echo "New records created successfully";
-// } else {
-//   echo "Error: " . $sql . "<br>" . $conn->error;
-// }
-
-
-
-
-
-
-// // Define function
-// function print_recursive($arr){
-
-//   foreach ($arr as $key => $val) {
-//     if (is_array($val)) {
-//       print_recursive($val);
-
-//     } else {
-//        echo("$key = $val <br/>");
-//     }
-//   }
-// return;
-// }
-// // Call function
-// print_recursive($json_data);
-
 
 
 

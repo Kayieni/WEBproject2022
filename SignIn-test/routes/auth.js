@@ -2,9 +2,13 @@ const express = require('express');
 const authController = require('../controllers/auth');
 const router = express.Router();
 
-const multer = require('multer');
-const storage = multer.memoryStorage();
-const upload = multer({storage: storage});
+const multer = require('multer'); 
+const storage = multer.memoryStorage(); // sets up a storage engine for Multer that stores the uploaded files in memory as Buffer objects rather than saving them to disk.
+const upload = multer({ storage: storage }); // creates an instance of Multer using the memory storage engine defined in the previous line. This instance can be used as middleware to handle file uploads.
+
+
+
+
 
 //performing tasks on a particular path is called routing
 
@@ -17,11 +21,11 @@ router.post('/updatepass', authController.updatepass);
 router.post('/review', authController.review);
 router.post('/stock', authController.stock);
 router.post('/save_discount', authController.save_discount);
-router.post('/update_products',upload.single('file'), authController.update_products);
+router.post('/update_products', upload.single('file'), authController.update_products);
 router.post('/delete_products', authController.delete_products);
-router.post('/update_pois',upload.single('file'), authController.update_pois);
+router.post('/update_pois', upload.single('file'), authController.update_pois);
 router.post('/delete_pois', authController.delete_pois);
-router.post('/delete_discount',authController.delete_discount);
+router.post('/delete_discount', authController.delete_discount);
 
 
 //with this command in node we can create a new module

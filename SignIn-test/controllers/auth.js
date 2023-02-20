@@ -1,8 +1,8 @@
 //first import the database in here
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs'); //to encrypt our passwords
-const fs = require('fs');
-const multer = require('multer');
+const fs = require('fs'); //to han
+const multer = require('multer'); //to handle the uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -480,31 +480,40 @@ exports.stock = (req, res) => {
 
 exports.save_discount = (req, res) => {
     console.log('inside save discount\n');
+    // Get data from form body
     const price = parseFloat(req.body.disc_price);
+    const original_price = parseFloat(req.body.original_price);
     const counter = parseInt(req.body.counter);
     const prodID = parseInt(req.body.prodID);
-    console.log("prodID =", prodID);
     const store_name = req.body.store_name;
-    console.log('store_name =', store_name);
-    const storeID = req.session.storeclicked.store.storeID;
-    console.log('storeID =', storeID);
-    const original_price = parseFloat(req.body.original_price);
     const entry_by = req.body.entry_by;
-    console.log("entry by userID=", entry_by);
+
+    const storeID = req.session.storeclicked.store.storeID;    
+    
     const currentTime = new Date();
-    console.log("currentTime = ", currentTime);
     const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
+
+    console.log("price =", price);
+    console.log("prodID =", prodID);
+    console.log("original_price =", original_price);
+    console.log('store_name =', store_name);
+    console.log('storeID =', storeID);
+    console.log("entry by userID=", entry_by);
+    console.log("currentTime = ", currentTime);
     console.log("formattedTime = ", formattedTime, "\n");
     let points = 0;
 
     const checkOriginalPriceQuery = `SELECT original_price FROM product WHERE counter=${counter}`;
     const checkDiscountedPriceQuery = `SELECT disc_price FROM discount  WHERE counter=${counter} ORDER BY entry_date DESC`;
+    // SELECT original price
     db.query(checkOriginalPriceQuery, (err, result) => {
         if (err) {
             console.log("error1: No original prices found");
             return console.log(err);
         }
         const originalPrice = result[0].original_price;
+
+        // SELECT discount price
         db.query(checkDiscountedPriceQuery, (err, result) => {
             if (err) {
                 console.log("error2: No discount prices found");
@@ -512,8 +521,8 @@ exports.save_discount = (req, res) => {
             }
             // to insert the discount in all the storesIDs of the same chain of markets
             const discount_selector = 'SELECT product.prodID, product.counter, stores.storeID, stores.store_name FROM product INNER JOIN stores ON stores.storeID = product.storeID WHERE stores.store_name = ? AND product.prodID = ?';
-            //gia kathe proin apo kathe alisida. An den ipirxan alisides posa proionta tha eixame
-            // let sql1 = 'SELECT DISTINCT stores.store_name, product.prodID, product.original_price, COALESCE(discount.disc_price, NULL) AS disc_price FROM stores INNER JOIN product ON product.storeID = stores.storeID LEFT JOIN discount ON discount.counter = product.counter WHERE product.prodID =? ';
+
+            // If a discount already exists
             if (result.length > 0) {
 
                 //////////////////////////////////////// FOR MEAN YESTERDAY //////////////////////////////////////////////////////// START
@@ -625,6 +634,7 @@ exports.save_discount = (req, res) => {
                     });
                 }
                 //////////////////////////////////////// FOR MEAN LAST WEEK //////////////////////////////////////////////////////// END
+                
                 const currentPrice = result[0].disc_price;
                 if (price < 0.8 * currentPrice) {
                     db.query(discount_selector, [store_name, prodID], (err, result) => {
@@ -761,23 +771,35 @@ exports.save_discount = (req, res) => {
     console.log('price = ', price);
     console.log('counter = ', counter);
     console.log('original = ', original_price);
-    // "node/354449389"
 }
 
 
 // for admin
-exports.update_products = (req, res, next) => {
+exports.update_products = (req, res) => {
+    // middleware (like multer) are functions that have access to the request and response objects
+    // When a file is uploaded using a form, multer can parse the form data and store the file in a designated location on the server.
+
+    // req.file: info about the uploaded file (name,type,buffer with file contents)
+    // toString(): Buffer object -> string
+    // JSON.parse(): JSON string -> js object
     var myObjArr = JSON.parse(req.file.buffer.toString());
     const myObjArray = myObjArr.products;
-    console.log(myObjArray);
+    //console.log(myObjArray);
     console.log("parsed json");
+
+    // Check if the product table is empty or not.
     db.query('SELECT COUNT(*) as count FROM product', (err, result) => {
         if (err) {
             console.log("error: i dont know if the product table is empty or not");
             return console.log(err);
         }
+        // result: array of result rows returned by the query
+        //console.log("result = ", result);
+        //console.log("result[0] = ", result[0]);
+        // If the table prduct is empty
         if (result[0].count === 0) {
             console.log('The table is empty');
+            // Fetch storeID from stores 
             const StoresSelector = 'SELECT storeID from stores';
             db.query(StoresSelector, (err, result) => {
                 if (err) {
@@ -791,37 +813,37 @@ exports.update_products = (req, res, next) => {
                         }
                         console.log("counter set to 1");
                     });
+                    // Insert the data myObjArray into product table
                     let sql = 'INSERT INTO product (prodID, subID, product_name, storeID, original_price, stock, image_link) VALUES';
                     let values = [];
+                    console.log("result = ", result);
+                    // result.map(): transform each element in an array
                     const storeIds = result.map(result => result.storeID);
                     console.log("selected storeIDs= ", storeIds);
                     for (let k = 0; k < storeIds.length; k++) {
-                        console.log("am inside for loop");
                         for (let i = 0; i < myObjArray.length; i++) {
                             const myObj = myObjArray[i];
                             sql += `(?, ?, ?, ?, ?, ?, ?),`;
-                            console.log("1------", sql);
                             values.push(myObj.id, myObj.subcategory, myObj.name, storeIds[k], myObj.price, 1, myObj.image);
                         }
-                        console.log("2-----------", sql);
                     }
-                    console.log("3---------------", sql);
                     sql = sql.slice(0, -1);
-                    console.log("4--------------------", sql);
+                    // The ON DUPLICATE KEY UPDATE clause is used to update the existing rows in the product table with new data.
                     sql += `ON DUPLICATE KEY UPDATE prodID = VALUES(prodID), subID = VALUES(subID), product_name = VALUES(product_name), storeID = VALUES(storeID), original_price = VALUES(original_price), stock = 1, image_link = VALUES(image_link); `;
-                    console.log("5--------------------------", sql);
                     db.query(sql, values, (error, results) => {
                         if (error) {
                             console.error(error);
                             return;
                         }
                         console.log("good");
-                        res.send('Data product uploaded successfully!');
+                        res.redirect('/admin-products');
                     });
                 }
             });
+            //  If the product table is not empty
         } else {
             console.log('The table is not empty');
+            // Update  original_price and stock for the existing products in the table.
             for (let k = 0; k < (myObjArr.products.length); k++) {
                 db.query('UPDATE product SET original_price = ?, stock=1 WHERE prodID = ?', [myObjArr.products[k].price, myObjArr.products[k].id], (error, results) => {
                     if (error) {
@@ -829,7 +851,6 @@ exports.update_products = (req, res, next) => {
                         console.log(error);
                     } else {
                         console.log('product price updated :) <3 ');
-                        // res.redirect("/reviews");
                     }
                 });
             }
@@ -838,8 +859,6 @@ exports.update_products = (req, res, next) => {
             res.redirect('/admin-products');
         }
     });
-
-
 }
 
 // for admin
@@ -857,9 +876,10 @@ exports.delete_products = (req, res) => {
 }
 
 // for admin
-exports.update_pois = (req, res, next) => {
+exports.update_pois = (req, res) => {
     var myObjStr = JSON.parse(req.file.buffer.toString());
     const myObjStores = myObjStr[2].data;
+    console.log("myObjStr = ", myObjStr);
     console.log(myObjStores);
     console.log("parsed json");
 
@@ -868,7 +888,6 @@ exports.update_pois = (req, res, next) => {
 
     // Loop through the entries in the JSON file
     for (let i = 0; i < myObjStores.length; i++) {
-        console.log("In loop");
         const myObjS = myObjStores[i];
         sql += `(?, ?, ?, ?, ?, ?),`;
         values.push(myObjS.storeID, myObjS.store_name, myObjS.store_latitude, myObjS.store_longtitude, myObjS.store_type, myObjS.disc_weekday);
@@ -887,15 +906,6 @@ exports.update_pois = (req, res, next) => {
         req.session.message = "POI Data updated successfully! ";
         res.redirect('/admin-poi');
     });
-
-
-
-
-
-
-
-
-
 
     // db.query(
     //     'INSERT INTO stores (storeID, store_name, store_latitude, store_longtitude, store_type, disc_weekday) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE store_name = VALUES(store_name), store_latitude = VALUES(store_latitude), store_longtitude = VALUES(store_longtitude), store_type = VALUES(store_type), disc_weekday = VALUES(disc_weekday);', (err, result) => {
@@ -917,7 +927,7 @@ exports.delete_pois = (req, res) => {
             console.log(err);
         } else {
             console.log("Store data deleted :O whyyyy houman? ");
-            res.redirect('/admin-pois')
+            res.redirect('/admin-poi')
         }
     });
 }
