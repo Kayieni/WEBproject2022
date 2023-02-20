@@ -157,7 +157,7 @@ exports.login = (req, res) => {
             // ...........
             // ...........
             // ...........
-            if (logname === 'admin' && logpwd === 'admin') {
+            if (logname === process.env.DATABASE_USER && logpwd === process.env.DATABASE_PASSWORD) {
                 req.session.authenticated = true;
                 req.session.role = "admin";
                 req.session.userid = logname;
@@ -260,7 +260,7 @@ exports.updatename = (req, res) => {
                                     console.log(error);
                                 } else {
                                     req.session.user_data = results;
-                                    console.log(req.session);    
+                                    console.log(req.session);
                                     return res.redirect("/profile");
                                 }
                             });
@@ -323,7 +323,7 @@ exports.updatepass = (req, res) => {
                                     console.log(error);
                                 } else {
                                     req.session.user_data = results;
-                                    console.log(req.session);    
+                                    console.log(req.session);
                                     return res.redirect("/profile");
                                 }
                             });
@@ -370,7 +370,7 @@ exports.review = (req, res) => {
                         if (error) {
                             console.log(error);
                         } else {
-                            req.session.user_data = results;
+                            req.session.user_data = results; //update user's session data
                         }
                     });
                 }
@@ -385,7 +385,13 @@ exports.review = (req, res) => {
                         month_score = month_score + 5;
                     }
                     else if (interact === 0) {
-                        month_score = month_score - 1;
+                        if (month_score == 0) {  //user's month score shouldn't be negative
+                            month_score = 0;
+                        }
+                        else {
+                            month_score = month_score - 1;
+                        }
+
                     }
                     console.log(month_score);
                     db.query('UPDATE users SET month_score = ? WHERE userID = ?', [month_score, entry_by], (error, results) => {
@@ -911,7 +917,7 @@ exports.delete_pois = (req, res) => {
             console.log(err);
         } else {
             console.log("Store data deleted :O whyyyy houman? ");
-            res.redirect('/admin-products')
+            res.redirect('/admin-pois')
         }
     });
 }
@@ -919,7 +925,7 @@ exports.delete_pois = (req, res) => {
 // for admin
 exports.delete_discount = (req, res) => {
     const id_disc = parseInt(req.body.id_disc);
-    db.query('DELETE FROM discount WHERE discount.id_disc = ?',[id_disc], (err, result) => {
+    db.query('DELETE FROM discount WHERE discount.id_disc = ?', [id_disc], (err, result) => {
         if (err) {
             console.log("Discount could not be deleted :(( ");
             console.log(err);

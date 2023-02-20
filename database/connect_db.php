@@ -1,8 +1,10 @@
 <?php
+
 $servername = "127.0.0.1";
 $username = "root";
 $password = "";
 $dbname = "webproject";
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
@@ -24,13 +26,13 @@ $jsndt = file_get_contents($flpth);
 $jsn_dt = json_decode($jsndt, true);
 
 
-
+// ALTER TABLE product AUTO_INCREMENT = 1;
 ///////////////////////////////////////////////////////////////////////
 //  PRODUCTS array inside json //
 // use prepare statement for insert query
-$stmt = $conn->prepare("INSERT INTO product(prodID, subID, product_name,storeID, original_price,disc_price,image_link) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO product(prodID, subID, product_name,storeID, original_price,stock,image_link) VALUES (?, ?, ?, ?, ?, ?, ?)");
 // bind variables to insert query params
-$stmt -> bind_param("ssssdds", $productID, $subcategory, $name,$storeID, $price, $disc_price, $image);
+$stmt -> bind_param("ssssdis", $productID, $subcategory, $name,$storeID, $price,$stock, $image);
 // loop through the products array
 $products=$json_data['products'];
 $inserted_rows=0;
@@ -43,21 +45,21 @@ foreach ($products as $row) {
   $subcategory = $row['subcategory'];
   $name = $row['name'];
   $price = $row['price'];
-  $disc_price = $price;
+  $stock = 1;
   $image = $row['image'];
   // $imagedata =  base64_encode(file_get_contents($image));
   var_dump($productID);   
   var_dump($subcategory);  
   var_dump($name); 
   var_dump($price);
-  var_dump($disc_price);
+  var_dump($stock);
   var_dump($image);
   $id = $rw['id']; 
   $storeID = $id;
   var_dump($storeID);
   echo "<br>";  
   //execute insert query
-  $stmt -> execute(); //  <------------------------------
+  //$stmt -> execute(); //  <------------------------------
   $inserted_rows++;
   echo "<br>";
 }
@@ -92,7 +94,7 @@ foreach ($categories as $row) {
   var_dump($name); 
   echo "<br>";  
   //execute insert query
-  //$stmt -> execute();   //<------------------------------
+  // $stmt -> execute();   //<------------------------------
   $inserted_rows++;
 }
 echo "<br>";
