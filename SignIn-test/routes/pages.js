@@ -84,8 +84,12 @@ router.get('/reviews', (req,res) => {
     // checkAuth up there
     const username = req.session.user_data[0].username;
     console.log(req.session.user_data[0]);
-    console.log("=========", req.session.storeclicked.store.storeID);
-    res.render('reviews', {user_data: req.session.user_data[0], storeclicked: req.session.storeclicked.store, user: username});
+    console.log("=========", req.session);
+    if(req.session.storeclicked) {
+      res.render('reviews', {user_data: req.session.user_data[0], storeclicked: req.session.storeclicked.store, user: username});
+    }else {
+      res.redirect("/welcome");
+    }
 })
 
 router.get('/map', (req,res) => {
@@ -112,7 +116,11 @@ router.get('/submit_disc', (req,res) => {
   //req.session.points = null;
   req.session.message = null;
   req.session.message2 = null;
-  res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store, message2: message2, user: username});
+  if(req.session.storeclicked) {
+    res.render("submit_disc", { message: message, storeclicked: req.session.storeclicked.store, message2: message2, user: username});
+  }else {
+    res.redirect("/welcome");
+  }
 })
 
 router.get('/statistics', (req,res) => {
