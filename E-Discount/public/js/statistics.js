@@ -1,4 +1,5 @@
-// Admin page - Statistics Charts 
+// const { startOfDay, startOfWeek, endOfWeek } = require("date-fns");
+
 let dataa;
 
 function getData() {
@@ -28,47 +29,14 @@ $(document).ready(function () {
 
             window.onload = function() {
                 // LOAD CHART 1
-                // to do it for the default vaule of month when loading the page
+                // to do it for the default value of month when loading the page
                 const defaultValue = document.getElementById("month");
                 console.log(defaultValue);
                 console.log(defaultValue.value);
                 filterData1(defaultValue);
-                filterbyCategory();
-
-                const categoriesDropdown = document.getElementById("categories");
-                const subcategoriesDropdown = document.getElementById("subcategories");
-
-                categoriesDropdown.addEventListener("change", filterbyCategory);
-                subcategoriesDropdown.addEventListener("change", filterbyCategory);
-                // fix week navigation
-                // var datePicker = document.getElementById("datePicker");
-
-                // datePicker.addEventListener("change", function() {
-                //     var selectedDate = new Date(this.value);
-
-                //     // Go to the start of the week (Sunday)
-                //     var startOfWeek = new Date(selectedDate);
-                //     startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
-
-                //     // Go to the end of the week (Saturday)
-                //     var endOfWeek = new Date(startOfWeek);
-                //     endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-                //     // Log the start of the week
-                //     console.log("Start of week:", startOfWeek.toDateString());
-                //     var startWeek = startOfWeek.toDateString();
-                //     document.getElementById("startWeek").value = startWeek;
-                    
-                //     // Log the end of the week
-                //     console.log("End of week:", endOfWeek.toDateString());
-                //     var endWeek = endOfWeek.toDateString();
-                //     document.getElementById("startWeek").value = endWeek;
-                // });
-
-                // selectedWeek();
-
             };
             
+            // to check the results on console
             var categories = results.cats; // contains: catID, category_name
             var subcategories = results.subcats; // contains: catID, subID, subcategory_name 
             var discounts = results.discs; // contains: catID, subID, subcategory_name 
@@ -82,8 +50,6 @@ $(document).ready(function () {
                 $('#categories').append(
                     `<option value="${category.catID}"> ${category.category_name} </option>`
                 );
-                // console.log(category.catID);
-                // console.log(`<option value="${category.catID}"> ${category.category_name} </option>`);
             });
             
             // function to add event listeners to dropdowns of 2nd chart
@@ -278,7 +244,7 @@ const myChart = new Chart(
     config
 );
 
-// to filter the data based on month and year selection
+// to filter the data based on month and year selection for chart 1
 function filterData1(monthinput) {
     // manage the labels based on month
     var days2 = [...days];
@@ -363,28 +329,11 @@ function isLeapYear(year) {
 
 // initiate the labels and the data for chart 2
 var weekdays = ["M", "T", "W", "T", "F", "S", "S"];
+
+// random values for testing purposes
 var weeklydata = [2,12,0,62,5.5,5,12];
 
-
-
-
-
-
-
-// var ctx = document.getElementById("myChart-2").getContext("2d");
-
-
-
-
-// if selected category and NO subcategory, display average discount of all discounts in selected category
-
-// if selected category and subcategory, display average discount of all discounts in selection
-
-// first view = current week
-// navigate between weeks
-
-// calculate average discount 
-
+// setup data of chart 2
 const data2 = {
     labels: weekdays,
     datasets: [{
@@ -406,7 +355,7 @@ const data2 = {
     }]
 };
 
-// config chart 2
+// configuration of chart 2
 const config2 = {
     type: 'bar',
     data: data2,
@@ -463,7 +412,6 @@ const config2 = {
         }
     }
 };
-// console.log(config2);
 
 // render init block
 const myChart2 = new Chart(
@@ -473,30 +421,84 @@ const myChart2 = new Chart(
 
 // create function that is called after changing the value of categoties/subcategories
 function filterbyCategory() {
+    // grab the values of the selected category and subcategory
     var selected_cat = document.getElementById("categories").value;
     var selected_subcat = document.getElementById("subcategories").value;
 
-    // call the discount
+    // call the discount function with the values selected
     averageDiscount(selected_cat,selected_subcat);
 }
-  
 
+// let weekData = null;
+let now;
+let startOfWeek;
+let endOfWeek;
+
+// to navigate between weeks
+function selectedWeek() {
+    const selected = document.querySelector('.selected');
+    if (selected) {
+      selected.classList.remove('selected');
+    }
+    const current = event.currentTarget;
+    current.classList.add('selected');
+    console.log(current.id);
+
+    var clickedButton = current.id;
+    console.log("The " + clickedButton + " button was clicked.");
+    // var clickedButton = document.getElementById(clickedButtonID);
+    
+    if (clickedButton == 'previous') {
+        // Get the start and end dates for the current week (Monday to Sunday)
+        now = new Date();
+        const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        const daysSinceMonday = oneWeekAgo.getDay() - 1;
+        startOfWeek = new Date(oneWeekAgo.getFullYear(), oneWeekAgo.getMonth(), oneWeekAgo.getDate() - daysSinceMonday);
+        endOfWeek = new Date(oneWeekAgo.getFullYear(), oneWeekAgo.getMonth(), startOfWeek.getDate() + 6);
+
+        console.log("now:",now);
+        console.log("startOfWeek:", startOfWeek);
+        console.log("endOfWeek:",endOfWeek);
+
+    }else if(clickedButton == 'next'){
+        // Get the start and end dates for the current week (Monday to Sunday)
+        now = new Date();
+        const oneWeekAfter = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
+        const daysSinceMonday = oneWeekAfter.getDay() - 1;
+        startOfWeek = new Date(oneWeekAfter.getFullYear(), oneWeekAfter.getMonth(), oneWeekAfter.getDate() - daysSinceMonday);
+        endOfWeek = new Date(oneWeekAfter.getFullYear(), oneWeekAfter.getMonth(), startOfWeek.getDate() + 6);
+
+        console.log("now:",now);
+        console.log("startOfWeek:", startOfWeek);
+        console.log("endOfWeek:",endOfWeek);
+
+    }else if(clickedButton == 'today') {
+        // Get the start and end dates for the current week (Monday to Sunday)
+        now = new Date();
+        // const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        const daysSinceMonday = now.getDay() - 1;
+        startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
+        endOfWeek = new Date(now.getFullYear(), now.getMonth(), startOfWeek.getDate() + 6);
+
+        console.log("now:",now);
+        console.log("startOfWeek:", startOfWeek);
+        console.log("endOfWeek:",endOfWeek);
+    } 
+
+    // return [now, startOfWeek, endOfWeek];
+}
+
+// function to calculate the average discount
 function averageDiscount(cat,subcat) {
+    // the selected values passed from the function above
     console.log("Selected category: ", cat);
     console.log("Selected subcategory: ", subcat);
-    
-    if(!subcat) {
-    // if subcategory is not selected
-    // to calculate all the products of the category
 
-    }else {
-    // category and subcategory
-    }
 
-    // add data from get request
+    // fetch data from get request
     var fetched = getData();
     var discs = fetched.discs;
-    console.log("fetched2 : ",fetched); // has cat, subcat, discs
+    console.log("fetched2 : ",fetched); // has cat, subcat, discs 
     console.log("discs2 : ",discs); // all the discs submitted
 
 
@@ -505,6 +507,8 @@ function averageDiscount(cat,subcat) {
     const daysSinceMonday = now.getDay() - 1;
     const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
     const endOfWeek = new Date(now.getFullYear(), now.getMonth(), startOfWeek.getDate() + 6);
+
+    // const [now, startOfWeek, endOfWeek] = selectedWeek();
 
     console.log("now:",now);
     console.log("startOfWeek:", startOfWeek);
@@ -523,10 +527,20 @@ function averageDiscount(cat,subcat) {
         }
     }
 
-    // filter all the products of this subcategory
-    const selectedProducts = discs.filter(product => product.subID === subcat);
-    // const selectedProducts = discs.filter(product => product.subID === subcat || catofProduct(product) === cat);
-    console.log("--productsByCat", selectedProducts); // selectedProducts of subcategory
+    let selectedProducts = 0;
+
+    if(!subcat) {
+    // if subcategory is not selected
+    // to calculate all the products of the category
+        selectedProducts = discs.filter(product => catofProduct(product) === cat);
+        console.log("--productsByCat", selectedProducts); // selectedProducts of category
+    }else {
+        // filter all the products of the selected subcategory
+        selectedProducts = discs.filter(product => product.subID === subcat);
+        // const selectedProducts = discs.filter(product => product.subID === subcat || catofProduct(product) === cat);
+        console.log("--productsBySubCat", selectedProducts); // selectedProducts of subcategory
+    }
+
 
     // select only products of the current week
     const filteredProducts = selectedProducts.filter(discount => {
@@ -577,245 +591,12 @@ function averageDiscount(cat,subcat) {
     // dataValues contains the average discount values for each date
     const labels = Object.keys(averageDiscountByEntryDate);
     // const labels = [];
-    const dataValues = labels.map(entryDate => averageDiscountByEntryDate[entryDate].toFixed(4)*100 || 0);
+    const dataValues = labels.map(entryDate => averageDiscountByEntryDate[entryDate].toFixed(5)*100 || 0);
     
-    // myChart2.config.data.labels = labels;
-    // for (let i = 0; i < 7; i++) {   
-    //     labels.push(startOfWeek.getDate() + i);
-    // }
     myChart2.config.data.labels = labels;
     
     myChart2.config.data.datasets[0].data = dataValues;
 
-    // // ypologismos diaforwn 
-    // var difference = [];
-    // // estw mesi timi proigoumenis vdomasas == original price
-    // for (let i = 0; i < discsofSubcat.length; i++) {
-    //     difference[i] = discsofSubcat[i].original_price - discsofSubcat[i].disc_price;        
-    // }
-
-    // //ypologismos mesis timis
-    // var sum=0;
-    // for (let i = 0; i < difference.length; i++) {
-    //     sum += difference[i];
-    // }
-    // var mesi_timi = Math.round((sum/difference.length)*100);
-
-    // var mesi_ekptosi = [];
-    // for (let i = 0; i < 7; i++) {
-    //     mesi_ekptosi[i] = mesi_timi;
-    // }
-
-    //replace the data in the chart
-    // myChart2.config.data.datasets[0].data = mesi_ekptosi;
-    // myChart2.config.data.labels = weekdays;
     // load the updates to the canva of the chart
     myChart2.update();
 }
-
-
-
-// function selectedWeek() {
-//     const weekdays2 = [...weekdays];
-//     const startweek = document.getElementById('startWeek');
-//     console.log(startweek.value);
-//     const date = new Date(startweek.value);
-//     console.log(date);
-
-//     // const endweek = document.getElementById('endWeek');
-//     var filterWeek = [];
-//     for (let i = 0; i < 7; i++) {
-//         // const element = array[i];
-//         // filterWeek.push(startweek + i);
-//         let nextDay = new Date(date);
-//         nextDay.setDate(nextDay.getDate() + i);
-//         filterWeek.push(nextDay.toDateString().slice(0, 10));
-//     }
-//     console.log("im inside select week");
-//     console.log("filterweek", filterWeek);
-//     myChart2.config2.data.labels = filterWeek;
-//     myChart2.update();
-
-    
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-// new Chart(ctx2, {
-//     type: "line",
-//     data: {
-//         labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-//         datasets: [{
-//             label: "Mobile apps",
-//             tension: 0,
-//             borderWidth: 0,
-//             pointRadius: 5,
-//             pointBackgroundColor: "rgba(255, 255, 255, .8)",
-//             pointBorderColor: "transparent",
-//             borderColor: "rgba(255, 255, 255, .8)",
-//             borderColor: "rgba(255, 255, 255, .8)",
-//             borderWidth: 4,
-//             backgroundColor: "transparent",
-//             fill: true,
-//             data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-//             maxBarThickness: 6
-
-//         }],
-//     },
-//     options: {
-//         responsive: true,
-//         maintainAspectRatio: false,
-//         plugins: {
-//             legend: {
-//                 display: false,
-//             }
-//         },
-//         interaction: {
-//             intersect: false,
-//             mode: 'index',
-//         },
-//         scales: {
-//             y: {
-//                 grid: {
-//                     drawBorder: false,
-//                     display: true,
-//                     drawOnChartArea: true,
-//                     drawTicks: false,
-//                     borderDash: [5, 5],
-//                     color: 'rgba(255, 255, 255, .2)'
-//                 },
-//                 ticks: {
-//                     display: true,
-//                     color: '#f8f9fa',
-//                     padding: 10,
-//                     font: {
-//                         size: 14,
-//                         weight: 300,
-//                         family: "Roboto",
-//                         style: 'normal',
-//                         lineHeight: 2
-//                     },
-//                 }
-//             },
-//             x: {
-//                 grid: {
-//                     drawBorder: false,
-//                     display: false,
-//                     drawOnChartArea: false,
-//                     drawTicks: false,
-//                     borderDash: [5, 5]
-//                 },
-//                 ticks: {
-//                     display: true,
-//                     color: '#f8f9fa',
-//                     padding: 10,
-//                     font: {
-//                         size: 14,
-//                         weight: 300,
-//                         family: "Roboto",
-//                         style: 'normal',
-//                         lineHeight: 2
-//                     },
-//                 }
-//             },
-//         },
-//     },
-// });
-
-
-
-
-
-// var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-// new Chart(ctx3, {
-//     type: "line",
-//     data: {
-//         labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-//         datasets: [{
-//             label: "Mobile apps",
-//             tension: 0,
-//             borderWidth: 0,
-//             pointRadius: 5,
-//             pointBackgroundColor: "rgba(255, 255, 255, .8)",
-//             pointBorderColor: "transparent",
-//             borderColor: "rgba(255, 255, 255, .8)",
-//             borderWidth: 4,
-//             backgroundColor: "transparent",
-//             fill: true,
-//             data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-//             maxBarThickness: 6
-
-//         }],
-//     },
-//     options: {
-//         responsive: true,
-//         maintainAspectRatio: false,
-//         plugins: {
-//             legend: {
-//                 display: false,
-//             }
-//         },
-//         interaction: {
-//             intersect: false,
-//             mode: 'index',
-//         },
-//         scales: {
-//             y: {
-//                 grid: {
-//                     drawBorder: false,
-//                     display: true,
-//                     drawOnChartArea: true,
-//                     drawTicks: false,
-//                     borderDash: [5, 5],
-//                     color: 'rgba(255, 255, 255, .2)'
-//                 },
-//                 ticks: {
-//                     display: true,
-//                     padding: 10,
-//                     color: '#f8f9fa',
-//                     font: {
-//                         size: 14,
-//                         weight: 300,
-//                         family: "Roboto",
-//                         style: 'normal',
-//                         lineHeight: 2
-//                     },
-//                 }
-//             },
-//             x: {
-//                 grid: {
-//                     drawBorder: false,
-//                     display: false,
-//                     drawOnChartArea: false,
-//                     drawTicks: false,
-//                     borderDash: [5, 5]
-//                 },
-//                 ticks: {
-//                     display: true,
-//                     color: '#f8f9fa',
-//                     padding: 10,
-//                     font: {
-//                         size: 14,
-//                         weight: 300,
-//                         family: "Roboto",
-//                         style: 'normal',
-//                         lineHeight: 2
-//                     },
-//                 }
-//             },
-//         },
-//     },
-// });
