@@ -1,3 +1,4 @@
+// Old name: Admin page - Statistics Charts 
 // const { startOfDay, startOfWeek, endOfWeek } = require("date-fns");
 
 let dataa;
