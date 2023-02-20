@@ -186,7 +186,7 @@ router.get('/discounts', (req, res) => {
 // Create route to retrieve products and discounts of a store selected from database
 router.get('/products', (req, res) => {
 
-    db.query('SELECT product.* , stores.store_name, COALESCE(discount.disc_price, NULL) AS disc_price FROM product  INNER JOIN stores ON product.storeID = stores.storeID LEFT JOIN discount ON discount.counter = product.counter ', (error, results) => {
+    db.query('SELECT p.*, s.store_name, d.disc_price FROM product p INNER JOIN stores s ON p.storeID = s.storeID LEFT JOIN (SELECT counter, MAX(entry_date) AS latest_entry_date FROM discount WHERE entry_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) GROUP BY counter ) max_dates ON p.counter = max_dates.counter LEFT JOIN discount d ON p.counter = d.counter AND d.entry_date = max_dates.latest_entry_date', (error, results) => {
       if (error) {
         res.status(500).send(error);
 
@@ -288,7 +288,8 @@ router.get('/user_history', (req, res) => {
 
 router.get('/userslead', (req, res) => {
   // the following query will give me all the interactions of the user loged in, for the products with counter same as the ones in the interaction table 
-  db.query('SELECT * FROM users WHERE total_score > 0 ORDER BY users.total_score DESC', (error, results) => {
+  db.query('SELECT * FROM users ORDER BY users.total_score DESC', (error, results) => {
+    // WHERE total_score > 0 
      
     if (error) {
       res.status(500).send(error);
@@ -351,7 +352,7 @@ module.exports = router;
 
 router.get('/endMonth', (req, res) => {
   const cron = require('node-cron');
-  const mysql = require('mysql2');
+  
 
   // Schedule a task to run at the end of each month
   // cron.schedule('0 0 28 * *', () => {
