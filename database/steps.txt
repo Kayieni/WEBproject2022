@@ -1,7 +1,0 @@
-get-data.py     // Get product and category data from ekatanalotis
-products.json     // We save the data 
-json_data.txt     // Paste products.json into a txt file
-better_preprocessing.html     //We process json_data.txt to keep the things we need
-MakeFile.js     // The same as step 3 but put the processed data into a new json file + with additional product prices
-newThing.json     // The data from step 4 
-connect_db.php      // Read step 5, display it and send it to database (+we read another json file, export.geojson because we need one value)      
